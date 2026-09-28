@@ -1,4 +1,18 @@
 User-agent: *
 Allow: /
+Allow: /#logos
+Allow: /#drops
+Allow: /#ateso-movies-section
+Allow: /#mixes
+Allow: /sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
 
 Sitemap: https://djemmapro.com/sitemap.xml

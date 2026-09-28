@@ -5,39 +5,56 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 
-  <!-- Core Dashboard / DJ Mixtapes -->
+  <!-- Core Storefront & Studio -->
   <url>
     <loc>https://djemmapro.com/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png</image:loc>
+      <image:title>DJ EMMA PRO FX Official Studio &amp; Nonstop Broadcast</image:title>
+    </image:image>
   </url>
 
-  <!-- Ateso Movies Section -->
+  <!-- 3D Logos Reveal Room & Electric Shockwave Intro -->
+  <url>
+    <loc>https://djemmapro.com/#logos</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <video:video>
+      <video:thumbnail_loc>https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png</video:thumbnail_loc>
+      <video:title>Electric Shockwave 3D Logo Reveal - DJ Emma Pro FX</video:title>
+      <video:description>High-Voltage Lightning &amp; Bass Impact 3D Motion Logo animation in 360p Data Saver quality.</video:description>
+      <video:content_loc>https://res.cloudinary.com/hbyqk5y0/video/upload/w_640,h_360,c_limit,q_auto:eco/v1789609295/VID-20260810-WA0011.mp4</video:content_loc>
+    </video:video>
+  </url>
+
+  <!-- DJ Voice Drops & Studio Name Tags -->
+  <url>
+    <loc>https://djemmapro.com/#drops</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Ateso Movies (Poison Break Series) -->
   <url>
     <loc>https://djemmapro.com/#ateso-movies-section</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
   </url>
 
-  <!-- Studio Manager Services -->
-  <url>
-    <loc>https://djemmapro.com/#studio-manager</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Trending Audio Mixes -->
+  <!-- Audio Mixtapes & Nonstop Sets -->
   <url>
     <loc>https://djemmapro.com/#mixes</loc>
     <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
 
-  <!-- Video & Visuals -->
+  <!-- Studio Manager Admin Portal -->
   <url>
-    <loc>https://djemmapro.com/#reggae-afro</loc>
+    <loc>https://djemmapro.com/#studio-manager</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.80</priority>
   </url>
 
 </urlset>
