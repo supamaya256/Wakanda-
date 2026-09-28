@@ -52,7 +52,8 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
   // Active / Center Stage 3D Video Player (Plays directly from the middle of the showcase without scrolling up)
   const [activeLogo, setActiveLogo] = useState<LogoItem>(() => {
     const list = Array.isArray(logos) && logos.length > 0 ? logos : LOGO_ITEMS_DATA;
-    return list[0] || LOGO_ITEMS_DATA[0];
+    const electricLogo = list.find(l => l && (l.id === 'electric-shockwave-wa0011' || l.title?.toUpperCase().includes('ELECTRIC SHOCKWAVE')));
+    return electricLogo || list[0] || LOGO_ITEMS_DATA[0];
   });
   const activeVideoRef = useRef<HTMLVideoElement>(null);
   const centerPlayerRef = useRef<HTMLDivElement>(null);
@@ -66,7 +67,8 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
   useEffect(() => {
     const list = Array.isArray(logos) && logos.length > 0 ? logos : LOGO_ITEMS_DATA;
     if (!activeLogo || !list.find(l => l && l.id === activeLogo.id) || !activeLogo.videoUrl) {
-      setActiveLogo(list[0] || LOGO_ITEMS_DATA[0]);
+      const electricLogo = list.find(l => l && (l.id === 'electric-shockwave-wa0011' || l.title?.toUpperCase().includes('ELECTRIC SHOCKWAVE')));
+      setActiveLogo(electricLogo || list[0] || LOGO_ITEMS_DATA[0]);
     }
   }, [logos, activeLogo]);
 

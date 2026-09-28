@@ -43,6 +43,18 @@ export function ensure360pLogoUrl(url?: string | null): string {
 
 export const THREE_D_LOGOS_REVEAL_DATA: ThreeDLogoRevealItem[] = [
   {
+    id: '3d-reveal-electric-shockwave',
+    title: '3D LOGO REVEAL',
+    edition: 'Edition #01',
+    styleTag: 'Electric Shockwave High-Voltage Lightning & Bass Impact',
+    description: 'High-voltage lightning arcs breaking into volumetric smoke with cinematic logo lockup and bass impact.',
+    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/w_640,h_360,c_limit,q_auto:eco/v1789609295/VID-20260810-WA0011.mp4',
+    category: 'Electric & Laser',
+    resolution: '360p Data Saver',
+    fps: 30,
+    featured: true
+  },
+  {
     id: '3d-reveal-02',
     title: '3D LOGO REVEAL',
     edition: 'Edition #02',

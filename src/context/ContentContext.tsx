@@ -81,7 +81,7 @@ interface ContentContextType {
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
 const DROPS_STORAGE_KEY = 'dj_emma_voice_drops_v1';
-const LOGOS_STORAGE_KEY = 'dj_emma_logos_v1';
+const LOGOS_STORAGE_KEY = 'dj_emma_logos_v2_electric_first';
 const ATESO_MOVIES_STORAGE_KEY = 'dj_emma_ateso_movies_v4_youtube';
 const FILES_STORAGE_KEY = 'dj_emma_custom_files_v1';
 const YT_SUBSCRIBED_KEY = 'dj_emma_yt_subscribed_v2';
@@ -139,6 +139,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
               tags: Array.isArray(item.tags) ? item.tags : (fallbackItem.tags || ['3D Logo', 'Studio Motion'])
             };
           }).filter((l: LogoItem) => Boolean(l.videoUrl));
+
+          const electricIdx = sanitized.findIndex(
+            (l: LogoItem) => l.id === 'electric-shockwave-wa0011' || l.title?.toUpperCase().includes('ELECTRIC SHOCKWAVE')
+          );
+          if (electricIdx > 0) {
+            const [electricItem] = sanitized.splice(electricIdx, 1);
+            sanitized.unshift(electricItem);
+          }
 
           if (sanitized.length > 0) return sanitized;
         }

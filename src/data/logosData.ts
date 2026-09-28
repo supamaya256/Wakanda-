@@ -33,18 +33,6 @@ export const ensure480pUrl = ensure360pUrl;
 
 export const LOGO_ITEMS_DATA: LogoItem[] = [
   {
-    id: 'dj-capecious',
-    title: 'DJ CAPECIOUS 3D LOGO',
-    style: '3D Gold Metallic Spin & Neon Pulse',
-    category: 'Gold & Metallic',
-    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/w_640,h_360,c_limit,q_auto:eco/v1789609383/DJ_CAPECIOUS.mp4',
-    priceUgx: '18,000 UGX',
-    priceUsd: '$5 USD',
-    resolution: '360p Fast Stream • 30 FPS',
-    matchScore: 99,
-    tags: ['3D Metallic', 'Gold Spin', 'Club LED Ready']
-  },
-  {
     id: 'electric-shockwave-wa0011',
     title: 'ELECTRIC SHOCKWAVE INTRO',
     style: 'High-Voltage Lightning & Bass Impact',
@@ -53,8 +41,20 @@ export const LOGO_ITEMS_DATA: LogoItem[] = [
     priceUgx: '18,000 UGX',
     priceUsd: '$5 USD',
     resolution: '360p Fast Stream • Data Saver',
-    matchScore: 98,
+    matchScore: 99,
     tags: ['Electric Sparks', 'Bass Impact', 'Transparent Alpha']
+  },
+  {
+    id: 'dj-capecious',
+    title: 'DJ CAPECIOUS 3D LOGO',
+    style: '3D Gold Metallic Spin & Neon Pulse',
+    category: 'Gold & Metallic',
+    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/w_640,h_360,c_limit,q_auto:eco/v1789609383/DJ_CAPECIOUS.mp4',
+    priceUgx: '18,000 UGX',
+    priceUsd: '$5 USD',
+    resolution: '360p Fast Stream • 30 FPS',
+    matchScore: 98,
+    tags: ['3D Metallic', 'Gold Spin', 'Club LED Ready']
   },
   {
     id: 'dj-2m',
