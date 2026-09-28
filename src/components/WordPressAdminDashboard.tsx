@@ -267,10 +267,10 @@ export default function WordPressAdminDashboard({
 
   return (
     <div className="min-h-screen bg-[#08080a] text-white font-sans selection:bg-[#E50914] selection:text-white flex flex-col antialiased relative overflow-x-hidden">
-      {/* Background Image Layer (Requested by User: DJ Emma Pro FX Signature Visual Showcase) */}
+      {/* Background Image Layer (Requested by User: DJ Emma Pro FX Signature Visual Showcase - Eco Optimized) */}
       <div 
         className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-30 filter brightness-90 contrast-110"
-        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
+        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_960/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
       />
       {/* Cinematic dark ambient overlay for sharp readable UI panels */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#08080a]/85 via-[#08080a]/75 to-[#08080a]/90 backdrop-blur-[1px]" />

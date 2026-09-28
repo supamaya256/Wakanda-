@@ -12,6 +12,8 @@ import { AdminAuthProvider } from './context/AdminAuthContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { useAdminAuth } from './context/AdminAuthContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { DataSaverProvider, useDataSaver } from './context/DataSaverContext';
+import DataSaverQuickBar from './components/DataSaverQuickBar';
 import AdminAuthModal from './components/AdminAuthModal';
 import { AtesoMovie } from './data/atesoMoviesData';
 import NetflixNavbar from './components/NetflixNavbar';
@@ -39,7 +41,6 @@ import AiStudioHubModal from './components/AiStudioHubModal';
 import QuickAccessBar from './components/QuickAccessBar';
 import MobileBottomNav from './components/MobileBottomNav';
 import FeaturedVideoPremiere from './components/FeaturedVideoPremiere';
-import NetflixWatchHistoryRow from './components/NetflixWatchHistoryRow';
 import ThreeDLogosRevealPage from './components/ThreeDLogosRevealPage';
 import ThreeDLogosWelcomeHero from './components/ThreeDLogosWelcomeHero';
 import { WatchHistoryProvider } from './context/WatchHistoryContext';
@@ -190,6 +191,17 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
   if (currentView === 'movies') {
     return (
       <div className="min-h-screen bg-[#0e0e0e] text-white pb-20 md:pb-8">
+        <DataSaverQuickBar 
+          onOpenLogosReveal={() => {
+            setCurrentView('logos-reveal');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenAtesoMovies={() => {
+            setSelectedMovie(null);
+            setCurrentView('movies');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
         <WatchAtesoMoviesPage
           onBackToStore={() => {
             setSelectedMovie(null);
@@ -222,7 +234,18 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
 
   if (currentView === 'logos-reveal') {
     return (
-      <div className="min-h-screen bg-[#07070a] text-white pt-[36px] pb-20 md:pb-8">
+      <div className="min-h-screen bg-[#07070a] text-white pb-20 md:pb-8">
+        <DataSaverQuickBar 
+          onOpenLogosReveal={() => {
+            setCurrentView('logos-reveal');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenAtesoMovies={() => {
+            setSelectedMovie(null);
+            setCurrentView('movies');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
         <ThreeDLogosRevealPage
           onBackToStore={() => {
             setCurrentView('store');
@@ -261,6 +284,11 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
     );
   }
 
+  const { isDataSaver } = useDataSaver();
+  const bgImageUrl = isDataSaver 
+    ? 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:low,w_480/v1790550689/file_00000000bda08211910e147fbb531635.png'
+    : 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_960/v1790550689/file_00000000bda08211910e147fbb531635.png';
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }}
@@ -268,10 +296,10 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="min-h-screen bg-[#141414] text-white selection:bg-[#E50914] selection:text-white font-sans overflow-x-hidden pt-[36px] pb-28 sm:pb-24 relative"
     >
-      {/* Background Image Layer (Requested by User: DJ Emma Pro FX Signature Visual Showcase) */}
+      {/* Background Image Layer (Optimized for Data Saver: 98% less MB) */}
       <div 
         className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25 filter brightness-80 contrast-115"
-        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
+        style={{ backgroundImage: `url('${bgImageUrl}')` }}
       />
       <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#141414]/85 via-[#141414]/75 to-[#141414]/90 backdrop-blur-[1px]" />
 
@@ -302,6 +330,19 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
         onOpenLogin={onOpenLogin}
         onOpenTrustModal={() => setIsTrustModalOpen(true)}
         onOpenAiHub={() => setIsAiHubOpen(true)}
+      />
+
+      {/* Easy Access & Data Saver Quick Bar */}
+      <DataSaverQuickBar 
+        onOpenLogosReveal={() => {
+          setCurrentView('logos-reveal');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onOpenAtesoMovies={() => {
+          setSelectedMovie(null);
+          setCurrentView('movies');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       <main>
@@ -427,21 +468,6 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
           {/* ===================================================================
               ACT 1: STREAMING THEATRE (Nonstop DJ Mixtapes & Top Shows)
              =================================================================== */}
-          {/* Watch History Row (Tracks Movies & Mixtapes Played, Persisted in Local Storage) */}
-          {!searchQuery.trim() && selectedGenre === 'All' && (
-            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-              <NetflixWatchHistoryRow
-                onWatchMovie={(movie) => {
-                  setSelectedMovie(movie);
-                  setCurrentView('movies');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                onOpenTrackModal={(track) => setSelectedTrack(track)}
-                isLoading={isFeedLoading || isFilterLoading}
-              />
-            </motion.div>
-          )}
-
           {/* My Favorites Row */}
           {favoriteTracks && favoriteTracks.length > 0 && !searchQuery.trim() && selectedGenre === 'All' && (
             <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
@@ -726,17 +752,19 @@ function RootApp() {
 export default function App() {
   return (
     <LanguageProvider>
-      <AuthProvider>
-        <AdminAuthProvider>
-          <ContentProvider>
-            <AudioProvider>
-              <WatchHistoryProvider>
-                <RootApp />
-              </WatchHistoryProvider>
-            </AudioProvider>
-          </ContentProvider>
-        </AdminAuthProvider>
-      </AuthProvider>
+      <DataSaverProvider>
+        <AuthProvider>
+          <AdminAuthProvider>
+            <ContentProvider>
+              <AudioProvider>
+                <WatchHistoryProvider>
+                  <RootApp />
+                </WatchHistoryProvider>
+              </AudioProvider>
+            </ContentProvider>
+          </AdminAuthProvider>
+        </AuthProvider>
+      </DataSaverProvider>
     </LanguageProvider>
   );
 }

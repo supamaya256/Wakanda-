@@ -13,7 +13,9 @@ import SoftwareDownloadSection from './SoftwareDownloadSection';
 import YoutubeSubscribeUnlockModal from './YoutubeSubscribeUnlockModal';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import { useWatchHistory } from '../context/WatchHistoryContext';
+import { useDataSaver } from '../context/DataSaverContext';
 import HdMediaSlideshow from './HdMediaSlideshow';
+import { Zap } from 'lucide-react';
 
 interface WatchAtesoMoviesPageProps {
   onBackToStore: () => void;
@@ -25,10 +27,11 @@ export default function WatchAtesoMoviesPage({ onBackToStore, onOpenStudioManage
   const { atesoMovies, isYoutubeSubscribed, setYoutubeSubscribed } = useContent();
   const { isAdmin } = useAdminAuth();
   const { recordMoviePlayed } = useWatchHistory();
+  const { isDataSaver, toggleDataSaver } = useDataSaver();
   const [selectedMovie, setSelectedMovie] = useState<AtesoMovie | null>(
     initialSelectedMovie || atesoMovies[0] || null
   );
-  const [isPlaying, setIsPlaying] = useState<boolean>(isYoutubeSubscribed);
+  const [isPlaying, setIsPlaying] = useState<boolean>(!isDataSaver && isYoutubeSubscribed);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
@@ -246,6 +249,22 @@ export default function WatchAtesoMoviesPage({ onBackToStore, onOpenStudioManage
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Data Saver Mode Toggle Button */}
+          <button
+            type="button"
+            onClick={toggleDataSaver}
+            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded text-xs font-bold transition-all cursor-pointer border select-none ${
+              isDataSaver
+                ? 'bg-emerald-950/70 border-emerald-500/50 text-emerald-300 hover:bg-emerald-900/80 shadow-md'
+                : 'bg-zinc-800/80 border-zinc-700 text-zinc-300 hover:bg-zinc-700'
+            }`}
+            title="Toggle Data Saver (Saves ~85% mobile data)"
+          >
+            <Zap className={`w-3.5 h-3.5 ${isDataSaver ? 'text-emerald-400 fill-current animate-pulse' : 'text-zinc-400'}`} />
+            <span className="hidden sm:inline">DATA SAVER:</span>
+            <span>{isDataSaver ? 'ON (LOW MB)' : 'OFF (HD)'}</span>
+          </button>
+
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent('app:switch-view', { detail: 'logos-reveal' }))}
@@ -343,6 +362,7 @@ export default function WatchAtesoMoviesPage({ onBackToStore, onOpenStudioManage
                     ref={videoRef}
                     src={get320pVideoUrl(selectedMovie.videoUrl320 || selectedMovie.videoUrl)}
                     poster={selectedMovie.thumbnail}
+                    preload={isDataSaver ? 'none' : 'metadata'}
                     className="w-full h-full object-contain"
                     playsInline
                     controls={false}

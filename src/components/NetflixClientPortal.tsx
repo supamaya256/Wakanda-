@@ -67,7 +67,7 @@ export default function NetflixClientPortal() {
       <div className="flex items-baseline justify-between mb-4">
         <div>
           <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white tracking-wide flex items-center gap-2">
-            <span>Continue Watching & Order Progress</span>
+            <span>Client Portal & Order Progress</span>
             <span className="text-xs text-[#E50914] font-normal tracking-normal inline-flex items-center">
               ● Live Studio Feed
             </span>

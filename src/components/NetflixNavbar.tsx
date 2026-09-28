@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
-import { Search, Bell, ChevronDown, Check, Download, MessageSquare, Headphones, Sliders, ExternalLink, X, UploadCloud, Shield, Film, Lock, ShieldCheck, LogOut, Instagram, Twitter, Music, Facebook, Ghost, MessageCircle, Youtube, WifiOff, Phone, Keyboard, Sparkles, Globe, Cloud, LayoutDashboard, User, UserPlus, LogIn, History, Send } from 'lucide-react';
+import { Search, Bell, ChevronDown, Check, Download, MessageSquare, Headphones, Sliders, ExternalLink, X, UploadCloud, Shield, Film, Lock, ShieldCheck, LogOut, Instagram, Twitter, Music, Facebook, Ghost, MessageCircle, Youtube, WifiOff, Phone, Keyboard, Sparkles, Globe, Cloud, LayoutDashboard, User, UserPlus, LogIn, History, Send, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAudio } from '../context/AudioContext';
 import { useAdminAuth, MASTER_ADMIN_EMAIL } from '../context/AdminAuthContext';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useDataSaver } from '../context/DataSaverContext';
 import GoogleSearchVisibilityModal from './GoogleSearchVisibilityModal';
 
 interface NetflixNavbarProps {
@@ -36,6 +37,7 @@ export default function NetflixNavbar({
 }: NetflixNavbarProps) {
   const { isAdmin, adminEmail, openAuthModal, logout: adminLogout } = useAdminAuth();
   const { user, logout: clientLogout } = useAuth();
+  const { isDataSaver, toggleDataSaver } = useDataSaver();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -333,13 +335,6 @@ export default function NetflixNavbar({
               <span>{t('nav.movies', 'Ateso Movies')}</span>
             </button>
 
-            <a
-              href="#watch-history-row"
-              className="hover:text-white transition-colors whitespace-nowrap flex items-center gap-1"
-            >
-              <History className="w-3.5 h-3.5 text-[#E50914]" />
-              <span>{t('nav.history', 'History')}</span>
-            </a>
             <a
               href="#software-downloads"
               className="hover:text-white transition-colors whitespace-nowrap flex items-center gap-1"
@@ -698,6 +693,21 @@ export default function NetflixNavbar({
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
             </svg>
             <span className="hidden lg:inline">Google Search</span>
+          </button>
+
+          {/* Data Saver Mode 1-Tap Toggle */}
+          <button
+            type="button"
+            onClick={toggleDataSaver}
+            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded text-[11px] sm:text-xs font-bold tracking-wide transition-all shadow-sm shrink-0 cursor-pointer ${
+              isDataSaver
+                ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/50 hover:bg-emerald-600/40'
+                : 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700 hover:text-white'
+            }`}
+            title="Toggle Data Saver mode (saves mobile cellular data)"
+          >
+            <Zap className={`w-3.5 h-3.5 ${isDataSaver ? 'fill-current text-emerald-400 animate-pulse' : 'text-zinc-400'}`} />
+            <span className="hidden sm:inline">{isDataSaver ? 'Data Saver: ON' : 'Data Saver: OFF'}</span>
           </button>
 
           {/* WhatsApp Direct VIP Pill */}

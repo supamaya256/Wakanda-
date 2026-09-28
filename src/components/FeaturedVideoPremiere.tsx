@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
 import { useWatchHistory } from '../context/WatchHistoryContext';
+import { useDataSaver } from '../context/DataSaverContext';
 
 export type VideoCategoryTag = 'All' | 'New Release' | 'Viral' | 'Mixtape' | 'Ateso Movies';
 
@@ -338,6 +339,7 @@ interface FeaturedVideoPremiereProps {
 export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVideoPremiereProps) {
   const { tracks, isPlaying, currentTrackIndex, playTrack, togglePlay, downloadTrack } = useAudio();
   const { recordMixtapePlayed, recordMoviePlayed } = useWatchHistory();
+  const { isDataSaver, preloadStrategy, shouldAutoplay } = useDataSaver();
   const [copied, setCopied] = useState(false);
   const [selectedTag, setSelectedTag] = useState<VideoCategoryTag>('All');
   const [activeVideo, setActiveVideo] = useState<PremiereVideoItem>(PREMIERE_VIDEOS[0]);
@@ -756,7 +758,8 @@ export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVide
                   src={activeVideo.videoUrl}
                   poster={activeVideo.thumbnail}
                   controls
-                  autoPlay
+                  preload={preloadStrategy}
+                  autoPlay={!isDataSaver && autoplayEnabled}
                   onTimeUpdate={(e) => setPlaybackSeconds(Math.floor(e.currentTarget.currentTime))}
                   className="w-full h-full object-contain"
                 >

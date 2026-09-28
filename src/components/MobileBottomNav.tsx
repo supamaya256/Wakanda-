@@ -1,7 +1,8 @@
 import React from 'react';
-import { Home, Headphones, Mic2, Film, User, ShieldCheck, Sparkles } from 'lucide-react';
+import { Home, Headphones, Mic2, Film, User, ShieldCheck, Sparkles, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useAdminAuth } from '../context/AdminAuthContext';
+import { useDataSaver } from '../context/DataSaverContext';
 
 interface MobileBottomNavProps {
   onOpenAtesoMovies: () => void;
@@ -20,6 +21,7 @@ export default function MobileBottomNav({
 }: MobileBottomNavProps) {
   const { user } = useAuth();
   const { isAdmin } = useAdminAuth();
+  const { isDataSaver, toggleDataSaver } = useDataSaver();
 
   const scrollTo = (id: string) => {
     if (currentView !== 'store') {
@@ -107,6 +109,19 @@ export default function MobileBottomNav({
         <Film className={`w-5 h-5 ${currentView === 'movies' ? 'text-amber-400' : 'text-zinc-400 group-hover:text-amber-400'}`} />
         <span className={`text-[10px] mt-0.5 font-medium ${currentView === 'movies' ? 'text-amber-300 font-bold' : 'text-zinc-400'}`}>
           Movies
+        </span>
+      </button>
+
+      {/* 1-Tap Mobile Data Saver Button */}
+      <button
+        type="button"
+        onClick={toggleDataSaver}
+        className="flex flex-col items-center justify-center py-1 px-1.5 transition-colors cursor-pointer group"
+        title="Toggle Data Saver (Save up to 85% mobile data)"
+      >
+        <Zap className={`w-5 h-5 transition-transform group-active:scale-125 ${isDataSaver ? 'text-emerald-400 fill-current animate-pulse' : 'text-zinc-500'}`} />
+        <span className={`text-[9px] mt-0.5 font-bold ${isDataSaver ? 'text-emerald-400' : 'text-zinc-400'}`}>
+          {isDataSaver ? 'Saver ON' : 'Saver OFF'}
         </span>
       </button>
 

@@ -19,8 +19,10 @@ import {
   MessageCircle,
   Eye,
   CheckCircle2,
-  ChevronDown
+  ChevronDown,
+  Zap
 } from 'lucide-react';
+import { useDataSaver } from '../context/DataSaverContext';
 import { THREE_D_LOGOS_REVEAL_DATA, ThreeDLogoRevealItem, ensure360pLogoUrl } from '../data/threeDLogosRevealData';
 
 interface ThreeDLogosWelcomeHeroProps {
@@ -28,11 +30,13 @@ interface ThreeDLogosWelcomeHeroProps {
 }
 
 export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogosWelcomeHeroProps) {
+  const { isDataSaver, shouldAutoplay, preloadStrategy, getOptimizedMediaUrl } = useDataSaver();
+
   // Active welcome video (defaults to Edition #01 or #11)
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const activeLogo: ThreeDLogoRevealItem = THREE_D_LOGOS_REVEAL_DATA[activeIndex] || THREE_D_LOGOS_REVEAL_DATA[0];
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [isPlaying, setIsPlaying] = useState<boolean>(!isDataSaver);
   const [isMuted, setIsMuted] = useState<boolean>(true);
   const [showToast, setShowToast] = useState<string | null>(null);
 
@@ -52,10 +56,12 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {});
-      setIsPlaying(true);
+      if (!isDataSaver || isPlaying) {
+        videoRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      }
     }
-  }, [activeIndex]);
+  }, [activeIndex, isDataSaver]);
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -240,8 +246,9 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                 <video
                   ref={videoRef}
                   key={activeLogo.videoUrl}
-                  src={ensure360pLogoUrl(activeLogo.videoUrl)}
-                  autoPlay
+                  src={getOptimizedMediaUrl(activeLogo.videoUrl, 'video')}
+                  autoPlay={shouldAutoplay}
+                  preload={preloadStrategy}
                   loop
                   playsInline
                   muted={isMuted}
@@ -252,6 +259,22 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                   className="w-full h-full object-contain max-h-[420px]"
                   onClick={togglePlay}
                 />
+
+                {/* Data Saver Tap-To-Play Overlay when paused */}
+                {!isPlaying && (
+                  <div 
+                    className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-[2px] cursor-pointer z-10" 
+                    onClick={togglePlay}
+                  >
+                    <div className="w-16 h-16 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-[0_0_30px_rgba(229,9,20,0.8)] hover:scale-110 active:scale-95 transition-transform mb-3">
+                      <Play className="w-7 h-7 fill-white translate-x-0.5" />
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/80 border border-emerald-500/40 text-xs font-mono font-bold text-emerald-400 shadow-md">
+                      <Zap className="w-3.5 h-3.5 fill-current animate-pulse" />
+                      <span>Tap to Stream 3D Reveal (Data Saver Active)</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Studio Watermark Overlay */}
                 <div className="absolute top-3 left-3 pointer-events-none flex items-center gap-2 bg-black/70 backdrop-blur-sm px-2.5 py-1 rounded text-[10px] font-mono text-zinc-200 border border-white/10">

@@ -5,6 +5,7 @@ import {
   Download, Volume2, VolumeX, Sparkles, Film, Image as ImageIcon, 
   Share2, Check, X, ZoomIn, ZoomOut
 } from 'lucide-react';
+import { useDataSaver } from '../context/DataSaverContext';
 
 export interface MediaSlide {
   id: string;
@@ -112,6 +113,7 @@ export default function HdMediaSlideshow({
   subtitle,
   className = '',
 }: HdMediaSlideshowProps) {
+  const { isDataSaver, preloadStrategy } = useDataSaver();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -397,7 +399,7 @@ export default function HdMediaSlideshow({
                   poster={currentSlide.poster}
                   playsInline
                   autoPlay={false}
-                  preload="metadata"
+                  preload={preloadStrategy}
                   loop
                   muted={isMuted}
                   onError={() => handleMediaError(currentSlide.id)}
@@ -699,7 +701,7 @@ export default function HdMediaSlideshow({
                     poster={currentSlide.poster}
                     controls
                     autoPlay={false}
-                    preload="metadata"
+                    preload={preloadStrategy}
                     playsInline
                     className="max-h-[82vh] w-auto max-w-full rounded-2xl shadow-2xl border border-zinc-800 object-contain"
                   />

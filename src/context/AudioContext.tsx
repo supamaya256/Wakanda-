@@ -761,10 +761,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     >
       {children}
       
-      {/* Global Audio Player */}
+      {/* Global Audio Player - preload none to save mobile bandwidth */}
       <audio 
         ref={audioRef}
-        preload="auto"
+        preload="none"
       />
 
       {/* Phone Download Notification Toast */}

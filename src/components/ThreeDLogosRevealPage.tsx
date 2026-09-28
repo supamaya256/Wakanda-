@@ -30,6 +30,7 @@ import {
   Eye
 } from 'lucide-react';
 import { THREE_D_LOGOS_REVEAL_DATA, ThreeDLogoRevealItem, ensure360pLogoUrl } from '../data/threeDLogosRevealData';
+import { useDataSaver } from '../context/DataSaverContext';
 
 interface ThreeDLogosRevealPageProps {
   onBackToStore: () => void;
@@ -45,15 +46,27 @@ export default function ThreeDLogosRevealPage({
   onOpenStudioManager,
   onOpenAtesoMovies
 }: ThreeDLogosRevealPageProps) {
+  const { isDataSaver, toggleDataSaver, shouldAutoplay, preloadStrategy } = useDataSaver();
+
+  // Helper for ultra-lightweight Cloudinary video posters (10KB vs 5MB video)
+  const getVideoPoster = (url: string) => {
+    if (!url) return '';
+    if (url.includes('cloudinary.com') && url.includes('/video/upload/')) {
+      return url.replace(/\/video\/upload\/([^/]+)?\/?/, '/video/upload/so_0,w_480,h_270,c_fill,f_auto,q_auto:low/').replace(/\.mp4(\?.*)?$/i, '.jpg');
+    }
+    return '';
+  };
+
   // Active selected video in center Holo-Deck
   const [activeItem, setActiveItem] = useState<ThreeDLogoRevealItem>(THREE_D_LOGOS_REVEAL_DATA[0]);
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [isPlaying, setIsPlaying] = useState<boolean>(!isDataSaver);
   const [isMuted, setIsMuted] = useState<boolean>(true);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
   const [perspective, setPerspective] = useState<StagePerspective>('spatial-tilt');
   const [viewMode, setViewMode] = useState<GalleryViewMode>('grid');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
 
   // Audio equalizer simulation state
   const [isAudioActive, setIsAudioActive] = useState<boolean>(false);
@@ -287,7 +300,23 @@ export default function ThreeDLogosRevealPage({
         </nav>
 
         {/* Zone 3: Primary Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Data Saver Mode Toggle Button */}
+          <button
+            type="button"
+            onClick={toggleDataSaver}
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border select-none ${
+              isDataSaver
+                ? 'bg-emerald-950/70 border-emerald-500/50 text-emerald-300 hover:bg-emerald-900/80 shadow-md'
+                : 'bg-zinc-800/80 border-zinc-700 text-zinc-300 hover:bg-zinc-700'
+            }`}
+            title="Toggle Data Saver (Saves ~85% mobile data)"
+          >
+            <Zap className={`w-3.5 h-3.5 ${isDataSaver ? 'text-emerald-400 fill-current animate-pulse' : 'text-zinc-400'}`} />
+            <span className="hidden sm:inline">DATA SAVER:</span>
+            <span>{isDataSaver ? 'ON (ECO)' : 'OFF (HD)'}</span>
+          </button>
+
           <button
             type="button"
             onClick={() => setOrderModalItem(activeItem)}
@@ -465,22 +494,47 @@ export default function ThreeDLogosRevealPage({
                   : 'scale-100'
               }`}
             >
-              {/* Live Video Element - Strictly Protected Against Downloading in fast 360p Data Saver quality */}
-              <video
-                ref={stageVideoRef}
-                key={activeItem.videoUrl}
-                src={ensure360pLogoUrl(activeItem.videoUrl)}
-                autoPlay
-                loop
-                playsInline
-                muted={isMuted}
-                controls={false}
-                controlsList="nodownload nofullscreen noremoteplayback"
-                disablePictureInPicture
-                onContextMenu={triggerAntiDownloadNotice}
-                className="w-full h-full object-contain max-h-[540px] pointer-events-auto"
-                onClick={togglePlay}
-              />
+              {/* Visual Display: Lightweight Poster when Data Saver is on and video is not yet playing */}
+              {isDataSaver && !isPlaying ? (
+                <div 
+                  className="relative w-full h-full flex items-center justify-center cursor-pointer group/poster"
+                  onClick={togglePlay}
+                >
+                  <img
+                    src={getVideoPoster(activeItem.videoUrl)}
+                    alt={activeItem.title}
+                    className="w-full h-full object-contain max-h-[540px] select-none"
+                    loading="eager"
+                  />
+                  {/* Big Tap to Stream Button Overlay */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px]">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-[0_0_35px_rgba(229,9,20,0.85)] hover:scale-110 active:scale-95 transition-transform mb-3">
+                      <Play className="w-8 h-8 fill-white translate-x-0.5" />
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/85 border border-emerald-500/50 text-xs font-mono font-bold text-emerald-400 shadow-xl">
+                      <Zap className="w-3.5 h-3.5 fill-current animate-pulse" />
+                      <span>Tap to Stream 3D Reveal (~1.2 MB • Low Data)</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <video
+                  ref={stageVideoRef}
+                  key={activeItem.videoUrl}
+                  src={ensure360pLogoUrl(activeItem.videoUrl)}
+                  autoPlay={isPlaying}
+                  loop
+                  playsInline
+                  muted={isMuted}
+                  preload={preloadStrategy}
+                  controls={false}
+                  controlsList="nodownload nofullscreen noremoteplayback"
+                  disablePictureInPicture
+                  onContextMenu={triggerAntiDownloadNotice}
+                  className="w-full h-full object-contain max-h-[540px] pointer-events-auto"
+                  onClick={togglePlay}
+                />
+              )}
 
               {/* Watermark Overlay (Studio Proof & Security) */}
               <div className="absolute top-3 left-4 pointer-events-none flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md border border-white/10 text-[10px] font-mono tracking-wider text-zinc-300">
@@ -649,20 +703,34 @@ export default function ThreeDLogosRevealPage({
                 }`}
                 style={{ scrollSnapAlign: 'start' }}
               >
-                {/* Video Preview thumbnail loop (360p Data Saver) */}
-                <div className="relative aspect-video w-full bg-black overflow-hidden">
-                  <video
-                    src={ensure360pLogoUrl(item.videoUrl)}
-                    muted
-                    loop
-                    playsInline
-                    autoPlay
-                    controls={false}
-                    controlsList="nodownload nofullscreen noremoteplayback"
-                    disablePictureInPicture
-                    onContextMenu={triggerAntiDownloadNotice}
-                    className="w-full h-full object-cover"
-                  />
+                {/* Video / Poster Preview thumbnail (Data Saver Eco Mode) */}
+                <div 
+                  className="relative aspect-video w-full bg-black overflow-hidden"
+                  onMouseEnter={() => setHoveredCardId(item.id)}
+                  onMouseLeave={() => setHoveredCardId(null)}
+                >
+                  {isDataSaver && hoveredCardId !== item.id && !isSelected ? (
+                    <img
+                      src={getVideoPoster(item.videoUrl)}
+                      alt={item.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover select-none"
+                    />
+                  ) : (
+                    <video
+                      src={ensure360pLogoUrl(item.videoUrl)}
+                      muted
+                      loop
+                      playsInline
+                      autoPlay
+                      controls={false}
+                      controlsList="nodownload nofullscreen noremoteplayback"
+                      disablePictureInPicture
+                      onContextMenu={triggerAntiDownloadNotice}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 
                   {/* Watermark Tag */}
@@ -745,20 +813,34 @@ export default function ThreeDLogosRevealPage({
                     : 'border-white/10 hover:border-white/30 hover:shadow-2xl hover:shadow-black'
                 }`}
               >
-                {/* Top Video Preview (360p Data Saver) */}
-                <div className="relative aspect-video w-full bg-black overflow-hidden">
-                  <video
-                    src={ensure360pLogoUrl(item.videoUrl)}
-                    loop
-                    muted
-                    autoPlay
-                    playsInline
-                    controls={false}
-                    controlsList="nodownload nofullscreen noremoteplayback"
-                    disablePictureInPicture
-                    onContextMenu={triggerAntiDownloadNotice}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                {/* Top Video Preview / Poster (360p Data Saver Eco Mode) */}
+                <div 
+                  className="relative aspect-video w-full bg-black overflow-hidden"
+                  onMouseEnter={() => setHoveredCardId(item.id)}
+                  onMouseLeave={() => setHoveredCardId(null)}
+                >
+                  {isDataSaver && hoveredCardId !== item.id && !isCurrentlyActive ? (
+                    <img
+                      src={getVideoPoster(item.videoUrl)}
+                      alt={item.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 select-none"
+                    />
+                  ) : (
+                    <video
+                      src={ensure360pLogoUrl(item.videoUrl)}
+                      loop
+                      muted
+                      autoPlay
+                      playsInline
+                      controls={false}
+                      controlsList="nodownload nofullscreen noremoteplayback"
+                      disablePictureInPicture
+                      onContextMenu={triggerAntiDownloadNotice}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
 
                   {/* Watermark Tag */}
