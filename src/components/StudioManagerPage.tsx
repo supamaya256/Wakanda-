@@ -49,6 +49,7 @@ import { LogoItem } from '../data/logosData';
 import { AtesoMovie } from '../data/atesoMoviesData';
 import CustomVoiceDropRequestForm from './CustomVoiceDropRequestForm';
 import StudioContactForm from './StudioContactForm';
+import WordPressAdminDashboard from './WordPressAdminDashboard';
 import { 
   smartUploadFile, 
   getPreferredStorage, 
@@ -65,7 +66,7 @@ interface StudioManagerPageProps {
   initialTab?: TabType;
 }
 
-type TabType = 'tracks' | 'drops' | 'custom-drops' | 'logos' | 'movies' | 'files' | 'inquiries';
+export type TabType = 'dashboard' | 'tracks' | 'drops' | 'custom-drops' | 'logos' | 'movies' | 'files' | 'inquiries';
 
 function FavoriteTracksD3Chart({ tracks }: { tracks: AudioTrack[] }) {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -281,7 +282,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     resetAllContent
   } = useContent();
 
-  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+  const [activeTab, setActiveTab] = useState<TabType>(initialTab || 'dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
 
@@ -904,8 +905,25 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     (f.type && f.type.toLowerCase().includes(q))
   );
 
+  if (activeTab === 'dashboard') {
+    return (
+      <WordPressAdminDashboard
+        onBackToStore={onBackToStore}
+        onOpenUploadCatalog={(sec) => setActiveTab(sec)}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#111111] text-white font-sans selection:bg-[#E50914] selection:text-white pb-32">
+    <div className="min-h-screen bg-[#111111] text-white font-sans selection:bg-[#E50914] selection:text-white pb-32 relative overflow-x-hidden">
+      {/* Background Image Layer (Requested by User: DJ Emma Pro FX Signature Visual Showcase) */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25 filter brightness-85 contrast-110"
+        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
+      />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#111111]/85 via-[#111111]/75 to-[#111111]/90 backdrop-blur-[1px]" />
+
+      <div className="relative z-10">
       {/* Hidden audio element for previewing */}
       <audio
         ref={previewAudioRef}
@@ -1023,6 +1041,17 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
               <span className="hidden md:inline">Reset Catalog</span>
             </button>
           )}
+
+          {/* Return to Admin Dashboard button */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('dashboard')}
+            className="px-3 sm:px-3.5 py-1.5 rounded-lg bg-[#151515] hover:bg-[#E50914] text-white text-xs font-bold flex items-center gap-1.5 border border-[#222222] hover:border-[#E50914] transition-all cursor-pointer shadow-md"
+            title="Return to WordPress Admin Dashboard"
+          >
+            <LayoutDashboard className="w-3.5 h-3.5 text-[#E50914]" />
+            <span>CONTROL ROOM</span>
+          </button>
 
           {/* View live store button */}
           <button
@@ -1397,6 +1426,15 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6">
           {/* Tabs */}
           <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-900 border border-white/10 overflow-x-auto no-scrollbar">
+            <button
+              type="button"
+              onClick={() => setActiveTab('dashboard')}
+              className="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer text-zinc-400 hover:text-white hover:bg-white/5"
+            >
+              <LayoutDashboard className="w-4 h-4 text-[#E50914]" />
+              <span>Control Room Dashboard</span>
+            </button>
+
             <button
               type="button"
               onClick={() => setActiveTab('tracks')}
@@ -3282,6 +3320,7 @@ service firebase.storage {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -29,7 +29,7 @@ import {
   Send,
   Eye
 } from 'lucide-react';
-import { THREE_D_LOGOS_REVEAL_DATA, ThreeDLogoRevealItem } from '../data/threeDLogosRevealData';
+import { THREE_D_LOGOS_REVEAL_DATA, ThreeDLogoRevealItem, ensure360pLogoUrl } from '../data/threeDLogosRevealData';
 
 interface ThreeDLogosRevealPageProps {
   onBackToStore: () => void;
@@ -465,11 +465,11 @@ export default function ThreeDLogosRevealPage({
                   : 'scale-100'
               }`}
             >
-              {/* Live Video Element - Strictly Protected Against Downloading */}
+              {/* Live Video Element - Strictly Protected Against Downloading in fast 360p Data Saver quality */}
               <video
                 ref={stageVideoRef}
                 key={activeItem.videoUrl}
-                src={activeItem.videoUrl}
+                src={ensure360pLogoUrl(activeItem.videoUrl)}
                 autoPlay
                 loop
                 playsInline
@@ -486,6 +486,8 @@ export default function ThreeDLogosRevealPage({
               <div className="absolute top-3 left-4 pointer-events-none flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md border border-white/10 text-[10px] font-mono tracking-wider text-zinc-300">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
                 <span>DJ EMMA PRO FX • 3D LOGO REVEAL</span>
+                <span className="text-zinc-500">|</span>
+                <span className="text-emerald-400 font-bold">360p</span>
               </div>
 
               <div className="absolute top-3 right-4 pointer-events-none flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-amber-500/30 text-[10px] font-medium text-amber-400">
@@ -550,6 +552,10 @@ export default function ThreeDLogosRevealPage({
                 <h3 className="text-sm font-bold text-white uppercase">{activeItem.title}</h3>
                 <span className="text-zinc-600">·</span>
                 <span className="text-xs text-amber-400 font-semibold">{activeItem.edition}</span>
+                <span className="text-zinc-600">·</span>
+                <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                  360p Data Saver
+                </span>
               </div>
               <p className="text-xs text-zinc-400 mt-1 max-w-xl">{activeItem.description}</p>
             </div>
@@ -643,10 +649,10 @@ export default function ThreeDLogosRevealPage({
                 }`}
                 style={{ scrollSnapAlign: 'start' }}
               >
-                {/* Video Preview thumbnail loop */}
+                {/* Video Preview thumbnail loop (360p Data Saver) */}
                 <div className="relative aspect-video w-full bg-black overflow-hidden">
                   <video
-                    src={item.videoUrl}
+                    src={ensure360pLogoUrl(item.videoUrl)}
                     muted
                     loop
                     playsInline
@@ -739,10 +745,10 @@ export default function ThreeDLogosRevealPage({
                     : 'border-white/10 hover:border-white/30 hover:shadow-2xl hover:shadow-black'
                 }`}
               >
-                {/* Top Video Preview */}
+                {/* Top Video Preview (360p Data Saver) */}
                 <div className="relative aspect-video w-full bg-black overflow-hidden">
                   <video
-                    src={item.videoUrl}
+                    src={ensure360pLogoUrl(item.videoUrl)}
                     loop
                     muted
                     autoPlay

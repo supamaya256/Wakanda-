@@ -56,7 +56,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGenre, setSelectedGenre] = useState<string>('All');
   const [currentView, setCurrentView] = useState<'store' | 'manager' | 'movies' | 'logos-reveal'>('store');
-  const [studioInitialTab, setStudioInitialTab] = useState<'tracks' | 'drops' | 'custom-drops' | 'logos' | 'movies' | 'files'>('tracks');
+  const [studioInitialTab, setStudioInitialTab] = useState<'dashboard' | 'tracks' | 'drops' | 'custom-drops' | 'logos' | 'movies' | 'files'>('dashboard');
   const [isTrustModalOpen, setIsTrustModalOpen] = useState(false);
   const [isAiHubOpen, setIsAiHubOpen] = useState(false);
 
@@ -178,24 +178,10 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
 
   if (currentView === 'manager') {
     return (
-      <div className="min-h-screen bg-[#111111] text-white pt-[36px] pb-20 md:pb-8">
+      <div className="min-h-screen bg-[#080808] text-white">
         <StudioManagerPage 
           onBackToStore={() => setCurrentView('store')} 
           initialTab={studioInitialTab}
-        />
-        <MobileBottomNav
-          onOpenAtesoMovies={() => {
-            setSelectedMovie(null);
-            setCurrentView('movies');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenStudioManager={() => {
-            setStudioInitialTab('tracks');
-            setCurrentView('manager');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenLogin={onOpenLogin}
-          currentView={currentView}
         />
       </div>
     );
@@ -210,7 +196,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             setCurrentView('store');
           }}
           onOpenStudioManager={() => {
-            setStudioInitialTab('tracks');
+            setStudioInitialTab('dashboard');
             setCurrentView('manager');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
@@ -219,7 +205,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
         <MobileBottomNav
           onOpenAtesoMovies={() => {}}
           onOpenStudioManager={() => {
-            setStudioInitialTab('tracks');
+            setStudioInitialTab('dashboard');
             setCurrentView('manager');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
@@ -243,7 +229,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           onOpenStudioManager={() => {
-            setStudioInitialTab('tracks');
+            setStudioInitialTab('dashboard');
             setCurrentView('manager');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
@@ -260,7 +246,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           onOpenStudioManager={() => {
-            setStudioInitialTab('tracks');
+            setStudioInitialTab('dashboard');
             setCurrentView('manager');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
@@ -280,17 +266,25 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="min-h-screen bg-[#141414] text-white selection:bg-[#E50914] selection:text-white font-sans overflow-x-hidden pt-[36px] pb-28 sm:pb-24"
+      className="min-h-screen bg-[#141414] text-white selection:bg-[#E50914] selection:text-white font-sans overflow-x-hidden pt-[36px] pb-28 sm:pb-24 relative"
     >
-      {/* Netflix Top Navigation Bar */}
-      <NetflixNavbar
+      {/* Background Image Layer (Requested by User: DJ Emma Pro FX Signature Visual Showcase) */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25 filter brightness-80 contrast-115"
+        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
+      />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#141414]/85 via-[#141414]/75 to-[#141414]/90 backdrop-blur-[1px]" />
+
+      <div className="relative z-10">
+        {/* Netflix Top Navigation Bar */}
+        <NetflixNavbar
         onSearch={(query) => setSearchQuery(query)}
         onOpenPortal={() => {
           const el = document.getElementById('portal');
           el?.scrollIntoView({ behavior: 'smooth' });
         }}
         onOpenStudioManager={() => {
-          setStudioInitialTab('tracks');
+          setStudioInitialTab('dashboard');
           setCurrentView('manager');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
@@ -693,6 +687,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
         onOpenLogin={onOpenLogin}
         currentView={currentView}
       />
+      </div>
     </motion.div>
   );
 }

@@ -21,7 +21,7 @@ import {
   CheckCircle2,
   ChevronDown
 } from 'lucide-react';
-import { THREE_D_LOGOS_REVEAL_DATA, ThreeDLogoRevealItem } from '../data/threeDLogosRevealData';
+import { THREE_D_LOGOS_REVEAL_DATA, ThreeDLogoRevealItem, ensure360pLogoUrl } from '../data/threeDLogosRevealData';
 
 interface ThreeDLogosWelcomeHeroProps {
   onOpenLogosReveal: () => void;
@@ -215,11 +215,11 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                 className="relative rounded-xl overflow-hidden bg-black border border-white/15 aspect-video w-full flex items-center justify-center shadow-2xl group select-none"
                 onContextMenu={handleContextMenu}
               >
-                {/* 3D Logo Reveal Video */}
+                {/* 3D Logo Reveal Video (Delivered in fast 360p Data Saver quality) */}
                 <video
                   ref={videoRef}
                   key={activeLogo.videoUrl}
-                  src={activeLogo.videoUrl}
+                  src={ensure360pLogoUrl(activeLogo.videoUrl)}
                   autoPlay
                   loop
                   playsInline
