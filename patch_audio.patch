@@ -1,0 +1,69 @@
+--- src/context/AudioContext.tsx
++++ src/context/AudioContext.tsx
+@@ -163,6 +163,7 @@
+ interface AudioContextType {
+   tracks: AudioTrack[];
++  recentTracks: AudioTrack[];
+   currentTrackIndex: number;
+   currentTrack: AudioTrack;
+   isPlaying: boolean;
+@@ -190,6 +191,7 @@
+ 
+ export function AudioProvider({ children }: { children: ReactNode }) {
+   const [tracks, setTracks] = useState<AudioTrack[]>(() => {
+     try {
+       const saved = localStorage.getItem(TRACKS_STORAGE_KEY) || localStorage.getItem('dj_emma_audio_tracks_v1');
+@@ -252,6 +254,16 @@
+   const [isPlaying, setIsPlaying] = useState(false);
+   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+   const currentTrack = tracks[currentTrackIndex] || AUDIO_TRACKS[0];
++
++  const [recentTracks, setRecentTracks] = useState<AudioTrack[]>(() => {
++    try {
++      const saved = localStorage.getItem('dj_emma_recent_tracks');
++      if (saved) return JSON.parse(saved);
++    } catch (e) {
++      console.warn('Could not load recent tracks:', e);
++    }
++    return [];
++  });
+ 
+   const [currentTime, setCurrentTime] = useState(0);
+   const [duration, setDuration] = useState(0);
+@@ -268,6 +280,14 @@
+       console.warn('Could not save tracks to storage:', e);
+     }
+   }, [tracks]);
++
++  useEffect(() => {
++    try {
++      localStorage.setItem('dj_emma_recent_tracks', JSON.stringify(recentTracks));
++    } catch (e) {
++      console.warn('Could not save recent tracks:', e);
++    }
++  }, [recentTracks]);
+ 
+   const addTrack = (newTrack: AudioTrack) => {
+     setTracks(prev => {
+@@ -363,6 +383,16 @@
+       audio.play().catch(() => setIsPlaying(false));
+     }
++
++    // Add to recent tracks
++    setRecentTracks(prev => {
++      const current = tracks[currentTrackIndex];
++      if (!current) return prev;
++      const filtered = prev.filter(t => t.id !== current.id);
++      return [current, ...filtered].slice(0, 5);
++    });
+   }, [currentTrackIndex]);
+ 
+   const togglePlay = () => {
+@@ -475,6 +505,7 @@
+     <AudioContext.Provider
+       value={{
+         tracks,
++        recentTracks,
+         currentTrackIndex,
+         currentTrack,
+         isPlaying,

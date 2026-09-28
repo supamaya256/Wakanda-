@@ -1,0 +1,105 @@
+--- src/components/NetflixModal.tsx
++++ src/components/NetflixModal.tsx
+@@ -1,4 +1,4 @@
+-import { X, Play, Pause, Download, Plus, Check, Volume2, MessageSquare, ExternalLink, Sparkles, MessageCircle, Send, Link } from 'lucide-react';
++import { X, Play, Pause, Download, Plus, Check, Volume2, MessageSquare, ExternalLink, Sparkles, MessageCircle, Send, Link, Loader2 } from 'lucide-react';
+ import { useAudio, AudioTrack } from '../context/AudioContext';
+ import { useState } from 'react';
+ import EmojiReactionPicker from './EmojiReactionPicker';
+@@ -14,6 +14,8 @@
+   const { isPlaying, currentTrack, currentTrackIndex, playTrack, togglePlay, downloadTrack, tracks } = useAudio();
+   const [inList, setInList] = useState(false);
+   const [copied, setCopied] = useState(false);
++  const [downloadState, setDownloadState] = useState<'idle' | 'downloading' | 'done'>('idle');
++  const [downloadProgress, setDownloadProgress] = useState(0);
+ 
+   if (!track) return null;
+ 
+@@ -46,6 +48,60 @@
+     }
+   ];
+ 
++  const handleDownloadClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
++    e.preventDefault();
++    if (downloadState === 'downloading') return;
++
++    setDownloadState('downloading');
++    setDownloadProgress(0);
++    
++    try {
++      // Try to fetch to get real progress
++      const response = await fetch(track.downloadUrl);
++      if (!response.ok) throw new Error('Network response was not ok');
++      
++      const contentLength = response.headers.get('content-length');
++      if (!contentLength) throw new Error('No content length');
++
++      const total = parseInt(contentLength, 10);
++      let loaded = 0;
++
++      const reader = response.body?.getReader();
++      if (!reader) throw new Error('No reader');
++
++      const chunks = [];
++      while (true) {
++        const { done, value } = await reader.read();
++        if (done) break;
++        chunks.push(value);
++        loaded += value.length;
++        setDownloadProgress(Math.min(100, Math.round((loaded / total) * 100)));
++      }
++
++      const blob = new Blob(chunks);
++      const url = window.URL.createObjectURL(blob);
++      const a = document.createElement('a');
++      a.href = url;
++      a.download = track.filename;
++      document.body.appendChild(a);
++      a.click();
++      document.body.removeChild(a);
++      window.URL.revokeObjectURL(url);
++      
++      setDownloadState('done');
++      setTimeout(() => setDownloadState('idle'), 3000);
++
++    } catch (err) {
++      console.warn("Real download progress failed, falling back to native", err);
++      downloadTrack(track); // Fallback to context default
++      
++      // Simulate a quick progress to show something happened
++      setDownloadProgress(100);
++      setDownloadState('done');
++      setTimeout(() => setDownloadState('idle'), 3000);
++    }
++  };
++
+   return (
+     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex justify-center p-0 sm:p-4 md:p-6 animate-fadeIn">
+       {/* Modal Container */}
+@@ -110,11 +166,22 @@
+                 download={track.filename}
+                 target="_blank"
+                 rel="noopener noreferrer"
+-                onClick={() => downloadTrack(track)}
+-                className="inline-flex items-center gap-2 px-5 py-2 rounded bg-[#E50914] hover:bg-[#b80710] text-white font-bold text-sm transition-all shadow-md shadow-[#E50914]/30 cursor-pointer"
++                onClick={handleDownloadClick}
++                className="relative overflow-hidden inline-flex items-center gap-2 px-5 py-2 rounded bg-[#E50914] hover:bg-[#b80710] text-white font-bold text-sm transition-all shadow-md shadow-[#E50914]/30 cursor-pointer group"
+               >
+-                <Download className="w-4 h-4 stroke-[2.5]" />
+-                <span>Download to Phone</span>
++                {/* Progress bar background */}
++                {downloadState === 'downloading' && (
++                  <div 
++                    className="absolute left-0 top-0 bottom-0 bg-white/20 transition-all duration-200 ease-out" 
++                    style={{ width: \`\${downloadProgress}%\` }} 
++                  />
++                )}
++                
++                <span className="relative z-10 flex items-center gap-2">
++                  {downloadState === 'downloading' ? <Loader2 className="w-4 h-4 animate-spin" /> : 
++                   downloadState === 'done' ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4 stroke-[2.5]" />}
++                  <span>{downloadState === 'downloading' ? \`Downloading \${downloadProgress}%\` : downloadState === 'done' ? 'Downloaded' : 'Download to Phone'}</span>
++                </span>
+               </a>
+ 
+               {/* Add to List */}

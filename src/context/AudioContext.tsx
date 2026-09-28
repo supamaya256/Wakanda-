@@ -1,0 +1,792 @@
+import { createContext, useContext, useState, useRef, useEffect, useMemo, ReactNode, RefObject } from 'react';
+
+export interface AudioTrack {
+  id: number;
+  title: string;
+  artist: string;
+  durationLabel: string;
+  url: string;
+  downloadUrl: string;
+  filename: string;
+  thumbnail: string;
+  backdrop: string;
+  matchScore: number;
+  year: number;
+  ageRating: string;
+  quality: string;
+  genres: string[];
+  description: string;
+  isTrending?: boolean;
+  isVideo?: boolean;
+  youtubeId?: string;
+  youtubeUrl?: string;
+  videoUrl?: string;
+  topRank?: number;
+}
+
+export const AUDIO_TRACKS: AudioTrack[] = [
+  {
+    id: 1,
+    title: 'ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO',
+    artist: 'DJ EMMA PRO',
+    durationLabel: 'YouTube Premiere Nonstop',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786241/ONE_DROP_REGGEA_MIX_VOL_ONE.mp3',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_Emma_Pro_One_Drop_Reggae_Mix_Vol_1/v1789786241/ONE_DROP_REGGEA_MIX_VOL_ONE.mp3',
+    filename: 'DJ_Emma_Pro_One_Drop_Reggae_Mix_Vol_1.mp3',
+    thumbnail: 'https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg',
+    backdrop: 'https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg',
+    matchScore: 99,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K • Spatial Audio',
+    genres: ['One Drop Reggae', 'YouTube Premiere', 'Roots & Culture'],
+    description: 'Official YouTube Video Premiere: ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO. Smooth conscious reggae rhythms and heavy dub basslines. Anyone can play and stream directly from the website.',
+    isTrending: true,
+    isVideo: true,
+    youtubeId: 'TcVAuZcXB5U',
+    youtubeUrl: 'https://youtu.be/TcVAuZcXB5U?si=ABy2rdgBX0KBuf_Y',
+    videoUrl: 'https://www.youtube.com/embed/TcVAuZcXB5U',
+    topRank: 1
+  },
+  {
+    id: 2,
+    title: 'BEST OF ACHOLI NONSTOP TRADITIONAL',
+    artist: 'DJ EMMA PRO FX',
+    durationLabel: 'Traditional Nonstop',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789785554/best_of_acholi_nonstop_traditional.mp3',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Acholi_Nonstop_Traditional/v1789785554/best_of_acholi_nonstop_traditional.mp3',
+    filename: 'Best_Of_Acholi_Nonstop_Traditional.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 99,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K • Studio Master',
+    genres: ['Acholi Traditional', 'Roots & Culture'],
+    description: 'The finest collection of Acholi traditional nonstop rhythms expertly curated by DJ Emma Pro FX.',
+    isTrending: true,
+    topRank: 2
+  },
+  {
+    id: 3,
+    title: 'BEST OF VYROOTA FULL MIXTAPE',
+    artist: 'DJ EMMA PRO FX',
+    durationLabel: 'Vyroota Nonstop',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786103/best_of_vyroota_full_mixtape.mp3',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Full_Mixtape/v1789786103/best_of_vyroota_full_mixtape.mp3',
+    filename: 'Best_Of_Vyroota_Full_Mixtape.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 98,
+    year: 2026,
+    ageRating: 'TV-MA',
+    quality: 'Ultra HD 4K • Spatial Audio',
+    genres: ['Vyroota Hits', 'Nonstop Party', 'Afrobeats'],
+    description: 'The definitive Best of Vyroota full mixtape expertly blended by DJ Emma Pro FX.',
+    isTrending: true,
+    topRank: 3
+  },
+  {
+    id: 4,
+    title: 'EPISODE 2 DJ EMMA PRO FT MC RICKY',
+    artist: 'DJ EMMA PRO FT MC RICKY',
+    durationLabel: 'Live Club Hype',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786272/episode_2_dj_emma_pro_ft_mc_ricky.mp3',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_Emma_Pro_ft_MC_Ricky_Episode_2/v1789786272/episode_2_dj_emma_pro_ft_mc_ricky.mp3',
+    filename: 'DJ_Emma_Pro_ft_MC_Ricky_Episode_2.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 98,
+    year: 2026,
+    ageRating: 'TV-MA',
+    quality: 'Ultra HD 4K',
+    genres: ['Club Mix', 'Hype'],
+    description: 'Episode 2 featuring DJ Emma Pro and MC Ricky delivering non-stop hype and club bangers.',
+    isTrending: true,
+    topRank: 4
+  },
+  {
+    id: 5,
+    title: 'OLD SOUTH AFRICA MUSIC MC RICKY',
+    artist: 'DJ EMMA PRO FX FT MC RICKY',
+    durationLabel: 'Classic Kwaito Mix',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786279/Old_South_Africa_music_MC_RICKY.mp3',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Old_South_Africa_Music_MC_Ricky/v1789786279/Old_South_Africa_music_MC_RICKY.mp3',
+    filename: 'Old_South_Africa_Music_MC_Ricky.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
+    matchScore: 98,
+    year: 2026,
+    ageRating: '16+',
+    quality: 'Dolby Atmos 5.1',
+    genres: ['Kwaito', 'House', 'South African Classics'],
+    description: 'A nostalgic journey through classic South African club hits hosted by MC Ricky and mixed live by DJ Emma Pro.',
+    isTrending: true,
+    topRank: 5
+  },
+  {
+    id: 6,
+    title: 'EPISODE 1 BY MC RICKY FT DJ EMMA PRO',
+    artist: 'MC RICKY FT DJ EMMA PRO',
+    durationLabel: 'Episode 1 Hype',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786346/episode1_by_mc_ricky_ft_dj_emma_pro.mp3',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:MC_Ricky_ft_DJ_Emma_Pro_Episode_1/v1789786346/episode1_by_mc_ricky_ft_dj_emma_pro.mp3',
+    filename: 'MC_Ricky_ft_DJ_Emma_Pro_Episode_1.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 99,
+    year: 2025,
+    ageRating: 'TV-MA',
+    quality: 'Ultra HD 4K • Studio Master',
+    genres: ['Hype & Dancehall', 'Club Banger'],
+    description: 'Episode 1 featuring MC Ricky hype master and DJ Emma Pro FX on the turntables.',
+    isTrending: true,
+    topRank: 6
+  },
+  {
+    id: 7,
+    title: 'FULL ATESO MIXTAPE 2026',
+    artist: 'DJ EMMA PRO FX',
+    durationLabel: 'Ateso Nonstop',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786374/full_ateso_mixtape_2026.mp3',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_EMMA_PRO_Full_Ateso_Mixtape_2026/v1789786374/full_ateso_mixtape_2026.mp3',
+    filename: 'DJ_EMMA_PRO_Full_Ateso_Mixtape_2026.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 97,
+    year: 2026,
+    ageRating: 'TV-MA',
+    quality: 'HD Lossless',
+    genres: ['Ateso Cultural', 'Eastern Uganda', 'Party Mix'],
+    description: 'The absolute best Ateso cultural and modern club mixtape of 2026 curated by DJ Emma Pro FX.',
+    isTrending: true,
+    topRank: 7
+  },
+  {
+    id: 8,
+    title: 'DJ EMMA PRO INTRO DUBPLATE',
+    artist: 'DJ EMMA PRO',
+    durationLabel: 'Intro Dubplate',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789682618/INTRO_EMMA_PRO.mp4',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_Emma_Pro_Intro/v1789682618/INTRO_EMMA_PRO.mp4',
+    filename: 'DJ_Emma_Pro_Intro.mp4',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 95,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Studio Master',
+    genres: ['Dubplate', 'Intro'],
+    description: 'Exclusive custom DJ Emma Pro FX intro dubplate.',
+    isTrending: false,
+    topRank: 8
+  },
+  {
+    id: 9,
+    title: 'ATESO VIBES EXCLUSIVE',
+    artist: 'DJ EMMA PRO',
+    durationLabel: 'Exclusive Mix',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789682622/ATESO.mp4',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Ateso_Vibes_Exclusive/v1789682622/ATESO.mp4',
+    filename: 'Ateso_Vibes_Exclusive.mp4',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 96,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'HD Lossless',
+    genres: ['Ateso', 'Exclusive'],
+    description: 'High-energy Ateso vibes curated by DJ Emma Pro.',
+    isTrending: true,
+    topRank: 9
+  },
+  {
+    id: 10,
+    title: 'AMITO STELLA MIX',
+    artist: 'DJ EMMA PRO',
+    durationLabel: 'Special Mix',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789682628/AMITO_STELLA_MIX.mp4',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Amito_Stella_Mix/v1789682628/AMITO_STELLA_MIX.mp4',
+    filename: 'Amito_Stella_Mix.mp4',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 97,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K',
+    genres: ['Amito Stella', 'Special Mix'],
+    description: 'Amito Stella special musical journey mixed by DJ Emma Pro.',
+    isTrending: true,
+    topRank: 10
+  }
+];
+
+interface AudioContextType {
+  tracks: AudioTrack[];
+  recentTracks: AudioTrack[];
+  currentTrackIndex: number;
+  currentTrack: AudioTrack;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  volume: number;
+  isMuted: boolean;
+  downloadStatus: string | null;
+  togglePlay: () => void;
+  playTrack: (index: number) => void;
+  playTrackById: (id: number) => void;
+  pauseTrack: () => void;
+  nextTrack: () => void;
+  prevTrack: () => void;
+  seek: (seconds: number) => void;
+  seekRelative: (deltaSeconds: number) => void;
+  setVolume: (volume: number) => void;
+  adjustVolume: (delta: number) => number;
+  toggleMute: () => boolean;
+  formatTime: (seconds: number) => string;
+  downloadTrack: (track: AudioTrack) => void;
+  addTrack: (track: AudioTrack) => void;
+  deleteTrack: (id: number) => void;
+  resetTracks: () => void;
+  togglePiP: () => void;
+  favorites: number[];
+  favoriteTracks: AudioTrack[];
+  toggleFavorite: (id: number) => void;
+  isFavorite: (id: number) => boolean;
+  playbackRate: number;
+  setPlaybackRate: (rate: number) => void;
+  audioRef: RefObject<HTMLAudioElement | null>;
+}
+
+const AudioContext = createContext<AudioContextType | undefined>(undefined);
+
+const TRACKS_STORAGE_KEY = 'dj_emma_audio_tracks_v12';
+
+export function AudioProvider({ children }: { children: ReactNode }) {
+  const [tracks, setTracks] = useState<AudioTrack[]>(() => {
+    try {
+      const saved = localStorage.getItem(TRACKS_STORAGE_KEY);
+      if (saved) {
+        const parsed: AudioTrack[] = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // If stored tracks don't have the YouTube video as #1, reset to new AUDIO_TRACKS
+          const hasFeaturedYoutubeVideo = parsed[0]?.youtubeId === 'TcVAuZcXB5U';
+          if (!hasFeaturedYoutubeVideo) {
+            localStorage.removeItem(TRACKS_STORAGE_KEY);
+            return AUDIO_TRACKS;
+          }
+          return parsed.map((t, idx) => ({
+            ...t,
+            id: t.id || (idx + 1),
+            title: t.title || 'Nonstop Mixtape',
+            artist: t.artist || 'DJ EMMA PRO FX',
+            url: t.url || (t as any).audioUrl || '',
+            downloadUrl: t.downloadUrl || t.url || '',
+            filename: t.filename || `${t.title || 'track'}.mp3`,
+            genres: Array.isArray(t.genres) ? t.genres : ['Nonstop Mix'],
+            durationLabel: t.durationLabel || 'Nonstop',
+            thumbnail: t.thumbnail || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+            backdrop: t.backdrop || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+            matchScore: t.matchScore || 99,
+            year: t.year || 2026,
+            ageRating: t.ageRating || 'All Ages',
+            quality: t.quality || 'Studio Master',
+            description: t.description || 'Mastered studio nonstop mixtape by DJ Emma Pro FX.'
+          }));
+        }
+      }
+    } catch (e) {
+      console.warn('Failed reading tracks from storage:', e);
+    }
+    return AUDIO_TRACKS;
+  });
+
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolumeState] = useState(0.85);
+  const [isMuted, setIsMuted] = useState(false);
+  const prevVolumeRef = useRef(0.85);
+  const [downloadStatus, setDownloadStatus] = useState<string | null>(null);
+
+  const [recentTracks, setRecentTracks] = useState<AudioTrack[]>(() => {
+    try {
+      const saved = localStorage.getItem('dj_emma_recent_tracks');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.warn('Could not load recent tracks:', e);
+    }
+    return [];
+  });
+
+  const [favorites, setFavorites] = useState<number[]>(() => {
+    try {
+      const saved = localStorage.getItem('dj_emma_favorites');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Could not load favorites:', e);
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    try {
+      if (Array.isArray(favorites)) {
+        localStorage.setItem('dj_emma_favorites', JSON.stringify(favorites));
+      }
+    } catch (e) {
+      console.warn('Could not save favorites:', e);
+    }
+  }, [favorites]);
+
+  const toggleFavorite = (id: number) => {
+    setFavorites(prev => {
+      const list = Array.isArray(prev) ? prev : [];
+      if (list.includes(id)) {
+        return list.filter(item => item !== id);
+      } else {
+        return [...list, id];
+      }
+    });
+  };
+
+  const isFavorite = (id: number) => Boolean(Array.isArray(favorites) && favorites.includes(id));
+
+  const favoriteTracks = useMemo(() => {
+    if (!Array.isArray(favorites) || !Array.isArray(tracks)) return [];
+    return tracks.filter(t => t && favorites.includes(t.id));
+  }, [tracks, favorites]);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const [playbackRate, setPlaybackRateState] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('dj_emma_playback_rate');
+      if (saved) return parseFloat(saved) || 1;
+    } catch (e) {}
+    return 1;
+  });
+
+  const setPlaybackRate = (rate: number) => {
+    setPlaybackRateState(rate);
+    if (audioRef.current) {
+      audioRef.current.playbackRate = rate;
+    }
+    try {
+      localStorage.setItem('dj_emma_playback_rate', rate.toString());
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
+
+  // Sync to local storage
+  useEffect(() => {
+    try {
+      localStorage.setItem(TRACKS_STORAGE_KEY, JSON.stringify(tracks));
+    } catch (e) {
+      console.warn('Could not save tracks to storage:', e);
+    }
+  }, [tracks]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('dj_emma_recent_tracks', JSON.stringify(recentTracks));
+    } catch (e) {
+      console.warn('Could not save recent tracks:', e);
+    }
+  }, [recentTracks]);
+
+  // Ensure index is valid
+  const safeIndex = tracks.length > 0 ? Math.min(currentTrackIndex, tracks.length - 1) : 0;
+  const currentTrack: AudioTrack = tracks[safeIndex] || AUDIO_TRACKS[0];
+
+  const addTrack = (newTrack: AudioTrack) => {
+    if (!newTrack) return;
+    const sanitized: AudioTrack = {
+      ...newTrack,
+      id: newTrack.id || Date.now(),
+      title: newTrack.title || 'Nonstop Mixtape',
+      artist: newTrack.artist || 'DJ EMMA PRO FX',
+      url: newTrack.url || (newTrack as any).audioUrl || '',
+      downloadUrl: newTrack.downloadUrl || newTrack.url || '',
+      filename: newTrack.filename || `${newTrack.title || 'mixtape'}.mp3`,
+      genres: Array.isArray(newTrack.genres) ? newTrack.genres : ['Nonstop Mix'],
+      durationLabel: newTrack.durationLabel || 'Nonstop',
+      thumbnail: newTrack.thumbnail || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+      backdrop: newTrack.backdrop || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+      matchScore: newTrack.matchScore || 99,
+      year: newTrack.year || 2026,
+      ageRating: newTrack.ageRating || 'All Ages',
+      quality: newTrack.quality || 'Studio Master',
+      description: newTrack.description || 'Mastered studio nonstop mixtape by DJ Emma Pro FX.'
+    };
+    setTracks(prev => [sanitized, ...(Array.isArray(prev) ? prev : [])]);
+  };
+
+  const deleteTrack = (id: number) => {
+    setTracks(prev => {
+      const updated = prev.filter(t => t.id !== id);
+      return updated.length > 0 ? updated : AUDIO_TRACKS.slice(0, 1);
+    });
+    if (currentTrack?.id === id) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      }
+      setCurrentTrackIndex(0);
+    }
+  };
+
+  const resetTracks = () => {
+    setTracks(AUDIO_TRACKS);
+    localStorage.removeItem(TRACKS_STORAGE_KEY);
+  };
+
+  const togglePiP = async () => {
+    if (audioRef.current && (document as any).pictureInPictureEnabled) {
+      try {
+        if ((document as any).pictureInPictureElement) {
+          await (document as any).exitPictureInPicture();
+        } else if (typeof (audioRef.current as any).requestPictureInPicture === 'function') {
+          await (audioRef.current as any).requestPictureInPicture();
+        }
+      } catch (error) {
+        console.error('Failed to enter/exit PIP:', error);
+      }
+    }
+  };
+
+  const downloadTrack = (track: AudioTrack) => {
+    setDownloadStatus(`Downloading "${track.title}" to your phone...`);
+    const link = document.createElement('a');
+    link.href = track.downloadUrl;
+    link.setAttribute('download', track.filename);
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => {
+      setDownloadStatus(null);
+    }, 4500);
+  };
+
+  // Initialize audio element once
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    
+    audio.preload = 'auto';
+    audio.volume = volume;
+
+    const onTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const onLoadedMetadata = () => {
+      setDuration(audio.duration || 0);
+    };
+
+    const onEnded = () => {
+      setCurrentTrackIndex((prev) => (prev + 1) % (tracks.length > 0 ? tracks.length : AUDIO_TRACKS.length));
+    };
+
+    const onError = (e: Event) => {
+      const target = e.target as HTMLAudioElement | null;
+      const mediaError = target?.error;
+      // Code 1: MEDIA_ERR_ABORTED, Code 2: MEDIA_ERR_NETWORK, Code 3: MEDIA_ERR_DECODE, Code 4: MEDIA_ERR_SRC_NOT_SUPPORTED
+      if (mediaError && (mediaError.code === 1 || mediaError.code === 4)) {
+        // Aborted or format error on empty src - ignore
+        return;
+      }
+      console.warn('Audio playback error code:', mediaError?.code, 'message:', mediaError?.message);
+      // Attempt recovery
+      setTimeout(() => {
+        if (audioRef.current && currentTrack?.url) {
+          try {
+            audioRef.current.load();
+            if (isPlaying) {
+              audioRef.current.play().catch(() => {});
+            }
+          } catch {
+            // ignore
+          }
+        }
+      }, 1500);
+    };
+
+    const onStalled = () => {
+      console.warn('Playback stalled, attempting recovery...');
+      if (audioRef.current && isPlaying) {
+        audioRef.current.play().catch(() => {});
+      }
+    };
+
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('ended', onEnded);
+    audio.addEventListener('error', onError);
+    audio.addEventListener('stalled', onStalled);
+
+    return () => {
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('ended', onEnded);
+      audio.removeEventListener('error', onError);
+      audio.removeEventListener('stalled', onStalled);
+      audio.pause();
+      audio.src = '';
+    };
+  }, []);
+
+  const safePlay = async (audio: HTMLAudioElement) => {
+    try {
+      audio.playbackRate = playbackRate;
+      audio.volume = isMuted ? 0 : volume;
+      await audio.play();
+      setIsPlaying(true);
+      if (typeof window !== 'undefined' && currentTrack) {
+        window.dispatchEvent(new CustomEvent('app:track-played', { detail: currentTrack }));
+      }
+    } catch (err: any) {
+      if (
+        err &&
+        (err.name === 'AbortError' ||
+          err.code === 20 ||
+          err.message?.includes('interrupted by a new load request') ||
+          err.message?.includes('aborted'))
+      ) {
+        // Interrupted by new load request - normal when switching tracks fast, ignore
+        return;
+      }
+      console.warn('Playback error:', err);
+      setIsPlaying(false);
+    }
+  };
+
+  // Sync track URL change
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const wasPlaying = isPlaying;
+    audio.src = currentTrack.url;
+    audio.load();
+
+    if (wasPlaying) {
+      safePlay(audio);
+    }
+
+    setRecentTracks(prev => {
+      const filtered = prev.filter(t => t.id !== currentTrack.id);
+      return [currentTrack, ...filtered].slice(0, 5);
+    });
+  }, [currentTrackIndex]);
+
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+    } else {
+      if (!audio.src || audio.src === '') {
+        audio.src = currentTrack.url;
+      }
+      safePlay(audio);
+    }
+  };
+
+  const playTrack = (index: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (index === currentTrackIndex) {
+      if (isPlaying) {
+        audio.pause();
+        setIsPlaying(false);
+      } else {
+        safePlay(audio);
+      }
+      return;
+    }
+
+    setCurrentTrackIndex(index);
+    if (tracks[index]) {
+      audio.src = tracks[index].url;
+      audio.load();
+      safePlay(audio);
+    }
+  };
+
+  const playTrackById = (id: number) => {
+    const idx = tracks.findIndex(t => t.id === id);
+    if (idx !== -1) {
+      playTrack(idx);
+    } else {
+      const fallbackIdx = AUDIO_TRACKS.findIndex(t => t.id === id);
+      if (fallbackIdx !== -1) {
+        const targetTrack = AUDIO_TRACKS[fallbackIdx];
+        setTracks(prev => [targetTrack, ...prev]);
+        setTimeout(() => {
+          playTrack(0);
+        }, 50);
+      }
+    }
+  };
+
+  const pauseTrack = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.pause();
+    setIsPlaying(false);
+  };
+
+  const nextTrack = () => {
+    if (tracks.length === 0) return;
+    const nextIdx = (currentTrackIndex + 1) % tracks.length;
+    playTrack(nextIdx);
+  };
+
+  const prevTrack = () => {
+    if (tracks.length === 0) return;
+    const prevIdx = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+    playTrack(prevIdx);
+  };
+
+  const seek = (seconds: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const clamped = Math.max(0, Math.min(duration || audio.duration || seconds, seconds));
+    audio.currentTime = clamped;
+    setCurrentTime(clamped);
+  };
+
+  const seekRelative = (deltaSeconds: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const cur = audio.currentTime || currentTime || 0;
+    const maxDur = duration || audio.duration || 0;
+    const target = Math.max(0, maxDur > 0 ? Math.min(maxDur, cur + deltaSeconds) : cur + deltaSeconds);
+    seek(target);
+  };
+
+  const setVolume = (val: number) => {
+    const audio = audioRef.current;
+    const clamped = Math.max(0, Math.min(1, val));
+    setVolumeState(clamped);
+    if (clamped > 0 && isMuted) {
+      setIsMuted(false);
+    }
+    if (audio) {
+      audio.volume = clamped;
+    }
+  };
+
+  const adjustVolume = (delta: number): number => {
+    const nextVal = Math.max(0, Math.min(1, Math.round((volume + delta) * 100) / 100));
+    setVolume(nextVal);
+    return nextVal;
+  };
+
+  const toggleMute = (): boolean => {
+    if (isMuted || volume === 0) {
+      const restored = prevVolumeRef.current > 0 ? prevVolumeRef.current : 0.85;
+      setVolume(restored);
+      setIsMuted(false);
+      return false; // not muted
+    } else {
+      prevVolumeRef.current = volume;
+      setVolume(0);
+      setIsMuted(true);
+      return true; // muted
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    if (isNaN(seconds) || seconds <= 0) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  return (
+    <AudioContext.Provider
+      value={{
+        tracks,
+        recentTracks,
+        currentTrackIndex,
+        currentTrack,
+        isPlaying,
+        currentTime,
+        duration,
+        volume,
+        isMuted,
+        downloadStatus,
+        togglePlay,
+        playTrack,
+        playTrackById,
+        pauseTrack,
+        nextTrack,
+        prevTrack,
+        seek,
+        seekRelative,
+        setVolume,
+        adjustVolume,
+        toggleMute,
+        formatTime,
+        downloadTrack,
+        addTrack,
+        deleteTrack,
+        resetTracks,
+        togglePiP,
+        favorites,
+        favoriteTracks,
+        toggleFavorite,
+        isFavorite,
+        playbackRate,
+        setPlaybackRate,
+        audioRef
+      }}
+    >
+      {children}
+      
+      {/* Global Audio Player */}
+      <audio 
+        ref={audioRef}
+        preload="auto"
+      />
+
+      {/* Phone Download Notification Toast */}
+      {downloadStatus && (
+        <div className="fixed top-20 right-4 sm:right-8 z-50 max-w-sm bg-[#090909]/95 text-white border border-[#00ffcc] p-4 rounded-xl shadow-[0_0_30px_rgba(0,255,204,0.4)] backdrop-blur-xl flex items-center gap-3 animate-bounce font-mono">
+          <div className="w-8 h-8 rounded-full bg-[#00ffcc]/20 border border-[#00ffcc] flex items-center justify-center shrink-0">
+            <span className="text-[#00ffcc] text-sm font-bold">⬇</span>
+          </div>
+          <div className="text-xs">
+            <div className="text-[#00ffcc] font-bold uppercase tracking-wider">SAVING TO DEVICE</div>
+            <div className="text-zinc-300 mt-0.5">{downloadStatus}</div>
+          </div>
+        </div>
+      )}
+    </AudioContext.Provider>
+  );
+}
+
+export function useAudio() {
+  const context = useContext(AudioContext);
+  if (!context) {
+    throw new Error('useAudio must be used within an AudioProvider');
+  }
+  return context;
+}

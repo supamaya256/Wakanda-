@@ -1,0 +1,63 @@
+--- src/components/NetflixRow.tsx
++++ src/components/NetflixRow.tsx
+@@ -1,4 +1,4 @@
+-import { useRef, useState, MouseEvent } from 'react';
++import { useRef, useState, MouseEvent, useEffect } from 'react';
+ import { ChevronLeft, ChevronRight, Play, Pause, Download, Plus, Check, Info, Sparkles } from 'lucide-react';
+ import { motion } from 'motion/react';
+ import { useAudio, AudioTrack } from '../context/AudioContext';
+@@ -19,6 +19,25 @@
+   const [myList, setMyList] = useState<number[]>([1, 2]);
+ 
+   const { isPlaying, currentTrackIndex, playTrack, downloadTrack, currentTime, duration } = useAudio();
++  
++  const [hoveredCardId, setHoveredCardId] = useState<number | null>(null);
++  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
++
++  const handleMouseEnter = (trackId: number) => {
++    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
++    hoverTimeoutRef.current = setTimeout(() => {
++      setHoveredCardId(trackId);
++    }, 500);
++  };
++
++  const handleMouseLeave = () => {
++    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
++    setHoveredCardId(null);
++  };
++
++  useEffect(() => {
++    return () => {
++      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
++    };
++  }, []);
+ 
+   const handleScroll = (direction: 'left' | 'right') => {
+     if (rowRef.current) {
+@@ -121,6 +140,8 @@
+             return (
+               <div
+                 key={track.id}
++                onMouseEnter={() => handleMouseEnter(track.id)}
++                onMouseLeave={handleMouseLeave}
+                 className="group/card relative flex-none w-[260px] sm:w-[320px] lg:w-[360px] bg-[#181818] rounded-md overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:z-20 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/5 hover:border-zinc-700"
+               >
+                 {/* 16:9 Thumbnail Image */}
+@@ -131,6 +152,17 @@
+                     className="w-full h-full object-cover object-center group-hover/card:scale-105 transition-transform duration-500"
+                     referrerPolicy="no-referrer"
+                   />
++                  
++                  {hoveredCardId === track.id && (
++                    <video
++                      src={track.url}
++                      autoPlay
++                      muted
++                      loop
++                      playsInline
++                      className="absolute inset-0 w-full h-full object-cover object-center animate-fadeIn z-10"
++                    />
++                  )}
+ 
+                   {/* Gradient Vignette over image */}
+                   <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-black/30" />

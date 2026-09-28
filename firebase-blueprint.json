@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile document",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email"]
+    },
+    "TrackReaction": {
+      "title": "TrackReaction",
+      "description": "Emoji reactions on a music track",
+      "type": "object",
+      "properties": {
+        "count": { "type": "number" }
+      },
+      "required": ["count"]
+    },
+    "TrackLike": {
+      "title": "TrackLike",
+      "description": "Likes counter for a track",
+      "type": "object",
+      "properties": {
+        "count": { "type": "number" }
+      },
+      "required": ["count"]
+    },
+    "TrackRating": {
+      "title": "TrackRating",
+      "description": "Star rating summary for a track",
+      "type": "object",
+      "properties": {
+        "count": { "type": "number" },
+        "totalScore": { "type": "number" }
+      },
+      "required": ["count", "totalScore"]
+    },
+    "NewsletterSubscriber": {
+      "title": "NewsletterSubscriber",
+      "description": "Newsletter email subscriber",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email"]
+    },
+    "CommunityComment": {
+      "title": "CommunityComment",
+      "description": "User comments on the studio wall",
+      "type": "object",
+      "properties": {
+        "author": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["author", "text"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Administrator account role document",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" }
+      },
+      "required": ["uid"]
+    },
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Health check document for connection verification",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" }
+      }
+    },
+    "StudioInquiry": {
+      "title": "StudioInquiry",
+      "description": "Project inquiry submitted by client to DJ Emma Pro FX",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "projectType": { "type": "string" },
+        "phone": { "type": "string" },
+        "budget": { "type": "string" },
+        "timeline": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["name", "email", "projectType", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/studio_inquiries/{inquiryId}": {
+      "schema": { "$ref": "StudioInquiry" },
+      "description": "Client project inquiries for DJ Emma Pro FX Studio Suite"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "User" },
+      "description": "User profile documents"
+    },
+    "/track_reactions/{trackId}/emojis/{emojiId}": {
+      "schema": { "$ref": "TrackReaction" },
+      "description": "Emoji reactions per track"
+    },
+    "/track_likes/{trackId}": {
+      "schema": { "$ref": "TrackLike" },
+      "description": "Likes count per track"
+    },
+    "/track_ratings/{trackId}": {
+      "schema": { "$ref": "TrackRating" },
+      "description": "Star ratings per track"
+    },
+    "/newsletter_subscribers/{emailId}": {
+      "schema": { "$ref": "NewsletterSubscriber" },
+      "description": "Newsletter email subscriptions"
+    },
+    "/community_comments/{commentId}": {
+      "schema": { "$ref": "CommunityComment" },
+      "description": "Community wall comments"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "Admin" },
+      "description": "Admin security access collection"
+    },
+    "/test/{testId}": {
+      "schema": { "$ref": "TestConnection" },
+      "description": "Connection test path"
+    }
+  }
+}

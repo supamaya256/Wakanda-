@@ -1,0 +1,6 @@
+{
+  "name": "DJ EMMA PRO FX",
+  "description": "Professional DJ drops, Watch Ateso Movies, nonstop mixtapes, and cinematic 3D logo animations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Master Administrator: The designated user ID has full administrative access to all data
+    // Explicitly verifies Master Admin UID: 6mDkYNmfNbOJ6gC9RrnU6YBRcwC2
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        request.auth.uid == '6mDkYNmfNbOJ6gC9RrnU6YBRcwC2' ||
+        (request.auth.token.email == 'supamaya256@gmail.com' && request.auth.token.email_verified == true) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // 0. Database-wide Master Admin access override
+    // Ensures admin user ID 6mDkYNmfNbOJ6gC9RrnU6YBRcwC2 has complete read and write access to all data
+    match /{allPaths=**} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    // 1. Connection Health Check
+    match /test/{testId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // 2. User Profiles
+    match /users/{userId} {
+      allow read, write: if isSuperAdmin();
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // 3. Admin Security Documents
+    match /admins/{adminId} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    // 4. Track Emoji Reactions
+    match /track_reactions/{trackId}/emojis/{emojiId} {
+      allow read, write: if isSuperAdmin();
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['count'])
+                    && request.resource.data.keys().size() == 1
+                    && request.resource.data.count == 1;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count'])
+                    && (request.resource.data.count == resource.data.count + 1 || request.resource.data.count == resource.data.count - 1);
+    }
+
+    // 5. Track Likes
+    match /track_likes/{trackId} {
+      allow read, write: if isSuperAdmin();
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['count'])
+                    && request.resource.data.keys().size() == 1
+                    && request.resource.data.count == 1;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count'])
+                    && (request.resource.data.count == resource.data.count + 1 || request.resource.data.count == resource.data.count - 1);
+    }
+
+    // 6. Track Ratings
+    match /track_ratings/{trackId} {
+      allow read, write: if isSuperAdmin();
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['count', 'totalScore'])
+                    && request.resource.data.keys().size() == 2
+                    && request.resource.data.count == 1
+                    && request.resource.data.totalScore >= 1
+                    && request.resource.data.totalScore <= 5;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'totalScore'])
+                    && (
+                      (request.resource.data.count == resource.data.count + 1 && request.resource.data.totalScore >= resource.data.totalScore + 1 && request.resource.data.totalScore <= resource.data.totalScore + 5) ||
+                      (request.resource.data.count == resource.data.count && request.resource.data.totalScore >= resource.data.totalScore - 4 && request.resource.data.totalScore <= resource.data.totalScore + 4)
+                    );
+    }
+
+    // 7. Newsletter Subscribers (Admin can read, list, export, update, and delete)
+    match /newsletter_subscribers/{emailId} {
+      allow read, write: if isSuperAdmin();
+      allow create: if request.resource.data.keys().hasAll(['email', 'createdAt'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$');
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    // 8. Community Comments (Admin can moderate, delete, and update any comment)
+    match /community_comments/{commentId} {
+      allow read, write: if isSuperAdmin();
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['author', 'text', 'createdAt'])
+                    && request.resource.data.author is string
+                    && request.resource.data.text is string;
+      allow update: if isSuperAdmin()
+                    || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['replies', 'likes'])
+                    || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']);
+      allow delete: if isSuperAdmin();
+    }
+
+    // 9. Media & Tracks catalog collections
+    match /media/{mediaId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /tracks/{trackId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // 10. Studio Inquiries (Client inquiries for DJ Emma Pro FX)
+    match /studio_inquiries/{inquiryId} {
+      allow read, write: if isSuperAdmin();
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'projectType', 'message', 'createdAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.email is string
+                    && request.resource.data.email.matches('^[^@]+@[^@]+\\.[^@]+$')
+                    && request.resource.data.projectType is string
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() > 0
+                    && request.resource.data.createdAt is string;
+      allow read, update, delete: if isSuperAdmin();
+    }
+  }
+}

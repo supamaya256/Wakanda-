@@ -1,0 +1,52 @@
+--- src/components/NetflixModal.tsx
++++ src/components/NetflixModal.tsx
+@@ -1,6 +1,7 @@
+-import { X, Play, Pause, Download, Plus, Check, Volume2, MessageSquare, ExternalLink, Sparkles, MessageCircle, Send, Link, Loader2 } from 'lucide-react';
++import { X, Play, Pause, Download, Plus, Check, Volume2, MessageSquare, ExternalLink, Sparkles, MessageCircle, Send, Link, Loader2, QrCode } from 'lucide-react';
+ import { useAudio, AudioTrack } from '../context/AudioContext';
+ import { useState } from 'react';
++import { QRCodeSVG } from 'qrcode.react';
+ import EmojiReactionPicker from './EmojiReactionPicker';
+ import StarRating from './StarRating';
+ 
+@@ -17,6 +18,7 @@
+   const [copied, setCopied] = useState(false);
+   const [downloadState, setDownloadState] = useState<'idle' | 'downloading' | 'done'>('idle');
+   const [downloadProgress, setDownloadProgress] = useState(0);
++  const [showQR, setShowQR] = useState(false);
+ 
+   if (!track) return null;
+ 
+@@ -233,7 +235,31 @@
+                 {copied ? <Check className="w-4 h-4" /> : <Link className="w-4 h-4" />}
+               </button>
++
++              {/* Share - QR Code */}
++              <button
++                onClick={() => setShowQR(!showQR)}
++                className={`w-9 h-9 rounded-full border border-zinc-500 bg-zinc-900/80 hover:border-white flex items-center justify-center text-white cursor-pointer shrink-0 transition-colors ${showQR ? 'border-white bg-white/20' : ''}`}
++                title="Generate QR Code"
++              >
++                <QrCode className="w-4 h-4" />
++              </button>
+             </div>
+ 
++            {/* QR Code Display */}
++            {showQR && (
++              <div className="absolute top-full right-0 mt-4 p-4 bg-white rounded-xl shadow-2xl z-50 flex flex-col items-center gap-3 animate-fadeIn border border-zinc-200">
++                <div className="relative">
++                  <QRCodeSVG 
++                    value={window.location.href} 
++                    size={160}
++                    bgColor="#ffffff"
++                    fgColor="#000000"
++                    level="Q"
++                    includeMargin={false}
++                  />
++                </div>
++                <p className="text-black text-xs font-bold text-center w-full">Scan to open on mobile</p>
++              </div>
++            )}
++
+             {/* Emoji Reactions System */}
+             <EmojiReactionPicker trackId={track.id} />

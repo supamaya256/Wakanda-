@@ -1,0 +1,83 @@
+--- src/components/NetflixRow.tsx
++++ src/components/NetflixRow.tsx
+@@ -19,6 +19,89 @@
+   onOpenModal: (track: AudioTrack) => void;
+ }
+ 
++function LazyTrackCard({ 
++  track, index, isThisTrackPlaying, inMyList, hoveredCardId,
++  handleMouseEnter, handleMouseLeave, onOpenModal,
++  myList, setMyList, currentTrackIndex, isPlaying, playTrack, downloadTrack, duration, currentTime
++}: any) {
++  const cardRef = useRef<HTMLDivElement>(null);
++  const [isVisible, setIsVisible] = useState(false);
++
++  useEffect(() => {
++    const observer = new IntersectionObserver(
++      ([entry]) => {
++        if (entry.isIntersecting) {
++          setIsVisible(true);
++          observer.disconnect();
++        }
++      },
++      { rootMargin: '300px' }
++    );
++    
++    if (cardRef.current) {
++      observer.observe(cardRef.current);
++    }
++    
++    return () => observer.disconnect();
++  }, []);
++
++  return (
++    <div
++      ref={cardRef}
++      onMouseEnter={() => handleMouseEnter(track.id)}
++      onMouseLeave={handleMouseLeave}
++      className="group/card relative flex-none w-[260px] sm:w-[320px] lg:w-[360px] bg-[#181818] rounded-md overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:z-20 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/5 hover:border-zinc-700 min-h-[300px]"
++    >
++      {isVisible && (
++        <>
++          {/* 16:9 Thumbnail Image */}
++          <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden">
++            <img
++              src={track.thumbnail}
++              alt={track.title}
++              className="w-full h-full object-cover object-center group-hover/card:scale-105 transition-transform duration-500"
++              referrerPolicy="no-referrer"
++              loading="lazy"
++            />
++            
++            {hoveredCardId === track.id && (
++              <video
++                src={track.url}
++                autoPlay
++                muted
++                loop
++                playsInline
++                preload="metadata"
++                className="absolute inset-0 w-full h-full object-cover object-center animate-fadeIn z-10"
++              />
++            )}
++
++            {/* Gradient Vignette over image */}
++            <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-black/30" />
++
++            {/* Top Badges: N Series & Duration */}
++            <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
++              <span className="w-4 h-5 rounded-[2px] bg-[#E50914] flex items-center justify-center font-black text-white text-[10px] shadow">
++                N
++              </span>
++              <span className="bg-black/70 backdrop-blur-sm text-zinc-300 text-[10px] font-mono px-1.5 py-0.5 rounded border border-white/10">
++                {track.durationLabel}
++              </span>
++            </div>
++
++            {/* Top Right: Match Score */}
++            <div className="absolute top-2.5 right-2.5 z-20">
++              <span className="bg-black/80 backdrop-blur-sm text-[#46d369] font-bold text-[11px] px-2 py-0.5 rounded-full border border-green-500/20">
++                {track.matchScore}% Match
++              </span>
++            </div>
++EOF

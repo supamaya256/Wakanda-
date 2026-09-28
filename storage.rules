@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// Firebase Cloud Storage Rules for DJ EMMA PRO FX
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Dedicated Admin UID: 6mDkYNmfNbOJ6gC9RrnU6YBRcwC2
+    match /uploads/{folder}/{allPaths=**} {
+      // Anyone can read and stream music/media
+      allow read: if true;
+      
+      // Only the dedicated master admin can upload files
+      allow write: if request.auth != null && request.auth.uid == '6mDkYNmfNbOJ6gC9RrnU6YBRcwC2';
+    }
+
+    // Default fallback rule for general assets
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == '6mDkYNmfNbOJ6gC9RrnU6YBRcwC2';
+    }
+  }
+}
