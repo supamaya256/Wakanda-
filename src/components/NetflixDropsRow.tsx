@@ -20,6 +20,8 @@ import { useAudio } from '../context/AudioContext';
 import { useContent } from '../context/ContentContext';
 import { VoiceDropItem, VOICE_DROPS_DATA } from '../data/voiceDropsData';
 import { VoiceDropsRowSkeleton } from './NetflixSkeleton';
+import AutoScrollCarousel from './AutoScrollCarousel';
+import HeartLikeButton from './HeartLikeButton';
 
 export type { VoiceDropItem };
 export { VOICE_DROPS_DATA };
@@ -35,8 +37,8 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // Layout view mode: defaults to 'four-rows' ("4 lines down per then you scroll")
-  const [viewMode, setViewMode] = useState<ViewMode>('four-rows');
+  // Layout view mode: defaults to 'single-row' (Smooth Auto-Scrolling Horizontal Content Carousel)
+  const [viewMode, setViewMode] = useState<ViewMode>('single-row');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
@@ -643,121 +645,105 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
         </div>
       )}
 
-      {/* RENDER VIEW: CLASSIC SINGLE ROW CAROUSEL */}
+      {/* RENDER VIEW: CLASSIC SINGLE ROW AUTO-SCROLL CAROUSEL */}
       {viewMode === 'single-row' && (
-        <div className="relative">
-          {showLeftArrow && (
-            <button
-              onClick={() => handleScroll('left')}
-              className="absolute left-0 top-0 bottom-0 z-30 w-10 sm:w-12 bg-black/75 hover:bg-black text-white flex items-center justify-center transition-all opacity-85 hover:opacity-100 rounded-r cursor-pointer backdrop-blur-xs shadow-lg"
-              title="Scroll Left"
-            >
-              <ChevronLeft className="w-8 h-8" />
-            </button>
-          )}
+        <AutoScrollCarousel<VoiceDropItem>
+          id="drops-auto-carousel"
+          items={filteredDrops}
+          getItemKey={(d) => d.id}
+          speed={0.65}
+          resumeDelay={2500}
+          ariaLabel="DJ Voice Drops carousel"
+          renderItem={(drop) => {
+            const isThisDropActive = activeDropId === drop.id && isPlayingDrop;
 
-          <div
-            ref={rowRef}
-            onScroll={checkScrollPosition}
-            className="flex items-stretch gap-3 sm:gap-4 overflow-x-auto no-scrollbar scroll-smooth py-4"
-          >
-            {filteredDrops.map((drop) => {
-              const isThisDropActive = activeDropId === drop.id && isPlayingDrop;
+            return (
+              <div
+                className={`group/card relative flex-none w-[270px] sm:w-[320px] bg-[#181818] rounded-md overflow-hidden border transition-all duration-200 ease-out hover:scale-[1.03] active:scale-[0.97] touch-manipulation flex flex-col justify-between min-h-[320px] ${
+                  isThisDropActive
+                    ? 'border-[#E50914] shadow-[0_0_24px_rgba(229,9,20,0.5)] ring-1 ring-[#E50914] z-10'
+                    : 'border-white/10 hover:border-zinc-500 hover:shadow-xl hover:z-20'
+                }`}
+              >
+                <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden">
+                  <img
+                    src={drop.thumbnail}
+                    alt={drop.title}
+                    className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500"
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-black/40 to-transparent" />
 
-              return (
-                <div
-                  key={drop.id}
-                  className={`group/card relative flex-none w-[270px] sm:w-[320px] bg-[#181818] rounded-md overflow-hidden border transition-all duration-300 hover:scale-[1.02] flex flex-col justify-between ${
-                    isThisDropActive
-                      ? 'border-[#E50914] shadow-[0_0_20px_rgba(229,9,20,0.35)]'
-                      : 'border-white/10 hover:border-zinc-600'
-                  }`}
-                >
-                  <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden">
-                    <img
-                      src={drop.thumbnail}
-                      alt={drop.title}
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-black/40 to-transparent" />
-
-                    <div className="absolute top-2 left-2 flex items-center gap-1.5">
-                      <span className="w-4 h-5 rounded-[2px] bg-[#E50914] flex items-center justify-center font-black text-white text-[10px]">
-                        N
-                      </span>
-                      <span className="bg-black/80 backdrop-blur-sm text-white font-mono text-[10px] px-2 py-0.5 rounded font-bold border border-white/10">
-                        {drop.priceUgx || ((drop as any).price ? `${(drop as any).price.toLocaleString()} UGX` : '10,000 UGX')}
-                      </span>
-                    </div>
-
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <button
-                        type="button"
-                        onClick={() => handleTogglePlay(drop)}
-                        className={`w-12 h-12 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-2xl ${
-                          isThisDropActive
-                            ? 'bg-[#E50914] text-white scale-110'
-                            : 'bg-white/90 hover:bg-white text-black hover:scale-110'
-                        }`}
-                      >
-                        {isThisDropActive ? (
-                           <Pause className="w-5 h-5 fill-current" />
-                        ) : (
-                          <Play className="w-5 h-5 fill-current ml-0.5" />
-                        )}
-                      </button>
-                    </div>
-
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-800">
-                      <div
-                        className="h-full bg-[#E50914] transition-all"
-                        style={{
-                          width: isThisDropActive ? `${dropProgress}%` : '0%'
-                        }}
-                      />
-                    </div>
+                  <div className="absolute top-2 left-2 flex items-center gap-1.5 z-20">
+                    <span className="w-4 h-5 rounded-[2px] bg-[#E50914] flex items-center justify-center font-black text-white text-[10px]">
+                      N
+                    </span>
+                    <span className="bg-black/80 backdrop-blur-sm text-white font-mono text-[10px] px-2 py-0.5 rounded font-bold border border-white/10">
+                      {drop.priceUgx || ((drop as any).price ? `${(drop as any).price.toLocaleString()} UGX` : '10,000 UGX')}
+                    </span>
                   </div>
 
-                  <div className="p-3 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider mb-0.5">
-                        {drop.category || 'Voice Drop'}
-                      </div>
-                      <h3 className="font-bold text-white text-sm truncate mb-1" title={drop.title}>
-                        {drop.title}
-                      </h3>
-                      <p className="text-zinc-400 text-xs italic line-clamp-2 mb-3">
-                        {drop.sampleScript || `"${drop.title}" produced by DJ Emma Pro FX.`}
-                      </p>
-                    </div>
+                  <div className="absolute top-2 right-2 z-20" onClick={(e) => e.stopPropagation()}>
+                    <HeartLikeButton trackId={drop.id} item={drop} type="drop" size="sm" />
+                  </div>
 
-                    <div className="space-y-1.5 pt-2 border-t border-white/10">
-                      <button
-                        type="button"
-                        onClick={() => handleDirectWhatsAppOrder(drop)}
-                        className="w-full py-2 px-3 rounded bg-[#E50914] hover:bg-[#b80710] text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <MessageSquare className="w-3.5 h-3.5 fill-current" />
-                        <span>ORDER ON WHATSAPP ({drop.priceUgx || ((drop as any).price ? `${(drop as any).price.toLocaleString()} UGX` : '10,000 UGX')})</span>
-                      </button>
-                    </div>
+                  <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <button
+                      type="button"
+                      onClick={() => handleTogglePlay(drop)}
+                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-2xl ${
+                        isThisDropActive
+                          ? 'bg-[#E50914] text-white scale-110 shadow-[0_0_20px_rgba(229,9,20,0.8)]'
+                          : 'bg-white/95 hover:bg-white text-black hover:scale-110'
+                      }`}
+                    >
+                      {isThisDropActive ? (
+                        <Pause className="w-5 h-5 fill-current" />
+                      ) : (
+                        <Play className="w-5 h-5 fill-current ml-0.5" />
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-800 z-20">
+                    <div
+                      className="h-full bg-[#E50914] transition-all"
+                      style={{
+                        width: isThisDropActive ? `${dropProgress}%` : '0%'
+                      }}
+                    />
                   </div>
                 </div>
-              );
-            })}
-          </div>
 
-          {showRightArrow && (
-            <button
-              onClick={() => handleScroll('right')}
-              className="absolute right-0 top-0 bottom-0 z-30 w-10 sm:w-12 bg-black/75 hover:bg-black text-white flex items-center justify-center transition-all opacity-85 hover:opacity-100 rounded-l cursor-pointer backdrop-blur-xs shadow-lg"
-              title="Scroll Right"
-            >
-              <ChevronRight className="w-8 h-8" />
-            </button>
-          )}
-        </div>
+                <div className="p-3 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider mb-0.5">
+                      {drop.category || 'Voice Drop'}
+                    </div>
+                    <h3 className="font-bold text-white text-sm truncate mb-1" title={drop.title}>
+                      {drop.title}
+                    </h3>
+                    <p className="text-zinc-400 text-xs italic line-clamp-2 mb-3">
+                      {drop.sampleScript || `"${drop.title}" produced by DJ Emma Pro.`}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5 pt-2 border-t border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => handleDirectWhatsAppOrder(drop)}
+                      className="w-full py-2 px-3 rounded bg-[#E50914] hover:bg-[#b80710] text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 fill-current" />
+                      <span>ORDER ON WHATSAPP ({drop.priceUgx || ((drop as any).price ? `${(drop as any).price.toLocaleString()} UGX` : '10,000 UGX')})</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          }}
+        />
       )}
 
       {/* Netflix Order Modal for Custom DJ Drops */}

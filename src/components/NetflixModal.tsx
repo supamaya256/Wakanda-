@@ -42,6 +42,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import EmojiReactionPicker from './EmojiReactionPicker';
 import StarRating from './StarRating';
 import VideoPlayerModal from './VideoPlayerModal';
+import AutoScrollCarousel from './AutoScrollCarousel';
 
 interface NetflixModalProps {
   track: AudioTrack | null;
@@ -1379,25 +1380,31 @@ export default function NetflixModal({ track: propTrack, onClose, onSelectTrack 
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                {relatedTracks.slice(0, 6).map((relTrack) => (
+              <AutoScrollCarousel<AudioTrack>
+                id="modal-related-carousel"
+                items={relatedTracks}
+                getItemKey={(t) => t.id}
+                speed={0.55}
+                resumeDelay={2500}
+                ariaLabel="Related mixtapes carousel"
+                renderItem={(relTrack) => (
                   <div
-                    key={relTrack.id}
                     onClick={() => handleSelectTrack(relTrack)}
-                    className="group bg-[#202020] hover:bg-[#282828] rounded-md overflow-hidden border border-zinc-800 hover:border-zinc-700 transition-all cursor-pointer flex flex-col"
+                    className="group/card bg-[#202020] hover:bg-[#282828] rounded-md overflow-hidden border border-zinc-800 hover:border-[#E50914] transition-all duration-300 cursor-pointer flex flex-col w-[220px] sm:w-[260px] min-h-[260px] hover:scale-[1.03] shadow-md hover:shadow-xl hover:shadow-[#E50914]/20"
                   >
                     <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden">
                       <img
                         src={relTrack.backdrop || relTrack.thumbnail}
                         alt={relTrack.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300"
                         referrerPolicy="no-referrer"
+                        loading="lazy"
                       />
                       <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] font-mono text-zinc-300">
                         {relTrack.durationLabel || 'Nonstop'}
                       </div>
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <div className="w-10 h-10 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-lg transform scale-90 group-hover/card:scale-100 transition-transform">
                           <Play className="w-4 h-4 fill-current ml-0.5" />
                         </div>
                       </div>
@@ -1411,7 +1418,7 @@ export default function NetflixModal({ track: propTrack, onClose, onSelectTrack 
                             {relTrack.quality ? relTrack.quality.split('•')[0].trim() : 'HD'}
                           </span>
                         </div>
-                        <h4 className="text-xs font-bold text-white line-clamp-1 group-hover:text-red-400 transition-colors">
+                        <h4 className="text-xs font-bold text-white line-clamp-1 group-hover/card:text-red-400 transition-colors">
                           {relTrack.title}
                         </h4>
                         <p className="text-[11px] text-zinc-400 line-clamp-2 mt-1 leading-snug">
@@ -1419,13 +1426,13 @@ export default function NetflixModal({ track: propTrack, onClose, onSelectTrack 
                         </p>
                       </div>
                       <div className="mt-2.5 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] text-zinc-400">
-                        <span>{relTrack.artist}</span>
-                        <span className="text-[#E50914] font-semibold group-hover:underline">View Mix →</span>
+                        <span className="truncate max-w-[130px]">{relTrack.artist}</span>
+                        <span className="text-[#E50914] font-semibold group-hover/card:underline shrink-0">Switch Mix →</span>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                )}
+              />
             </div>
           )}
         </div>

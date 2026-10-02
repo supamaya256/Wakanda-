@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Search } from 'lucide-react';
 import { AudioProvider, useAudio, AudioTrack } from './context/AudioContext';
-import { ContentProvider } from './context/ContentContext';
+import { ContentProvider, useContent } from './context/ContentContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { useAdminAuth } from './context/AdminAuthContext';
@@ -43,13 +43,17 @@ import MobileBottomNav from './components/MobileBottomNav';
 import ThreeDLogosRevealPage from './components/ThreeDLogosRevealPage';
 import ThreeDLogosWelcomeHero from './components/ThreeDLogosWelcomeHero';
 import TopStreetAnthemBanner from './components/TopStreetAnthemBanner';
+import ContinueListeningBanner from './components/ContinueListeningBanner';
+import MyFavoritesSection from './components/MyFavoritesSection';
+import NetflixStickyPlayer from './components/NetflixStickyPlayer';
+import { FavoritesProvider, useFavorites } from './context/FavoritesContext';
 import { WatchHistoryProvider } from './context/WatchHistoryContext';
 import FloatingBackToTop from './components/FloatingBackToTop';
-import ErrorBoundary from './components/ErrorBoundary';
 
 function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'signup') => void }) {
   const { t } = useLanguage();
-  const { tracks, recentTracks, favoriteTracks } = useAudio();
+  const { tracks, recentTracks, favoriteTracks, currentTrack, isPlaying } = useAudio();
+  const { atesoMovies, voiceDrops } = useContent();
   const { isAdmin } = useAdminAuth();
 
   const [selectedTrack, setSelectedTrack] = useState<AudioTrack | null>(null);
@@ -160,15 +164,51 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
   const availableGenres = ['All', 'Reggae', 'Ateso', 'Dancehall', 'Afrobeats', 'Video Mix'];
 
   let filteredTracks = Array.isArray(tracks) ? tracks : [];
-  
+  let filteredMovies: AtesoMovie[] = [];
+  let filteredDrops: any[] = [];
+
   if (searchQuery.trim()) {
-    const q = searchQuery.toLowerCase();
-    filteredTracks = filteredTracks.filter(
-      t =>
-        (t?.title && t.title.toLowerCase().includes(q)) ||
-        (t?.artist && t.artist.toLowerCase().includes(q)) ||
-        (Array.isArray(t?.genres) && t.genres.some(g => g && typeof g === 'string' && g.toLowerCase().includes(q)))
-    );
+    const q = searchQuery.toLowerCase().trim();
+    filteredTracks = filteredTracks.filter(t => {
+      if (!t) return false;
+      const titleMatch = t.title && t.title.toLowerCase().includes(q);
+      const artistMatch = t.artist && t.artist.toLowerCase().includes(q);
+      const djMatch = (t.artist && (t.artist.toLowerCase().includes('dj') || t.title.toLowerCase().includes('dj'))) && (q.includes('dj') || q.includes('emma') || q.includes('wakanda'));
+      const genreMatch = Array.isArray(t.genres) && t.genres.some(g => g && g.toLowerCase().includes(q));
+      const yearMatch = t.year && String(t.year).includes(q);
+      const descMatch = t.description && t.description.toLowerCase().includes(q);
+      const qualityMatch = t.quality && t.quality.toLowerCase().includes(q);
+      const movieMatch = (q.includes('movie') || q.includes('film') || q.includes('cinema') || q.includes('ateso')) && 
+        (Boolean(t.isVideo) || (t.genres && t.genres.some(g => g.toLowerCase().includes('movie') || g.toLowerCase().includes('ateso'))));
+      const tagMatch = Array.isArray((t as any).tags) && (t as any).tags.some((tag: string) => tag && tag.toLowerCase().includes(q));
+      return Boolean(titleMatch || artistMatch || djMatch || genreMatch || yearMatch || descMatch || qualityMatch || movieMatch || tagMatch);
+    });
+
+    if (Array.isArray(atesoMovies)) {
+      filteredMovies = atesoMovies.filter(m => {
+        if (!m) return false;
+        const titleMatch = m.title && m.title.toLowerCase().includes(q);
+        const vjMatch = m.vj && m.vj.toLowerCase().includes(q);
+        const genreMatch = m.genre && m.genre.toLowerCase().includes(q);
+        const descMatch = m.description && m.description.toLowerCase().includes(q);
+        const partMatch = (m.episodeNumber && String(m.episodeNumber).includes(q)) || (m.partNumber && String(m.partNumber).includes(q));
+        const generalMovieMatch = q.includes('movie') || q.includes('poison') || q.includes('break') || q.includes('ateso');
+        return Boolean(titleMatch || vjMatch || genreMatch || descMatch || partMatch || generalMovieMatch);
+      });
+    }
+
+    if (Array.isArray(voiceDrops)) {
+      filteredDrops = voiceDrops.filter(d => {
+        if (!d) return false;
+        const titleMatch = d.title && d.title.toLowerCase().includes(q);
+        const styleMatch = d.style && d.style.toLowerCase().includes(q);
+        const catMatch = d.category && d.category.toLowerCase().includes(q);
+        const scriptMatch = d.sampleScript && d.sampleScript.toLowerCase().includes(q);
+        const tagMatch = Array.isArray(d.tags) && d.tags.some((t: string) => t && t.toLowerCase().includes(q));
+        const generalDropMatch = q.includes('drop') || q.includes('voice') || q.includes('intro') || q.includes('scratch') || q.includes('fx');
+        return Boolean(titleMatch || styleMatch || catMatch || scriptMatch || tagMatch || generalDropMatch);
+      });
+    }
   } else if (selectedGenre !== 'All') {
     const gFilter = selectedGenre.toLowerCase();
     filteredTracks = filteredTracks.filter(t => 
@@ -176,6 +216,25 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
       (t?.title && t.title.toLowerCase().includes(gFilter))
     );
   }
+
+  // Related Content (More Like This: recommend related mixes based on genre, artist, tags, popularity)
+  const relatedMixes = useMemo(() => {
+    if (!currentTrack || !tracks) return [];
+    const currentGenres = new Set((currentTrack.genres || []).map(g => g.toLowerCase()));
+    const otherTracks = tracks.filter(t => t.id !== currentTrack.id);
+    
+    return [...otherTracks].sort((a, b) => {
+      let scoreA = 0;
+      let scoreB = 0;
+      if (a.artist === currentTrack.artist) scoreA += 4;
+      if (b.artist === currentTrack.artist) scoreB += 4;
+      a.genres?.forEach(g => { if (currentGenres.has(g.toLowerCase())) scoreA += 3; });
+      b.genres?.forEach(g => { if (currentGenres.has(g.toLowerCase())) scoreB += 3; });
+      if (a.isTrending) scoreA += 1;
+      if (b.isTrending) scoreB += 1;
+      return scoreB - scoreA;
+    }).slice(0, 10);
+  }, [currentTrack, tracks]);
 
   if (currentView === 'manager') {
     return (
@@ -394,17 +453,87 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
 
 
 
-        {/* Search Results Row (Visible only when searching) */}
+        {/* Smart Multi-Category Search Results */}
         {searchQuery.trim() && (
-          <div className="pt-4">
-            <NetflixRow
-              id="search-results"
-              title={`Search Results for "${searchQuery}"`}
-              subtitle={`${filteredTracks.length} matches found`}
-              tracks={filteredTracks}
-              onOpenModal={(track) => setSelectedTrack(track)}
-              isLoading={isFilterLoading}
-            />
+          <div className="pt-4 space-y-6">
+            {filteredTracks.length > 0 && (
+              <NetflixRow
+                id="search-results"
+                title={`Mixtapes & Tracks matching "${searchQuery}"`}
+                subtitle={`${filteredTracks.length} mixes found`}
+                tracks={filteredTracks}
+                onOpenModal={(track) => setSelectedTrack(track)}
+                isLoading={isFilterLoading}
+              />
+            )}
+
+            {filteredMovies.length > 0 && (
+              <div className="px-4 sm:px-8 lg:px-12">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="bg-[#E50914] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">
+                    MOVIES
+                  </span>
+                  <h3 className="text-xl font-bold text-white">
+                    Matching Ateso Movies ({filteredMovies.length})
+                  </h3>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {filteredMovies.map((movie) => (
+                    <div
+                      key={movie.id}
+                      onClick={() => {
+                        setSelectedMovie(movie);
+                        setCurrentView('movies');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="group/mcard relative flex flex-col justify-between bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800 hover:border-[#E50914] transition-all cursor-pointer shadow-md hover:scale-[1.02]"
+                    >
+                      <div className="relative aspect-video w-full bg-black overflow-hidden">
+                        <img
+                          src={movie.thumbnail}
+                          alt={movie.title}
+                          className="w-full h-full object-cover group-hover/mcard:scale-105 transition-transform"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute top-2 left-2 bg-[#E50914] text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded">
+                          {movie.vj || 'ATESO'}
+                        </div>
+                        <div className="absolute top-2 right-2 bg-black/70 text-zinc-300 font-mono text-[9px] px-1.5 py-0.5 rounded">
+                          {movie.duration}
+                        </div>
+                      </div>
+                      <div className="p-3">
+                        <h4 className="font-bold text-xs sm:text-sm text-white truncate group-hover/mcard:text-[#E50914] transition-colors">
+                          {movie.title}
+                        </h4>
+                        <p className="text-[11px] text-zinc-400 truncate mt-0.5">{movie.genre}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {filteredTracks.length === 0 && filteredMovies.length === 0 && (
+              <div className="text-center py-16 px-4">
+                <div className="w-12 h-12 rounded-full bg-zinc-800/80 border border-zinc-700 flex items-center justify-center mx-auto mb-3 text-zinc-400">
+                  <Search className="w-5 h-5 text-red-500" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-white mb-1">
+                  No matching results for "{searchQuery}"
+                </h3>
+                <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-4">
+                  Try searching by DJ name ("DJ Emma Pro", "Wakanda"), movie title ("Poison Break"), genre ("Ateso", "Reggae"), or year ("2026").
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="px-4 py-1.5 rounded-full bg-[#E50914] hover:bg-[#b80710] text-white text-xs font-bold transition-all shadow-md cursor-pointer"
+                >
+                  Clear Search Filter
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -463,22 +592,105 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             </motion.div>
           )}
 
-          {/* ===================================================================
-              ACT 1: STREAMING THEATRE (Nonstop DJ Mixtapes & Top Shows)
-             =================================================================== */}
-          {/* My Favorites Row */}
-          {favoriteTracks && favoriteTracks.length > 0 && !searchQuery.trim() && selectedGenre === 'All' && (
+          {/* Continue Listening Banner */}
+          {!searchQuery.trim() && (
+            <ContinueListeningBanner onOpenModal={(track) => setSelectedTrack(track)} />
+          )}
+
+          {/* Smart Search Instant Results Banner */}
+          {searchQuery.trim() && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="px-4 sm:px-8 lg:px-12 my-3"
+            >
+              <div className="rounded-xl bg-zinc-900/90 border border-zinc-800 p-3.5 sm:p-4 shadow-xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <span className="text-xs uppercase font-mono tracking-wider text-zinc-400">
+                    Smart Search:
+                  </span>
+                  <span className="text-white font-bold text-sm bg-red-950/70 border border-red-500/40 px-2.5 py-0.5 rounded">
+                    "{searchQuery}"
+                  </span>
+                  <div className="flex items-center gap-1.5 text-xs font-mono">
+                    <span className="bg-zinc-800 text-zinc-200 px-2.5 py-0.5 rounded-full border border-zinc-700">
+                      {filteredTracks.length} Mixes
+                    </span>
+                    <span className="bg-zinc-800 text-zinc-200 px-2.5 py-0.5 rounded-full border border-zinc-700">
+                      {filteredMovies.length} Movies
+                    </span>
+                    <span className="bg-zinc-800 text-zinc-200 px-2.5 py-0.5 rounded-full border border-zinc-700">
+                      {filteredDrops.length} Drops
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="text-xs text-red-400 hover:text-white px-3 py-1 rounded bg-zinc-800/90 hover:bg-red-900/50 border border-zinc-700 transition-colors cursor-pointer"
+                  >
+                    Clear Search ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* No results friendly suggestion box */}
+              {filteredTracks.length === 0 && filteredMovies.length === 0 && filteredDrops.length === 0 && (
+                <div className="mt-4 p-8 text-center rounded-xl bg-zinc-900/60 border border-zinc-800">
+                  <p className="text-zinc-300 text-base font-medium mb-3">
+                    No results found for <span className="text-red-400 font-bold">"{searchQuery}"</span>
+                  </p>
+                  <p className="text-xs text-zinc-500 mb-4">
+                    Try searching by DJ name, genre, artist, movie or year:
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {['Street Anthem', 'DJ Emma', 'Wakanda DJs', 'Ateso', 'Afrobeats', '2026', 'Poison Break'].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => setSearchQuery(suggestion)}
+                        className="px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 border border-zinc-700 transition-all cursor-pointer"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+
+          {/* Universal My Favorites Section (Mixtapes, Movies, DJ Drops) */}
+          {!searchQuery.trim() && selectedGenre === 'All' && (
+            <MyFavoritesSection 
+              onOpenModal={(track) => setSelectedTrack(track)}
+              onWatchMovie={(movie) => {
+                setSelectedMovie(movie);
+                setCurrentView('movies');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          )}
+
+          {/* Related Content (More Like This: recommend related mixes based on active playing mix) */}
+          {currentTrack && !searchQuery.trim() && relatedMixes.length > 0 && (
             <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
               <NetflixRow
-                id="my-favorites"
-                title="My Favorites"
-                subtitle="Your saved mixes and favorite tracks"
-                tracks={favoriteTracks}
+                id="more-like-this-live"
+                title={`More Like "${currentTrack.title.length > 36 ? currentTrack.title.slice(0, 34) + '...' : currentTrack.title}"`}
+                subtitle={`Recommended mixes curated by Genre (${currentTrack.genres?.[0] || 'Club Mix'}), DJ & Popularity`}
+                tracks={relatedMixes}
                 onOpenModal={(track) => setSelectedTrack(track)}
                 isLoading={isFeedLoading || isFilterLoading}
               />
             </motion.div>
           )}
+
+          {/* ===================================================================
+              ACT 1: STREAMING THEATRE (Nonstop DJ Mixtapes & Top Shows)
+             =================================================================== */}
 
           {/* Recently Played */}
           {recentTracks && recentTracks.length > 0 && !searchQuery.trim() && selectedGenre === 'All' && (
@@ -506,9 +718,49 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             />
           </motion.div>
 
+          {/* Row 2: Latest Mixtapes • Fresh Releases 2026 */}
+          {!searchQuery.trim() && (
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
+              <NetflixRow
+                id="latest-mixtapes"
+                title="Latest Mixtapes • New Releases"
+                subtitle="Fresh Studio Cuts, Official Street Anthems & Live Turntablism 2026"
+                tracks={tracks.filter(t => 
+                  t.year >= 2025 || 
+                  t.title.includes('2024') || 
+                  t.title.includes('2025') || 
+                  t.title.includes('2026') || 
+                  t.title.includes('NEW') ||
+                  t.isTrending
+                )}
+                onOpenModal={(track) => setSelectedTrack(track)}
+                isLoading={isFeedLoading || isFilterLoading}
+              />
+            </motion.div>
+          )}
 
+          {/* Row 3: Popular DJ Mixes & Ugandan Club Bangers */}
+          {!searchQuery.trim() && (
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
+              <NetflixRow
+                id="popular-mixes"
+                title="Popular DJ Mixes & Club Bangers"
+                subtitle="High-Energy Dancefloor Fillers, Hype MC Collabs & Sound Clash Transitions"
+                tracks={tracks.filter(t => 
+                  t.title.includes('CLUB') || 
+                  t.title.includes('LIVE') || 
+                  t.title.includes('ALIEN') || 
+                  t.title.includes('SCRATCH') || 
+                  t.title.includes('DANCEHALL') ||
+                  t.title.includes('EPISODE')
+                )}
+                onOpenModal={(track) => setSelectedTrack(track)}
+                isLoading={isFeedLoading || isFilterLoading}
+              />
+            </motion.div>
+          )}
 
-          {/* Row 2: Wakanda DJs Live Mixtapes & Battle Scratch */}
+          {/* Row 4: Wakanda DJs Live Mixtapes & Battle Scratch */}
           <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
             <NetflixRow
               id="wakanda-battles"
@@ -528,7 +780,21 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             />
           </motion.div>
 
-          {/* Row 3: Ateso Cultural & Gospel Video Nonstops */}
+          {/* Row 5: Recommended For You • DJ Emma Pro Signature Curation */}
+          {!searchQuery.trim() && (
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
+              <NetflixRow
+                id="recommended-for-you"
+                title="Recommended For You"
+                subtitle="Curated Nonstops Handcrafted for Nonstop Partying, Driving & Soundclashes"
+                tracks={tracks.filter(t => (t.matchScore || 0) >= 98 || t.isTrending)}
+                onOpenModal={(track) => setSelectedTrack(track)}
+                isLoading={isFeedLoading || isFilterLoading}
+              />
+            </motion.div>
+          )}
+
+          {/* Row 6: Ateso Cultural & Gospel Video Nonstops */}
           <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
             <NetflixRow
               id="ateso-gospel-cultural"
@@ -544,7 +810,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             />
           </motion.div>
 
-          {/* Row 4: Ugandan Hits, Dancehall & Reggae Vibes */}
+          {/* Row 7: Ugandan Hits, Dancehall & Reggae Vibes */}
           <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
             <NetflixRow
               id="reggae-afro"
@@ -674,9 +940,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
 
           {/* Row 6: 3D Animated Logo Design Studio */}
           <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <ErrorBoundary fallbackTitle="3D Motion Logos Showcase">
-              <NetflixLogosRow isLoading={isFeedLoading} />
-            </ErrorBoundary>
+            <NetflixLogosRow isLoading={isFeedLoading} />
           </motion.div>
 
           {/* Row 7: Continue Watching / Client Portal Order Tracking */}
@@ -776,6 +1040,8 @@ function RootApp() {
         onCloseAllModals={() => setShowLoginModal(false)}
       />
       <NetflixDashboard onOpenLogin={handleOpenLogin} />
+      {/* Persistent Mini Player whenever audio is active */}
+      <NetflixStickyPlayer />
       <AdminAuthModal />
       {showLoginModal && (
         <LoginScreen 
@@ -798,9 +1064,11 @@ export default function App() {
           <AdminAuthProvider>
             <ContentProvider>
               <AudioProvider>
-                <WatchHistoryProvider>
-                  <RootApp />
-                </WatchHistoryProvider>
+                <FavoritesProvider>
+                  <WatchHistoryProvider>
+                    <RootApp />
+                  </WatchHistoryProvider>
+                </FavoritesProvider>
               </AudioProvider>
             </ContentProvider>
           </AdminAuthProvider>

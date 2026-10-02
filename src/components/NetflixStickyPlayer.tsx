@@ -1,9 +1,10 @@
-import { Play, Pause, SkipForward, SkipBack, Volume, Volume1, Volume2, VolumeX, Download, Maximize2, PictureInPicture2, Keyboard, X, Sliders, Waves, Activity, MonitorPlay } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Volume, Volume1, Volume2, VolumeX, Download, Maximize2, PictureInPicture2, Keyboard, X, Sliders, Waves, Activity, MonitorPlay, Loader2, Check } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
 import { useState, useRef, useEffect, MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import AudioWaveformVisualizer from './AudioWaveformVisualizer';
 import VideoPlayerModal from './VideoPlayerModal';
+import HeartLikeButton from './HeartLikeButton';
 
 export default function NetflixStickyPlayer() {
   const {
@@ -21,6 +22,7 @@ export default function NetflixStickyPlayer() {
     toggleMute,
     formatTime,
     downloadTrack,
+    downloadState,
     togglePiP
   } = useAudio();
 
@@ -29,7 +31,47 @@ export default function NetflixStickyPlayer() {
   const [showVisualizerTray, setShowVisualizerTray] = useState(false);
   const [showMobileVisualizer, setShowMobileVisualizer] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [swipeFeedback, setSwipeFeedback] = useState<'next' | 'prev' | null>(null);
   const mobileVolumeRef = useRef<HTMLDivElement>(null);
+
+  // Swipe handling on the player for mobile (Prev/Next mix)
+  const touchStartXRef = useRef<number>(0);
+  const touchStartYRef = useRef<number>(0);
+  const touchDeltaXRef = useRef<number>(0);
+  const touchDeltaYRef = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+    touchDeltaXRef.current = 0;
+    touchDeltaYRef.current = 0;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchDeltaXRef.current = e.touches[0].clientX - touchStartXRef.current;
+    touchDeltaYRef.current = e.touches[0].clientY - touchStartYRef.current;
+  };
+
+  const handleTouchEnd = () => {
+    const deltaX = touchDeltaXRef.current;
+    const deltaY = touchDeltaYRef.current;
+    // Only trigger if horizontal movement is clearly dominant (>40px and 1.3x vertical movement)
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+      if (deltaX < 0) {
+        // Swiped Left -> Next Mix
+        setSwipeFeedback('next');
+        nextTrack();
+        setTimeout(() => setSwipeFeedback(null), 700);
+      } else {
+        // Swiped Right -> Previous Mix
+        setSwipeFeedback('prev');
+        prevTrack();
+        setTimeout(() => setSwipeFeedback(null), 700);
+      }
+    }
+    touchDeltaXRef.current = 0;
+    touchDeltaYRef.current = 0;
+  };
 
   const effectiveVolume = isMuted ? 0 : volume;
   const effectivePercentage = Math.round(effectiveVolume * 100);
@@ -104,14 +146,33 @@ export default function NetflixStickyPlayer() {
         </div>
       </div>
 
-      <div className="max-w-[1800px] mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4">
+      <div 
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className="max-w-[1800px] mx-auto px-4 sm:px-8 py-2.5 flex items-center justify-between gap-4 touch-pan-y relative"
+      >
+        {/* Mobile Swipe Feedback Indicator Overlay */}
+        {swipeFeedback && (
+          <div className="absolute -top-7 left-4 px-2.5 py-0.5 rounded-full bg-[#E50914] text-white text-[11px] font-bold animate-pulse shadow-xl z-30 flex items-center gap-1 border border-white/20">
+            <span>{swipeFeedback === 'next' ? 'Next Mix →' : '← Previous Mix'}</span>
+          </div>
+        )}
+
         {/* Left: Track Info & Poster Thumbnail */}
-        <div className="flex items-center gap-3 min-w-0 max-w-[280px] sm:max-w-xs">
-          <div className="relative w-12 h-8 sm:w-14 sm:h-9 rounded overflow-hidden shrink-0 bg-zinc-900 border border-zinc-700">
+        <div 
+          className="flex items-center gap-2.5 sm:gap-3 min-w-0 max-w-[220px] sm:max-w-xs relative"
+          title="Swipe left or right on mobile to change mix"
+        >
+
+          <div 
+            onClick={() => setIsVideoModalOpen(true)}
+            className="relative w-11 h-8 sm:w-14 sm:h-9 rounded overflow-hidden shrink-0 bg-zinc-900 border border-zinc-700 cursor-pointer shadow group/thumb"
+          >
             <img
               src={currentTrack.thumbnail}
               alt={currentTrack.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform"
               referrerPolicy="no-referrer"
             />
             {isPlaying && (
@@ -121,8 +182,8 @@ export default function NetflixStickyPlayer() {
             )}
           </div>
 
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
               <span className="text-white text-xs sm:text-sm font-bold truncate block">
                 {currentTrack.title}
               </span>
@@ -138,26 +199,32 @@ export default function NetflixStickyPlayer() {
                 </button>
               </div>
             </div>
-            <p className="text-zinc-400 text-[11px] truncate flex items-center gap-2">
-              <span>{currentTrack.artist}</span>
+            <div className="text-zinc-400 text-[10px] sm:text-[11px] truncate flex items-center gap-1.5">
+              <span className="truncate">{currentTrack.artist}</span>
               <button
                 onClick={() => setIsVideoModalOpen(true)}
-                className="text-xs bg-[#E50914] hover:bg-red-600 text-white px-2 py-0.5 rounded font-bold flex items-center gap-1 transition-colors cursor-pointer shadow"
+                className="text-[9px] sm:text-xs bg-[#E50914] hover:bg-red-600 text-white px-1.5 py-0.5 rounded font-bold hidden sm:inline-flex items-center gap-1 transition-colors cursor-pointer shadow"
                 title="Watch Full HD Video"
               >
-                <MonitorPlay className="w-3 h-3" /> Watch Video
+                <MonitorPlay className="w-3 h-3" /> Watch
               </button>
-            </p>
+            </div>
+          </div>
+
+          {/* Mobile Favorite Heart Button in track box */}
+          <div className="sm:hidden shrink-0">
+            <HeartLikeButton trackId={currentTrack.id} item={currentTrack} type="mixtape" size="sm" />
           </div>
         </div>
 
         {/* Center: Playback Controls & Time */}
-        <div className="flex flex-col items-center gap-1 shrink-0">
-          <div className="flex items-center gap-3 sm:gap-5">
+        <div className="flex flex-col items-center gap-0.5 sm:gap-1 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-5">
             <button
               onClick={prevTrack}
-              title="Previous Track"
-              className="text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              title="Previous Track (← swipe right)"
+              aria-label="Previous Track"
+              className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-1"
             >
               <SkipBack className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
@@ -165,6 +232,7 @@ export default function NetflixStickyPlayer() {
             <button
               onClick={togglePlay}
               title={isPlaying ? 'Pause' : 'Play'}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white hover:bg-white/80 active:scale-95 text-black flex items-center justify-center transition-all shadow-md cursor-pointer"
             >
               {isPlaying ? (
@@ -176,16 +244,18 @@ export default function NetflixStickyPlayer() {
 
             <button
               onClick={nextTrack}
-              title="Next Track"
-              className="text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              title="Next Track (→ swipe left)"
+              aria-label="Next Track"
+              className="text-zinc-400 hover:text-white transition-colors cursor-pointer p-1"
             >
               <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 
-          <div className="text-[10px] font-mono text-zinc-400 hidden sm:block">
+          {/* Time indicator: visible on both desktop & mobile */}
+          <div className="text-[9px] sm:text-[10px] font-mono text-zinc-400">
             <span>{formatTime(currentTime)}</span>
-            <span className="mx-1 text-zinc-600">/</span>
+            <span className="mx-0.5 sm:mx-1 text-zinc-600">/</span>
             <span>{duration > 0 ? formatTime(duration) : 'LIVE'}</span>
           </div>
         </div>
@@ -195,22 +265,47 @@ export default function NetflixStickyPlayer() {
           <AudioWaveformVisualizer height={34} />
         </div>
 
-        {/* Right: Phone Download & Volume */}
-        <div className="flex items-center gap-3">
-          {/* Prominent Direct Download to Phone Button */}
-          <a
-            href={currentTrack.downloadUrl}
-            download={currentTrack.filename}
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* Right: Phone Download, Favorite & Volume */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Desktop Favorite Heart Button */}
+          <div className="hidden sm:block">
+            <HeartLikeButton trackId={currentTrack.id} item={currentTrack} type="mixtape" size="md" />
+          </div>
+
+          {/* Prominent Direct Download to Phone Button with Clear Download State */}
+          <button
+            type="button"
+            disabled={downloadState.status === 'downloading'}
             onClick={() => downloadTrack(currentTrack)}
-            title={`Download ${currentTrack.title} directly to phone`}
-            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded bg-[#E50914] hover:bg-[#b80710] text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-[#E50914]/20 transition-all hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
+            title={downloadState.status === 'downloading' ? 'Downloading...' : `Download ${currentTrack.title} directly to phone`}
+            className={`px-2.5 py-1.5 sm:px-4 sm:py-2 rounded font-bold text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer whitespace-nowrap ${
+              downloadState.status === 'downloading'
+                ? 'bg-amber-600 text-white animate-pulse'
+                : downloadState.status === 'completed'
+                  ? 'bg-emerald-600 text-white shadow-emerald-950/50'
+                  : 'bg-[#E50914] hover:bg-[#b80710] text-white shadow-[#E50914]/20 hover:scale-105 active:scale-95'
+            }`}
           >
-            <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
-            <span className="hidden sm:inline">DOWNLOAD TO PHONE</span>
-            <span className="sm:hidden">GET</span>
-          </a>
+            {downloadState.status === 'downloading' ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span className="hidden sm:inline">SAVING {downloadState.progress}%</span>
+                <span className="sm:hidden">{downloadState.progress}%</span>
+              </>
+            ) : downloadState.status === 'completed' ? (
+              <>
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                <span className="hidden sm:inline">SAVED</span>
+                <span className="sm:hidden">DONE</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
+                <span className="hidden sm:inline">DOWNLOAD TO PHONE</span>
+                <span className="sm:hidden">GET</span>
+              </>
+            )}
+          </button>
 
           {/* Enhanced Volume Control & Audio Sliders */}
           <div 

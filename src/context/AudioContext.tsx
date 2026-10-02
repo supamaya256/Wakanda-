@@ -505,6 +505,24 @@ export const AUDIO_TRACKS: AudioTrack[] = [
   }
 ];
 
+export interface ContinueListeningItem {
+  track: AudioTrack;
+  position: number;
+  duration: number;
+  formattedPosition: string;
+  formattedDuration: string;
+  progressPercent: number;
+  updatedAt: number;
+}
+
+export interface DownloadProgressState {
+  trackId: number | null;
+  status: 'idle' | 'downloading' | 'completed' | 'error';
+  progress: number;
+  filename: string | null;
+  message?: string;
+}
+
 interface AudioContextType {
   tracks: AudioTrack[];
   recentTracks: AudioTrack[];
@@ -516,6 +534,9 @@ interface AudioContextType {
   volume: number;
   isMuted: boolean;
   downloadStatus: string | null;
+  downloadState: DownloadProgressState;
+  continueListeningItem: ContinueListeningItem | null;
+  resumeTrack: (trackId?: number, targetTime?: number) => void;
   togglePlay: () => void;
   playTrack: (index: number) => void;
   playTrackById: (id: number) => void;
@@ -545,6 +566,16 @@ interface AudioContextType {
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
 const TRACKS_STORAGE_KEY = 'dj_emma_audio_tracks_v22_street_anthem_art';
+
+/**
+ * Format raw seconds into standard MM:SS or H:MM:SS format
+ */
+export function formatTime(seconds: number): string {
+  if (isNaN(seconds) || seconds <= 0) return '0:00';
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
 
 export function AudioProvider({ children }: { children: ReactNode }) {
   const [tracks, setTracks] = useState<AudioTrack[]>(() => {
@@ -604,6 +635,31 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       console.warn('Could not load recent tracks:', e);
     }
     return [];
+  });
+
+  // Continue Listening & playback position persistence
+  const [playbackPositions, setPlaybackPositions] = useState<{ [trackId: number]: { position: number; duration: number; updatedAt: number } }>(() => {
+    try {
+      const saved = localStorage.getItem('dj_emma_playback_positions');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.warn('Could not load playback positions:', e);
+    }
+    // Default initial demonstration for visitor if empty (e.g. Street Anthem 90 paused midway)
+    return {
+      1: {
+        position: 1935, // 32:15
+        duration: 3520, // 58:40
+        updatedAt: Date.now() - 1000 * 60 * 45 // 45 mins ago
+      }
+    };
+  });
+
+  const [downloadState, setDownloadState] = useState<DownloadProgressState>({
+    trackId: null,
+    status: 'idle',
+    progress: 0,
+    filename: null
   });
 
   const [favorites, setFavorites] = useState<number[]>(() => {
@@ -750,21 +806,144 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const downloadTrack = (track: AudioTrack) => {
-    setDownloadStatus(`Downloading "${track.title}" to your phone...`);
-    const link = document.createElement('a');
-    link.href = track.downloadUrl;
-    link.setAttribute('download', track.filename);
-    link.setAttribute('target', '_blank');
-    link.setAttribute('rel', 'noopener noreferrer');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const downloadTrack = async (track: AudioTrack) => {
+    // Prevent accidental multiple downloads
+    if (downloadState.status === 'downloading') {
+      setDownloadStatus(`Download already in progress: "${downloadState.filename}". Please wait a moment.`);
+      return;
+    }
 
-    setTimeout(() => {
-      setDownloadStatus(null);
-    }, 4500);
+    setDownloadState({
+      trackId: track.id,
+      status: 'downloading',
+      progress: 25,
+      filename: track.filename,
+      message: `Starting download: "${track.title}"...`
+    });
+    setDownloadStatus(`Downloading "${track.title}" to your phone...`);
+
+    let progress = 25;
+    const progressTimer = setInterval(() => {
+      progress += Math.floor(Math.random() * 20) + 15;
+      if (progress >= 90) {
+        clearInterval(progressTimer);
+        progress = 92;
+      }
+      setDownloadState(prev => ({
+        ...prev,
+        progress,
+        message: `Saving to device (${progress}%)...`
+      }));
+    }, 200);
+
+    try {
+      const link = document.createElement('a');
+      link.href = track.downloadUrl;
+      link.setAttribute('download', track.filename);
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(() => {
+        clearInterval(progressTimer);
+        setDownloadState({
+          trackId: track.id,
+          status: 'completed',
+          progress: 100,
+          filename: track.filename,
+          message: `Successfully saved "${track.filename}" to your phone!`
+        });
+        setDownloadStatus(`Saved "${track.title}" to device!`);
+
+        setTimeout(() => {
+          setDownloadState({
+            trackId: null,
+            status: 'idle',
+            progress: 0,
+            filename: null
+          });
+          setDownloadStatus(null);
+        }, 4000);
+      }, 900);
+    } catch (e) {
+      clearInterval(progressTimer);
+      setDownloadState({
+        trackId: track.id,
+        status: 'error',
+        progress: 0,
+        filename: track.filename,
+        message: 'Download error. Please retry.'
+      });
+      setTimeout(() => {
+        setDownloadState({
+          trackId: null,
+          status: 'idle',
+          progress: 0,
+          filename: null
+        });
+        setDownloadStatus(null);
+      }, 3000);
+    }
   };
+
+  // Continue Listening computation
+  const continueListeningItem = useMemo<ContinueListeningItem | null>(() => {
+    const entries = Object.entries(playbackPositions);
+    if (entries.length === 0) return null;
+
+    let candidate: { trackId: number; position: number; duration: number; updatedAt: number } | null = null;
+    for (const [idStr, data] of entries) {
+      const trackId = Number(idStr);
+      // Valid if visitor stopped after at least 15 seconds and before the final 20 seconds
+      if (data.position >= 15 && (!data.duration || data.position < data.duration - 20)) {
+        if (!candidate || data.updatedAt > candidate.updatedAt) {
+          candidate = { trackId, ...data };
+        }
+      }
+    }
+
+    if (!candidate) return null;
+    const matchedTrack = tracks.find(t => t.id === candidate!.trackId) || AUDIO_TRACKS.find(t => t.id === candidate!.trackId);
+    if (!matchedTrack) return null;
+
+    const totalDur = candidate.duration || 3520;
+    const progressPercent = Math.min(100, Math.round((candidate.position / totalDur) * 100));
+
+    return {
+      track: matchedTrack,
+      position: candidate.position,
+      duration: totalDur,
+      formattedPosition: formatTime(candidate.position),
+      formattedDuration: formatTime(totalDur),
+      progressPercent,
+      updatedAt: candidate.updatedAt
+    };
+  }, [playbackPositions, tracks]);
+
+  // Resume playback function
+  const resumeTrack = (targetTrackId?: number, targetTime?: number) => {
+    const id = targetTrackId || continueListeningItem?.track.id || currentTrack.id;
+    const savedPos = targetTime !== undefined 
+      ? targetTime 
+      : (playbackPositions[id]?.position || continueListeningItem?.position || 0);
+
+    const targetIndex = tracks.findIndex(t => t.id === id);
+    if (targetIndex !== -1) {
+      setCurrentTrackIndex(targetIndex);
+      const audio = audioRef.current;
+      if (audio) {
+        audio.src = tracks[targetIndex].url;
+        audio.load();
+        audio.currentTime = savedPos;
+        safePlay(audio);
+      }
+    }
+  };
+
+  // Position save throttler ref
+  const lastSavedPosRef = useRef<number>(0);
 
   // Initialize audio element once
   useEffect(() => {
@@ -775,7 +954,29 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     audio.volume = volume;
 
     const onTimeUpdate = () => {
-      setCurrentTime(audio.currentTime);
+      const cur = audio.currentTime;
+      setCurrentTime(cur);
+
+      // Throttled position persistence every 2.5 seconds
+      const now = Date.now();
+      if (cur > 10 && now - lastSavedPosRef.current > 2500) {
+        lastSavedPosRef.current = now;
+        const dur = audio.duration || duration || 0;
+        setPlaybackPositions(prev => {
+          const updated = {
+            ...prev,
+            [currentTrack.id]: {
+              position: Math.floor(cur),
+              duration: Math.floor(dur),
+              updatedAt: now
+            }
+          };
+          try {
+            localStorage.setItem('dj_emma_playback_positions', JSON.stringify(updated));
+          } catch {}
+          return updated;
+        });
+      }
     };
 
     const onLoadedMetadata = () => {
@@ -999,13 +1200,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const formatTime = (seconds: number) => {
-    if (isNaN(seconds) || seconds <= 0) return '0:00';
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
-
   return (
     <AudioContext.Provider
       value={{
@@ -1032,6 +1226,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         toggleMute,
         formatTime,
         downloadTrack,
+        downloadState,
+        continueListeningItem,
+        resumeTrack,
         addTrack,
         deleteTrack,
         resetTracks,
