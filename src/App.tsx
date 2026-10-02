@@ -40,7 +40,6 @@ import CommunityCommentsSection from './components/CommunityCommentsSection';
 import AiStudioHubModal from './components/AiStudioHubModal';
 import QuickAccessBar from './components/QuickAccessBar';
 import MobileBottomNav from './components/MobileBottomNav';
-import FeaturedVideoPremiere from './components/FeaturedVideoPremiere';
 import ThreeDLogosRevealPage from './components/ThreeDLogosRevealPage';
 import ThreeDLogosWelcomeHero from './components/ThreeDLogosWelcomeHero';
 import TopStreetAnthemBanner from './components/TopStreetAnthemBanner';
@@ -371,14 +370,6 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             isLoading={isFeedLoading}
           />
         </div>
-
-        {/* First in Dashboard: Direct Video Premiere Playable from Website */}
-        {!searchQuery.trim() && (
-          <FeaturedVideoPremiere 
-            onOpenTrustModal={() => setIsTrustModalOpen(true)}
-            onOpenAiHub={() => setIsAiHubOpen(true)}
-          />
-        )}
 
         {/* Quick Access Hub (Instant 1-Click Navigation) */}
         {!searchQuery.trim() && (

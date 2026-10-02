@@ -25,12 +25,29 @@ import {
   ExternalLink,
   ChevronDown,
   ChevronRight,
+  ChevronLeft,
   Eye,
   X,
   FileText,
   DollarSign,
   Radio,
-  SlidersHorizontal
+  SlidersHorizontal,
+  CheckCircle2,
+  AlertCircle,
+  HelpCircle,
+  Layers,
+  Wrench,
+  Palette,
+  Puzzle,
+  ShieldCheck,
+  RefreshCw,
+  Check,
+  ArrowRight,
+  Send,
+  Download,
+  Flame,
+  Music,
+  Maximize2
 } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
 import { useContent } from '../context/ContentContext';
@@ -55,8 +72,8 @@ export interface AdminOrder {
 const INITIAL_ORDERS: AdminOrder[] = [
   {
     id: '#1024',
-    customer: 'John',
-    service: 'DJ Drop',
+    customer: 'John (Wakanda Fan)',
+    service: 'DJ Drop (Custom Hype Vocals)',
     serviceType: 'DJ Drop',
     date: '28 Sep, 2025',
     payment: 'Paid',
@@ -65,8 +82,8 @@ const INITIAL_ORDERS: AdminOrder[] = [
   },
   {
     id: '#1023',
-    customer: 'Brian',
-    service: '3D Logo',
+    customer: 'Brian Beats UG',
+    service: '3D Logo (Metallic Gold Chrome)',
     serviceType: '3D Logo',
     date: '28 Sep, 2025',
     payment: 'Paid',
@@ -75,8 +92,8 @@ const INITIAL_ORDERS: AdminOrder[] = [
   },
   {
     id: '#1022',
-    customer: 'Sarah',
-    service: 'DJ Drop',
+    customer: 'Sarah Ateso VJ',
+    service: 'DJ Drop (Club Intro Package)',
     serviceType: 'DJ Drop',
     date: '27 Sep, 2025',
     payment: 'Paid',
@@ -85,8 +102,8 @@ const INITIAL_ORDERS: AdminOrder[] = [
   },
   {
     id: '#1021',
-    customer: 'Michael',
-    service: '3D Logo',
+    customer: 'Michael Divine',
+    service: '3D Logo (Fire Flames Animation)',
     serviceType: '3D Logo',
     date: '27 Sep, 2025',
     payment: 'Payment Pending',
@@ -95,8 +112,8 @@ const INITIAL_ORDERS: AdminOrder[] = [
   },
   {
     id: '#1020',
-    customer: 'Alice',
-    service: 'Movie',
+    customer: 'Alice Teso Media',
+    service: 'Movie (Ateso Translation Series)',
     serviceType: 'Movie',
     date: '26 Sep, 2025',
     payment: 'Paid',
@@ -105,8 +122,8 @@ const INITIAL_ORDERS: AdminOrder[] = [
   },
   {
     id: '#1019',
-    customer: 'David',
-    service: 'DJ Drop',
+    customer: 'David Kampala DJ',
+    service: 'DJ Drop (Standard Vocal Tag)',
     serviceType: 'DJ Drop',
     date: '26 Sep, 2025',
     payment: 'Unpaid',
@@ -126,51 +143,59 @@ interface RecentMediaItem {
 
 const RECENT_VIDEOS: RecentMediaItem[] = [
   {
+    id: 'vid-0',
+    title: 'STREET ANTHEM 90 • DJ EMMA PRO & WAKANDA DJs',
+    date: 'Today',
+    duration: '58:40',
+    views: '128.5K',
+    thumbnail: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png'
+  },
+  {
     id: 'vid-1',
-    title: 'DJ EMMA PRO - Live Mix',
+    title: '2024 ATESO VIDEO MIX VOL 1 VS AFROBEATS',
     date: '28 Sep, 2025',
-    duration: '03:24',
-    views: '12.5K',
-    thumbnail: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop'
+    duration: '50:15',
+    views: '42.5K',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_000000007a30824389bfed070b58d613.png'
   },
   {
     id: 'vid-2',
-    title: '3D Logo Animation',
+    title: '3D Logo Master Metal Reveal',
     date: '27 Sep, 2025',
     duration: '00:45',
-    views: '8.2K',
-    thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop'
+    views: '28.2K',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550683/file_00000000981482069a72d0e793ac5391.png'
   },
   {
     id: 'vid-3',
-    title: 'Ateso Movies - Episode 2',
+    title: 'Ateso Movies • Crazy Safari VJ Sultan',
     date: '26 Sep, 2025',
-    duration: '02:15',
-    views: '15.7K',
+    duration: '1h 36m',
+    views: '48.2K',
     thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550669/IMG-20260713-WA0056.jpg'
   },
   {
     id: 'vid-4',
-    title: 'TOSH Home Appliances',
-    date: '25 Sep, 2025',
-    duration: '00:38',
-    views: '6.3K',
-    thumbnail: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'vid-5',
-    title: 'Nonstop Mix 2025',
+    title: 'BEST OF VYROOTA NONSTOP 2026',
     date: '24 Sep, 2025',
-    duration: '04:12',
-    views: '11.9K',
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550667/IMG-20260723-WA0032.jpg'
+    duration: '52:18',
+    views: '96.4K',
+    thumbnail: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg'
   }
 ];
 
 const RECENT_PHOTOS: RecentMediaItem[] = [
   {
+    id: 'pho-0',
+    title: 'Street Anthem 90 Master Cover Art',
+    date: 'Today',
+    duration: '4K HD',
+    views: '34.8K',
+    thumbnail: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png'
+  },
+  {
     id: 'pho-1',
-    title: 'DJ Emma Pro FX Live On Stage',
+    title: 'DJ Emma Pro Live Turntables',
     date: '28 Sep, 2025',
     duration: 'HD',
     views: '14.8K',
@@ -186,7 +211,7 @@ const RECENT_PHOTOS: RecentMediaItem[] = [
   },
   {
     id: 'pho-3',
-    title: 'Master Artwork 2025 Press Kit',
+    title: 'Master Artwork Press Kit',
     date: '26 Sep, 2025',
     duration: 'RAW',
     views: '12.1K',
@@ -194,19 +219,11 @@ const RECENT_PHOTOS: RecentMediaItem[] = [
   },
   {
     id: 'pho-4',
-    title: 'Festival Night Turntables',
+    title: 'Wakanda DJs Soundstage Setup',
     date: '25 Sep, 2025',
     duration: 'HD',
     views: '16.5K',
     thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png'
-  },
-  {
-    id: 'pho-5',
-    title: 'VIP Lounge Soundstage Setup',
-    date: '24 Sep, 2025',
-    duration: 'HD',
-    views: '9.4K',
-    thumbnail: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=800&auto=format&fit=crop'
   }
 ];
 
@@ -215,13 +232,33 @@ export default function WordPressAdminDashboard({
   onOpenUploadCatalog
 }: WordPressAdminDashboardProps) {
   const { voiceDrops, logos, atesoMovies } = useContent();
+  const { tracks } = useAudio();
+
+  // WordPress UI states
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+  const [showScreenOptions, setShowScreenOptions] = useState<boolean>(false);
+  const [showHelpDrawer, setShowHelpDrawer] = useState<boolean>(false);
+  const [showWelcomePanel, setShowWelcomePanel] = useState<boolean>(true);
+
+  // Widget visibility toggles (classic WP Screen Options)
+  const [visibleWidgets, setVisibleWidgets] = useState({
+    welcome: true,
+    atAGlance: true,
+    quickDraft: true,
+    activity: true,
+    wooStatus: true,
+    recentMedia: true,
+    ordersTable: true
+  });
 
   // Collapsible submenus
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({
-    drops: true,
-    logos: true,
-    movies: true,
-    orders: true
+    dashboard: true,
+    mixes: true,
+    drops: false,
+    logos: false,
+    movies: false,
+    woocommerce: true
   });
 
   const toggleSubmenu = (key: string) => {
@@ -237,6 +274,41 @@ export default function WordPressAdminDashboard({
   // Media tab
   const [mediaTab, setMediaTab] = useState<'Videos' | 'Photos'>('Videos');
   const [previewMedia, setPreviewMedia] = useState<RecentMediaItem | null>(null);
+
+  // Quick Draft State
+  const [draftTitle, setDraftTitle] = useState('');
+  const [draftContent, setDraftContent] = useState('');
+  const [draftsList, setDraftsList] = useState<{ id: string; title: string; date: string; content: string }[]>([
+    {
+      id: 'd1',
+      title: 'Upcoming Wakanda Street Anthem 91 Concept',
+      date: 'Oct 02, 2026',
+      content: 'Mix together new Ateso drill rhythm with Ugandan afro-dancehall drops.'
+    },
+    {
+      id: 'd2',
+      title: 'Voice Drop Promo Script for Kampala Clubs',
+      date: 'Sep 29, 2026',
+      content: 'You are now live with DJ Emma Pro, the King of Scratch Wakanda DJs!'
+    }
+  ]);
+  const [draftSavedToast, setDraftSavedToast] = useState<string | null>(null);
+
+  const handleSaveDraft = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!draftTitle.trim()) return;
+    const newDraft = {
+      id: Date.now().toString(),
+      title: draftTitle.trim(),
+      date: 'Just now',
+      content: draftContent.trim()
+    };
+    setDraftsList([newDraft, ...draftsList]);
+    setDraftTitle('');
+    setDraftContent('');
+    setDraftSavedToast('Draft saved successfully to WordPress database!');
+    setTimeout(() => setDraftSavedToast(null), 3000);
+  };
 
   // Filtered orders list
   const filteredOrders = useMemo(() => {
@@ -266,606 +338,897 @@ export default function WordPressAdminDashboard({
   }, [orderFilter, orderSearch]);
 
   return (
-    <div className="min-h-screen bg-[#08080a]/40 text-white font-sans selection:bg-[#E50914] selection:text-white flex flex-col antialiased relative overflow-x-hidden">
-      {/* Background Image Layer (Transparent Glass Theme - DJ Emma Background Picture Clearly Visible) */}
-      <div 
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-75 filter brightness-95 contrast-110"
-        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_1440/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
-      />
-      {/* Cinematic dark ambient overlay for sharp readable UI panels */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 backdrop-blur-[0.5px]" />
-
+    <div className="min-h-screen bg-[#101517] text-[#f0f0f1] font-sans selection:bg-[#2271b1] selection:text-white flex flex-col antialiased relative">
+      
       {/* ========================================================
-          TOP NAVBAR
+          1. OFFICIAL WORDPRESS ADMIN BAR (TOP BAR - 32px height)
          ======================================================== */}
-      <header className="sticky top-0 z-50 h-16 bg-[#0c0c0e]/95 backdrop-blur-md border-b border-[#1f1f23]/80 px-4 sm:px-6 flex items-center justify-between shadow-lg relative">
-        {/* Left: Brand Logo & Hamburger */}
-        <div className="flex items-center gap-4 sm:gap-6 flex-1 max-w-2xl">
-          {/* Logo with Golden Crown */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            <Crown className="w-6 h-6 text-[#D4AF37] fill-[#D4AF37]/20 drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]" />
-            <div>
-              <div className="text-base sm:text-lg font-black tracking-tight flex items-center leading-none">
-                <span className="text-white">DJ</span>
-                <span className="text-[#E50914] ml-1">EMMA</span>
-                <span className="text-white ml-1.5 font-bold">PRO FX</span>
-              </div>
-              <p className="text-[10px] text-zinc-400 font-medium leading-tight mt-0.5 tracking-tight">
-                Official Studio & Nonstop Broadcast
-              </p>
+      <header className="sticky top-0 z-50 h-8 bg-[#1d2327] border-b border-[#2c3338] px-3 flex items-center justify-between text-xs text-[#c3c4c7] select-none shadow-sm">
+        {/* Left: Classic WordPress Admin Bar Links */}
+        <div className="flex items-center gap-1.5 sm:gap-3">
+          {/* WordPress W Logo */}
+          <div 
+            className="flex items-center gap-1 px-1.5 py-0.5 hover:bg-[#2271b1] hover:text-white text-white rounded transition-colors cursor-pointer group"
+            title="About WordPress 6.7.1"
+          >
+            <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center text-[#1d2327] font-serif font-black text-[10px]">
+              W
             </div>
           </div>
 
-          {/* Hamburger Menu Icon */}
-          <button
-            type="button"
-            className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
-            title="Menu"
+          {/* Site Title with Home Icon */}
+          <div 
+            onClick={onBackToStore}
+            className="flex items-center gap-1.5 px-2 py-0.5 hover:bg-[#2271b1] hover:text-white rounded transition-colors cursor-pointer text-white font-bold"
+            title="Visit Site"
           >
-            <div className="w-5 flex flex-col gap-1">
-              <span className="h-0.5 w-full bg-zinc-300"></span>
-              <span className="h-0.5 w-3/4 bg-[#E50914]"></span>
-              <span className="h-0.5 w-full bg-zinc-300"></span>
-            </div>
-          </button>
+            <Home className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">DJ EMMA PRO</span>
+          </div>
 
-          {/* Search Bar */}
-          <div className="relative w-full max-w-md hidden md:block">
-            <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search orders, customers, services..."
-              className="w-full bg-[#141417] border border-[#242429] focus:border-[#E50914] focus:outline-none rounded-lg pl-9 pr-4 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 transition-colors"
-            />
+          {/* Updates Counter */}
+          <div 
+            className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 hover:bg-[#2271b1] hover:text-white rounded transition-colors cursor-pointer"
+            title="2 Plugin and Core Updates Available"
+          >
+            <RefreshCw className="w-3 h-3 text-[#72aee6]" />
+            <span className="text-[10px] bg-[#d63638] text-white px-1.5 py-0.2 rounded-full font-bold">2</span>
+          </div>
+
+          {/* Comments Bubble */}
+          <div 
+            onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('inquiries')}
+            className="flex items-center gap-1 px-1.5 py-0.5 hover:bg-[#2271b1] hover:text-white rounded transition-colors cursor-pointer"
+            title="14 Pending Client Inquiries / Comments"
+          >
+            <MessageSquare className="w-3 h-3" />
+            <span className="text-[10px] bg-[#d63638] text-white px-1.5 py-0.2 rounded-full font-bold">14</span>
+          </div>
+
+          {/* + New Menu */}
+          <div className="relative group">
+            <button 
+              type="button"
+              className="flex items-center gap-1 px-2 py-0.5 hover:bg-[#2271b1] hover:text-white rounded transition-colors cursor-pointer text-white"
+            >
+              <PlusCircle className="w-3 h-3 text-emerald-400" />
+              <span className="hidden md:inline font-medium">New</span>
+              <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+            </button>
+            <div className="absolute left-0 top-full hidden group-hover:block w-48 bg-[#2c3338] border border-[#3c434a] shadow-xl py-1 z-50 text-[11px] rounded-b">
+              <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
+                <Music className="w-3.5 h-3.5 text-yellow-400" />
+                <span>Nonstop Mix</span>
+              </div>
+              <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('drops')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
+                <Mic className="w-3.5 h-3.5 text-red-400" />
+                <span>DJ Voice Drop</span>
+              </div>
+              <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
+                <Box className="w-3.5 h-3.5 text-emerald-400" />
+                <span>3D Logo Order</span>
+              </div>
+              <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
+                <Film className="w-3.5 h-3.5 text-blue-400" />
+                <span>Ateso Movie</span>
+              </div>
+              <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('files')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
+                <Folder className="w-3.5 h-3.5 text-purple-400" />
+                <span>Media File</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Right: Notifications, Messages, Admin Profile & VIEW WEBSITE */}
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-          {/* Notification bell with badge 5 */}
-          <button
-            type="button"
-            className="relative p-2 rounded-lg bg-[#141417] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#242429] transition-colors cursor-pointer"
-            title="Notifications"
-          >
-            <Bell className="w-4 h-4" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E50914] text-white text-[10px] font-bold flex items-center justify-center shadow-md">
-              5
-            </span>
-          </button>
-
-          {/* Message chat bubble with badge 3 */}
-          <button
-            type="button"
-            onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('inquiries')}
-            className="relative p-2 rounded-lg bg-[#141417] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#242429] transition-colors cursor-pointer"
-            title="Messages"
-          >
-            <MessageSquare className="w-4 h-4" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E50914] text-white text-[10px] font-bold flex items-center justify-center shadow-md">
-              3
-            </span>
-          </button>
-
-          {/* Admin Profile */}
-          <div className="flex items-center gap-2.5 px-2 py-1 rounded-lg bg-[#141417] border border-[#242429] cursor-pointer hover:border-zinc-700 transition-colors">
-            <img
-              src="https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_000000007a30824389bfed070b58d613.png"
-              alt="Admin"
-              className="w-7 h-7 rounded-full border border-amber-500/40 object-cover"
-            />
-            <div className="hidden sm:block text-left">
-              <p className="text-xs font-bold text-white leading-none">Admin</p>
-              <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">Administrator</p>
-            </div>
-            <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
-          </div>
-
-          {/* Google Search & SEO Visibility Button */}
+        {/* Right: User Profile & View Website */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Google Search & SEO Visibility Inspector */}
           <button
             type="button"
             onClick={() => setShowGoogleModal(true)}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#141417] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#242429] text-xs font-semibold transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-2 py-0.5 hover:bg-[#2271b1] hover:text-white rounded text-[11px] transition-colors cursor-pointer"
             title="Inspect Google Search Results & SEO Indexing"
           >
-            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-            </svg>
-            <span>Google SEO</span>
+            <span className="font-bold text-[#4285F4]">G</span>
+            <span className="hidden sm:inline">Google SEO</span>
           </button>
 
-          {/* VIEW WEBSITE Button (Bright Red with Subtle Glow) */}
+          {/* Howdy, DJ Emma Pro */}
+          <div className="flex items-center gap-1.5 px-2 py-0.5 hover:bg-[#2271b1] hover:text-white rounded transition-colors cursor-pointer text-white">
+            <span className="hidden sm:inline text-[#c3c4c7]">Howdy,</span>
+            <span className="font-bold">DJ Emma Pro</span>
+            <img
+              src="https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_000000007a30824389bfed070b58d613.png"
+              alt="DJ Emma Pro"
+              className="w-4 h-4 rounded-full border border-amber-500/60 object-cover ml-1"
+            />
+          </div>
+
+          {/* Visit Website Button */}
           <button
             type="button"
             onClick={onBackToStore}
-            className="px-4 py-1.5 rounded-lg bg-[#E50914] hover:bg-[#ff0f1e] text-white text-xs font-black tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(229,9,20,0.5)] active:scale-95 flex items-center gap-1.5 cursor-pointer border border-red-500/30"
+            className="flex items-center gap-1 px-2.5 py-0.5 bg-[#2271b1] hover:bg-[#135e96] text-white rounded font-bold text-[11px] transition-all cursor-pointer shadow-sm active:scale-95"
+            title="View Live Website Store & Streaming Player"
           >
-            <span>VIEW WEBSITE</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            <span>Visit Website</span>
+            <ExternalLink className="w-3 h-3" />
           </button>
         </div>
       </header>
 
       {/* ========================================================
-          BODY: LEFT SIDEBAR + MAIN WORKSPACE
+          2. MAIN BODY: WORDPRESS SIDEBAR + WORKSPACE
          ======================================================== */}
       <div className="flex-1 flex overflow-hidden">
+        
         {/* --------------------------------------------------------
-            LEFT SIDEBAR
+            OFFICIAL WORDPRESS ADMIN SIDEBAR (160px - 200px width)
            -------------------------------------------------------- */}
-        <aside className="w-60 sm:w-64 shrink-0 bg-[#0c0c0e]/92 backdrop-blur-md border-r border-[#1f1f23]/80 flex flex-col justify-between overflow-y-auto select-none py-4 px-3 space-y-4 relative z-10">
-          <nav className="space-y-1 text-xs font-medium">
-            {/* 1. Dashboard (Active Red Pill) */}
-            <div className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#E50914] text-white font-bold text-xs shadow-[0_0_15px_rgba(229,9,20,0.4)] cursor-pointer">
-              <Home className="w-4 h-4 shrink-0" />
-              <span>Dashboard</span>
-            </div>
-
-            {/* 2. DJ DROPS (Dropdown) */}
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={() => toggleSubmenu('drops')}
-                className="w-full flex items-center justify-between px-3 py-2 text-zinc-300 hover:text-white hover:bg-[#141417] rounded-lg transition-colors cursor-pointer"
+        <aside 
+          className={`shrink-0 bg-[#1d2327] border-r border-[#2c3338] flex flex-col justify-between overflow-y-auto select-none transition-all duration-200 z-20 ${
+            isSidebarCollapsed ? 'w-12' : 'w-52 sm:w-56'
+          }`}
+        >
+          <nav className="text-[13px] text-[#c3c4c7] font-normal py-1">
+            
+            {/* 1. Dashboard (Active WordPress Blue / Red) */}
+            <div className="relative">
+              <div 
+                className="flex items-center gap-2.5 px-3 py-2 bg-[#2271b1] text-white font-semibold cursor-pointer border-l-4 border-white"
+                title="Dashboard"
               >
-                <div className="flex items-center gap-2.5">
-                  <Mic className="w-4 h-4 text-zinc-300" />
-                  <span className="font-bold uppercase tracking-wider text-[11px]">DJ DROPS</span>
-                </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition-transform ${openSubmenus.drops ? '' : '-rotate-90'}`} />
-              </button>
-              {openSubmenus.drops && (
-                <div className="ml-6 mt-1 space-y-1 pl-2 border-l border-[#242429]">
-                  <div 
-                    onClick={() => setOrderFilter('DJ Drops')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>All Orders</span>
-                    <span className="w-4 h-4 rounded-full bg-[#E50914] text-white text-[9px] font-bold flex items-center justify-center">12</span>
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Pending')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>New Orders</span>
-                    <span className="w-4 h-4 rounded-full bg-[#E50914] text-white text-[9px] font-bold flex items-center justify-center">5</span>
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Processing')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>In Production</span>
-                    <span className="w-4 h-4 rounded-full bg-[#F97316] text-white text-[9px] font-bold flex items-center justify-center">3</span>
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Completed')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>Completed</span>
-                    <span className="w-4 h-4 rounded-full bg-[#10B981] text-white text-[9px] font-bold flex items-center justify-center">8</span>
-                  </div>
-                  <div 
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('drops')} 
-                    className="py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    DJ Drop Services
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 3. 3D LOGOS (Dropdown) */}
-            <div className="pt-1">
-              <button
-                type="button"
-                onClick={() => toggleSubmenu('logos')}
-                className="w-full flex items-center justify-between px-3 py-2 text-zinc-300 hover:text-white hover:bg-[#141417] rounded-lg transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Box className="w-4 h-4 text-[#D4AF37]" />
-                  <span className="font-bold uppercase tracking-wider text-[11px]">3D LOGOS</span>
-                </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition-transform ${openSubmenus.logos ? '' : '-rotate-90'}`} />
-              </button>
-              {openSubmenus.logos && (
-                <div className="ml-6 mt-1 space-y-1 pl-2 border-l border-[#242429]">
-                  <div 
-                    onClick={() => setOrderFilter('3D Logos')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>Logo Orders</span>
-                    <span className="w-4 h-4 rounded-full bg-[#E50914] text-white text-[9px] font-bold flex items-center justify-center">6</span>
-                  </div>
-                  <div 
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} 
-                    className="py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    Logo Services
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Processing')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>In Production</span>
-                    <span className="w-4 h-4 rounded-full bg-[#F97316] text-white text-[9px] font-bold flex items-center justify-center">2</span>
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Completed')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>Completed</span>
-                    <span className="w-4 h-4 rounded-full bg-[#10B981] text-white text-[9px] font-bold flex items-center justify-center">4</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 4. ATESO MOVIES (Dropdown) */}
-            <div className="pt-1">
-              <button
-                type="button"
-                onClick={() => toggleSubmenu('movies')}
-                className="w-full flex items-center justify-between px-3 py-2 text-zinc-300 hover:text-white hover:bg-[#141417] rounded-lg transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Film className="w-4 h-4 text-[#D4AF37]" />
-                  <span className="font-bold uppercase tracking-wider text-[11px]">ATESO MOVIES</span>
-                </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition-transform ${openSubmenus.movies ? '' : '-rotate-90'}`} />
-              </button>
-              {openSubmenus.movies && (
-                <div className="ml-6 mt-1 space-y-1 pl-2 border-l border-[#242429]">
-                  <div 
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>All Movies</span>
-                    <span className="w-4 h-4 rounded-full bg-[#E50914] text-white text-[9px] font-bold flex items-center justify-center">18</span>
-                  </div>
-                  <div 
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} 
-                    className="py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    Add Movie
-                  </div>
-                  <div 
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} 
-                    className="py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    Categories
-                  </div>
-                  <div className="py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors">
-                    Movie Analytics
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 5. ORDERS (Dropdown) */}
-            <div className="pt-1">
-              <button
-                type="button"
-                onClick={() => toggleSubmenu('orders')}
-                className="w-full flex items-center justify-between px-3 py-2 text-zinc-300 hover:text-white hover:bg-[#141417] rounded-lg transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-2.5">
-                  <ShoppingCart className="w-4 h-4 text-[#D4AF37]" />
-                  <span className="font-bold uppercase tracking-wider text-[11px]">ORDERS</span>
-                </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition-transform ${openSubmenus.orders ? '' : '-rotate-90'}`} />
-              </button>
-              {openSubmenus.orders && (
-                <div className="ml-6 mt-1 space-y-1 pl-2 border-l border-[#242429]">
-                  <div 
-                    onClick={() => setOrderFilter('All')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>All Orders</span>
-                    <span className="w-4 h-4 rounded-full bg-[#E50914] text-white text-[9px] font-bold flex items-center justify-center">24</span>
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Pending')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>Pending Payment</span>
-                    <span className="w-4 h-4 rounded-full bg-[#F97316] text-white text-[9px] font-bold flex items-center justify-center">7</span>
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Processing')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>Processing</span>
-                    <span className="w-4 h-4 rounded-full bg-[#F97316] text-white text-[9px] font-bold flex items-center justify-center">10</span>
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Completed')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>Completed</span>
-                    <span className="w-4 h-4 rounded-full bg-[#10B981] text-white text-[9px] font-bold flex items-center justify-center">14</span>
-                  </div>
-                  <div 
-                    onClick={() => setOrderFilter('Unpaid')} 
-                    className="flex items-center justify-between py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer transition-colors"
-                  >
-                    <span>Cancelled</span>
-                    <span className="w-4 h-4 rounded-full bg-[#E50914] text-white text-[9px] font-bold flex items-center justify-center">2</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 6. CUSTOMERS */}
-            <div 
-              onClick={() => setOrderFilter('All')}
-              className="flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-white hover:bg-[#141417] rounded-lg cursor-pointer transition-colors"
-            >
-              <Users className="w-4 h-4 text-zinc-400" />
-              <span>CUSTOMERS</span>
-            </div>
-
-            {/* 7. PAYMENTS */}
-            <div 
-              onClick={() => setOrderFilter('Paid')}
-              className="flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-white hover:bg-[#141417] rounded-lg cursor-pointer transition-colors"
-            >
-              <CreditCard className="w-4 h-4 text-zinc-400" />
-              <span>PAYMENTS</span>
-            </div>
-
-            {/* 8. MESSAGES */}
-            <div 
-              onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('inquiries')}
-              className="flex items-center justify-between px-3 py-2 text-zinc-400 hover:text-white hover:bg-[#141417] rounded-lg cursor-pointer transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <MessageSquare className="w-4 h-4 text-zinc-400" />
-                <span>MESSAGES</span>
+                <Home className="w-4 h-4 shrink-0" />
+                {!isSidebarCollapsed && <span>Dashboard</span>}
               </div>
-              <span className="w-4 h-4 rounded-full bg-[#E50914] text-white text-[9px] font-bold flex items-center justify-center">
-                6
-              </span>
+              {!isSidebarCollapsed && (
+                <div className="bg-[#101517] py-1 text-xs pl-9 pr-2 space-y-1">
+                  <div className="text-white font-medium hover:text-[#72aee6] cursor-pointer py-0.5">Home</div>
+                  <div className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5 flex items-center justify-between">
+                    <span>Updates</span>
+                    <span className="text-[10px] bg-[#d63638] text-white px-1.5 py-0.2 rounded-full font-bold">2</span>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* 9. ANALYTICS */}
-            <div className="flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-white hover:bg-[#141417] rounded-lg cursor-pointer transition-colors">
-              <BarChart3 className="w-4 h-4 text-zinc-400" />
-              <span>ANALYTICS</span>
+            {/* Separator */}
+            <div className="my-1 border-t border-[#2c3338]/60" />
+
+            {/* 2. Nonstop Mixes / Posts */}
+            <div>
+              <div 
+                onClick={() => toggleSubmenu('mixes')}
+                className="flex items-center justify-between px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+                title="Nonstop Mixes"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Music className="w-4 h-4 text-[#E50914] shrink-0" />
+                  {!isSidebarCollapsed && <span className="font-medium">Nonstop Mixes</span>}
+                </div>
+                {!isSidebarCollapsed && (
+                  <span className="text-[10px] bg-[#2c3338] border border-[#3c434a] text-white px-1.5 py-0.2 rounded-full font-bold">
+                    {tracks.length || 25}
+                  </span>
+                )}
+              </div>
+              {!isSidebarCollapsed && openSubmenus.mixes && (
+                <div className="bg-[#101517] py-1 text-xs pl-9 pr-2 space-y-1">
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">All 25 Nonstops</div>
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Add New Nonstop</div>
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Categories & Genres</div>
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">MP3 Audio Master 320k</div>
+                </div>
+              )}
             </div>
 
-            {/* 10. MEDIA LIBRARY */}
+            {/* 3. Media Library */}
             <div 
               onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('files')}
-              className="flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-white hover:bg-[#141417] rounded-lg cursor-pointer transition-colors"
+              className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+              title="Media Library"
             >
-              <Folder className="w-4 h-4 text-zinc-400" />
-              <span>MEDIA LIBRARY</span>
+              <Folder className="w-4 h-4 text-[#f0b849] shrink-0" />
+              {!isSidebarCollapsed && <span>Media Library</span>}
             </div>
 
-            {/* 11. SETTINGS */}
+            {/* 4. DJ Voice Drops */}
+            <div>
+              <div 
+                onClick={() => toggleSubmenu('drops')}
+                className="flex items-center justify-between px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+                title="DJ Drops"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Mic className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                  {!isSidebarCollapsed && <span className="font-medium">DJ Voice Drops</span>}
+                </div>
+                {!isSidebarCollapsed && (
+                  <span className="text-[10px] bg-[#d63638] text-white px-1.5 py-0.2 rounded-full font-bold">12</span>
+                )}
+              </div>
+              {!isSidebarCollapsed && openSubmenus.drops && (
+                <div className="bg-[#101517] py-1 text-xs pl-9 pr-2 space-y-1">
+                  <div onClick={() => setOrderFilter('DJ Drops')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">All Orders (12)</div>
+                  <div onClick={() => setOrderFilter('Pending')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">New Requests (5)</div>
+                  <div onClick={() => setOrderFilter('Processing')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">In Production (3)</div>
+                  <div onClick={() => setOrderFilter('Completed')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Completed (8)</div>
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('drops')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Voice Packages</div>
+                </div>
+              )}
+            </div>
+
+            {/* 5. 3D Logos */}
+            <div>
+              <div 
+                onClick={() => toggleSubmenu('logos')}
+                className="flex items-center justify-between px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+                title="3D Logos"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Box className="w-4 h-4 text-[#4ab866] shrink-0" />
+                  {!isSidebarCollapsed && <span className="font-medium">3D Logos</span>}
+                </div>
+                {!isSidebarCollapsed && (
+                  <span className="text-[10px] bg-[#2c3338] border border-[#3c434a] text-white px-1.5 py-0.2 rounded-full font-bold">6</span>
+                )}
+              </div>
+              {!isSidebarCollapsed && openSubmenus.logos && (
+                <div className="bg-[#101517] py-1 text-xs pl-9 pr-2 space-y-1">
+                  <div onClick={() => setOrderFilter('3D Logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Logo Orders (6)</div>
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Logo Catalog ({logos.length || 16})</div>
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Add New Logo</div>
+                </div>
+              )}
+            </div>
+
+            {/* 6. Ateso Movies */}
+            <div>
+              <div 
+                onClick={() => toggleSubmenu('movies')}
+                className="flex items-center justify-between px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+                title="Ateso Movies"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Film className="w-4 h-4 text-[#f0b849] shrink-0" />
+                  {!isSidebarCollapsed && <span className="font-medium">Ateso Movies</span>}
+                </div>
+                {!isSidebarCollapsed && (
+                  <span className="text-[10px] bg-[#2c3338] border border-[#3c434a] text-white px-1.5 py-0.2 rounded-full font-bold">
+                    {atesoMovies.length || 18}
+                  </span>
+                )}
+              </div>
+              {!isSidebarCollapsed && openSubmenus.movies && (
+                <div className="bg-[#101517] py-1 text-xs pl-9 pr-2 space-y-1">
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">All 18 Movies</div>
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Add Ateso Movie</div>
+                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">VJs: Sultan, Bashir, Junior</div>
+                </div>
+              )}
+            </div>
+
+            {/* Separator */}
+            <div className="my-1 border-t border-[#2c3338]/60" />
+
+            {/* 7. WooCommerce Orders & Store */}
+            <div>
+              <div 
+                onClick={() => toggleSubmenu('woocommerce')}
+                className="flex items-center justify-between px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+                title="WooCommerce"
+              >
+                <div className="flex items-center gap-2.5">
+                  <ShoppingCart className="w-4 h-4 text-[#7f54b3] shrink-0" />
+                  {!isSidebarCollapsed && <span className="font-medium">WooCommerce</span>}
+                </div>
+                {!isSidebarCollapsed && (
+                  <span className="text-[10px] bg-[#7f54b3] text-white px-1.5 py-0.2 rounded-full font-bold">24</span>
+                )}
+              </div>
+              {!isSidebarCollapsed && openSubmenus.woocommerce && (
+                <div className="bg-[#101517] py-1 text-xs pl-9 pr-2 space-y-1">
+                  <div onClick={() => setOrderFilter('All')} className="text-white font-medium hover:text-[#72aee6] cursor-pointer py-0.5 flex items-center justify-between">
+                    <span>Orders</span>
+                    <span className="text-[10px] bg-[#d63638] text-white px-1.5 py-0.2 rounded-full font-bold">24</span>
+                  </div>
+                  <div onClick={() => setOrderFilter('Pending')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Pending Payment (7)</div>
+                  <div onClick={() => setOrderFilter('Completed')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Completed (14)</div>
+                  <div className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Customers (1,284)</div>
+                  <div className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Coupons & Discounts</div>
+                  <div className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Sales Reports</div>
+                </div>
+              )}
+            </div>
+
+            {/* 8. Products */}
             <div 
-              onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('files')}
-              className="flex items-center gap-3 px-3 py-2 text-zinc-400 hover:text-white hover:bg-[#141417] rounded-lg cursor-pointer transition-colors"
+              onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('drops')}
+              className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+              title="Products"
             >
-              <Settings className="w-4 h-4 text-zinc-400" />
-              <span>SETTINGS</span>
+              <Box className="w-4 h-4 text-[#72aee6] shrink-0" />
+              {!isSidebarCollapsed && <span>Products & Catalog</span>}
+            </div>
+
+            {/* 9. Analytics */}
+            <div 
+              className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+              title="Analytics"
+            >
+              <BarChart3 className="w-4 h-4 text-[#34D399] shrink-0" />
+              {!isSidebarCollapsed && <span>Analytics</span>}
+            </div>
+
+            {/* 10. Appearance */}
+            <div 
+              className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+              title="Appearance"
+            >
+              <Palette className="w-4 h-4 text-[#f0b849] shrink-0" />
+              {!isSidebarCollapsed && <span>Appearance (Theme)</span>}
+            </div>
+
+            {/* 11. Plugins */}
+            <div 
+              className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+              title="Plugins"
+            >
+              <Puzzle className="w-4 h-4 text-[#e056fd] shrink-0" />
+              {!isSidebarCollapsed && (
+                <div className="flex items-center justify-between flex-1">
+                  <span>Plugins</span>
+                  <span className="text-[10px] bg-[#2c3338] border border-[#3c434a] text-white px-1.5 py-0.2 rounded-full font-bold">7</span>
+                </div>
+              )}
+            </div>
+
+            {/* 12. Users */}
+            <div 
+              className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+              title="Users"
+            >
+              <Users className="w-4 h-4 text-[#c3c4c7] shrink-0" />
+              {!isSidebarCollapsed && <span>Users (Admin)</span>}
+            </div>
+
+            {/* 13. Tools */}
+            <div 
+              className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+              title="Tools"
+            >
+              <Wrench className="w-4 h-4 text-[#c3c4c7] shrink-0" />
+              {!isSidebarCollapsed && <span>Tools & Site Health</span>}
+            </div>
+
+            {/* 14. Settings */}
+            <div 
+              className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
+              title="Settings"
+            >
+              <Settings className="w-4 h-4 text-[#c3c4c7] shrink-0" />
+              {!isSidebarCollapsed && <span>Settings</span>}
             </div>
           </nav>
+
+          {/* Classic WordPress Collapse Menu Button */}
+          <div className="p-2 border-t border-[#2c3338]">
+            <button
+              type="button"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="w-full flex items-center justify-center gap-2 py-1.5 px-2 text-xs text-[#c3c4c7] hover:text-white hover:bg-[#2c3338] rounded transition-colors cursor-pointer"
+              title={isSidebarCollapsed ? "Expand Menu" : "Collapse Menu"}
+            >
+              {isSidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : (
+                <>
+                  <ChevronLeft className="w-4 h-4" />
+                  <span className="text-[11px] font-medium">Collapse menu</span>
+                </>
+              )}
+            </button>
+          </div>
         </aside>
 
         {/* --------------------------------------------------------
-            MAIN CONTENT AREA
+            WORDPRESS WORKSPACE / DASHBOARD VIEW
            -------------------------------------------------------- */}
-        <main className="flex-1 bg-transparent p-4 sm:p-5 lg:p-6 overflow-y-auto space-y-4 sm:space-y-5 relative z-10">
-          {/* ========================================================
-              WELCOME BACK BANNER
-             ======================================================== */}
-          <div className="bg-[#111114] border border-[#202024] rounded-2xl p-4 sm:p-5 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Left: Crown Emblem + Welcome Title */}
-            <div className="flex items-center gap-4">
-              {/* Circular Gold Emblem */}
-              <div className="w-16 h-16 rounded-full border-2 border-[#D4AF37] bg-black/60 flex flex-col items-center justify-center p-1 shadow-[0_0_15px_rgba(212,175,55,0.3)] shrink-0">
-                <Crown className="w-5 h-5 text-[#D4AF37] fill-[#D4AF37]/30" />
-                <span className="text-[9px] font-black text-[#E50914] leading-none mt-0.5 tracking-tighter">DJ EMMA</span>
-                <span className="text-[7px] font-bold text-[#D4AF37] leading-none">PRO FX</span>
-              </div>
-
-              {/* Text */}
-              <div>
-                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex flex-wrap items-center gap-1.5">
-                  <span>WELCOME BACK,</span>
-                  <span className="text-[#E50914]">DJ EMMA PRO</span>
-                </h1>
-                <p className="text-xs text-zinc-400 mt-1 max-w-2xl leading-relaxed">
-                  Manage your DJ services, 3D logo orders, customers, payments and entertainment content from one professional dashboard.
-                </p>
-              </div>
+        <main className="flex-1 bg-[#101517] overflow-y-auto p-4 sm:p-6 space-y-4">
+          
+          {/* Classic WordPress Screen Options & Help Pulldowns Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2c3338] pb-3">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                <span>Dashboard</span>
+                <span className="text-xs font-mono font-normal text-[#8c8f94] bg-[#1d2327] px-2 py-0.5 rounded border border-[#2c3338]">
+                  WP 6.7.1 • Studio Pro Edition
+                </span>
+              </h1>
+              <p className="text-xs text-[#8c8f94] mt-0.5">
+                Official Studio Content & E-Commerce Management System
+              </p>
             </div>
 
-            {/* Right: Date/Time + Gold Script "Big Dreams Bigger Moves" */}
-            <div className="flex flex-col items-start md:items-end justify-between self-stretch shrink-0">
-              <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-mono">
-                <Calendar className="w-3.5 h-3.5 text-zinc-500" />
-                <span>Sept 28, 2025 | 10:24 AM</span>
-              </div>
+            {/* Screen Options & Help Buttons */}
+            <div className="flex items-center gap-1 self-end sm:self-auto">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowScreenOptions(!showScreenOptions);
+                  setShowHelpDrawer(false);
+                }}
+                className={`px-3 py-1 text-xs border rounded transition-colors flex items-center gap-1 cursor-pointer ${
+                  showScreenOptions 
+                    ? 'bg-[#2271b1] text-white border-[#2271b1]' 
+                    : 'bg-[#1d2327] hover:bg-[#2c3338] text-[#c3c4c7] border-[#2c3338]'
+                }`}
+              >
+                <span>Screen Options</span>
+                <ChevronDown className={`w-3 h-3 transition-transform ${showScreenOptions ? 'rotate-180' : ''}`} />
+              </button>
 
-              {/* Gold cursive script */}
-              <div className="mt-2 text-right">
-                <span className="font-serif italic font-normal text-xl sm:text-2xl text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] tracking-wide">
-                  Big Dreams
-                </span>
-                <br />
-                <span className="font-serif italic font-normal text-xl sm:text-2xl text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)] tracking-wide -mt-2 inline-block">
-                  Bigger Moves
-                </span>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowHelpDrawer(!showHelpDrawer);
+                  setShowScreenOptions(false);
+                }}
+                className={`px-3 py-1 text-xs border rounded transition-colors flex items-center gap-1 cursor-pointer ${
+                  showHelpDrawer 
+                    ? 'bg-[#2271b1] text-white border-[#2271b1]' 
+                    : 'bg-[#1d2327] hover:bg-[#2c3338] text-[#c3c4c7] border-[#2c3338]'
+                }`}
+              >
+                <HelpCircle className="w-3 h-3 text-[#72aee6]" />
+                <span>Help</span>
+                <ChevronDown className={`w-3 h-3 transition-transform ${showHelpDrawer ? 'rotate-180' : ''}`} />
+              </button>
             </div>
           </div>
 
-          {/* ========================================================
-              ROW OF 6 STATISTIC METRIC CARDS
-             ======================================================== */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-3.5">
-            {/* 1. NEW ORDERS */}
-            <div className="bg-[#111114] border border-[#202024] p-3.5 sm:p-4 rounded-xl shadow-md">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-red-950/40 border border-red-500/40 flex items-center justify-center text-[#E50914] shrink-0">
-                  <FileText className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
-                    NEW ORDERS
-                  </span>
-                  <div className="text-xl sm:text-2xl font-black text-white mt-0.5">24</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-2 text-[11px]">
-                <span className="text-emerald-400 font-bold">↗ 32%</span>
-                <span className="text-zinc-500 text-[10px]">vs last 7 days</span>
+          {/* Screen Options Pulldown Panel (Authentic WP Feature!) */}
+          {showScreenOptions && (
+            <div className="bg-[#1d2327] border border-[#2c3338] p-4 rounded shadow-xl text-xs space-y-3 animate-in fade-in slide-in-from-top-2 duration-150">
+              <p className="font-bold text-white uppercase text-[11px] tracking-wide">
+                Show on screen widgets:
+              </p>
+              <div className="flex flex-wrap gap-4 text-[#c3c4c7]">
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleWidgets.welcome}
+                    onChange={(e) => setVisibleWidgets({ ...visibleWidgets, welcome: e.target.checked })}
+                    className="accent-[#2271b1]"
+                  />
+                  <span>Welcome</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleWidgets.atAGlance}
+                    onChange={(e) => setVisibleWidgets({ ...visibleWidgets, atAGlance: e.target.checked })}
+                    className="accent-[#2271b1]"
+                  />
+                  <span>At a Glance</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleWidgets.wooStatus}
+                    onChange={(e) => setVisibleWidgets({ ...visibleWidgets, wooStatus: e.target.checked })}
+                    className="accent-[#2271b1]"
+                  />
+                  <span>WooCommerce Status</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleWidgets.quickDraft}
+                    onChange={(e) => setVisibleWidgets({ ...visibleWidgets, quickDraft: e.target.checked })}
+                    className="accent-[#2271b1]"
+                  />
+                  <span>Quick Draft</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleWidgets.activity}
+                    onChange={(e) => setVisibleWidgets({ ...visibleWidgets, activity: e.target.checked })}
+                    className="accent-[#2271b1]"
+                  />
+                  <span>Activity</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleWidgets.ordersTable}
+                    onChange={(e) => setVisibleWidgets({ ...visibleWidgets, ordersTable: e.target.checked })}
+                    className="accent-[#2271b1]"
+                  />
+                  <span>Orders Table</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleWidgets.recentMedia}
+                    onChange={(e) => setVisibleWidgets({ ...visibleWidgets, recentMedia: e.target.checked })}
+                    className="accent-[#2271b1]"
+                  />
+                  <span>Recent Media</span>
+                </label>
               </div>
             </div>
+          )}
 
-            {/* 2. DJ DROP ORDERS */}
-            <div className="bg-[#111114] border border-[#202024] p-3.5 sm:p-4 rounded-xl shadow-md">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-amber-950/40 border border-amber-500/40 flex items-center justify-center text-[#D4AF37] shrink-0">
-                  <Mic className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
-                    DJ DROP ORDERS
-                  </span>
-                  <div className="text-xl sm:text-2xl font-black text-white mt-0.5">128</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-2 text-[11px]">
-                <span className="text-emerald-400 font-bold">↗ 18%</span>
-                <span className="text-zinc-500 text-[10px]">vs last 7 days</span>
+          {/* Help Drawer Panel */}
+          {showHelpDrawer && (
+            <div className="bg-[#1d2327] border border-[#2c3338] p-4 rounded shadow-xl text-xs space-y-2 text-[#c3c4c7] animate-in fade-in slide-in-from-top-2 duration-150">
+              <h4 className="font-bold text-white">Dashboard Overview Help</h4>
+              <p>
+                Welcome to your DJ Emma Pro Studio WordPress administration screen! You can arrange widgets, draft new mix announcements, inspect incoming voice drop requests, review WooCommerce orders, and preview uploaded media files.
+              </p>
+              <div className="pt-2 flex items-center gap-4 text-[#72aee6]">
+                <a href="https://wa.me/256780527361" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1">
+                  <span>WhatsApp Admin Support Hotline (+256 780 527361)</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
             </div>
-
-            {/* 3. 3D LOGO ORDERS */}
-            <div className="bg-[#111114] border border-[#202024] p-3.5 sm:p-4 rounded-xl shadow-md">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-red-950/40 border border-red-500/40 flex items-center justify-center text-[#E50914] shrink-0">
-                  <Box className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
-                    3D LOGO ORDERS
-                  </span>
-                  <div className="text-xl sm:text-2xl font-black text-white mt-0.5">86</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-2 text-[11px]">
-                <span className="text-emerald-400 font-bold">↗ 24%</span>
-                <span className="text-zinc-500 text-[10px]">vs last 7 days</span>
-              </div>
-            </div>
-
-            {/* 4. TOTAL REVENUE */}
-            <div className="bg-[#111114] border border-[#202024] p-3.5 sm:p-4 rounded-xl shadow-md">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-amber-950/40 border border-amber-500/40 flex items-center justify-center text-[#D4AF37] shrink-0">
-                  <DollarSign className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
-                    TOTAL REVENUE
-                  </span>
-                  <div className="text-lg sm:text-xl font-black text-white mt-0.5 truncate">
-                    UGX 18.45M
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-2 text-[11px]">
-                <span className="text-emerald-400 font-bold">↗ 32%</span>
-                <span className="text-zinc-500 text-[10px]">vs last 7 days</span>
-              </div>
-            </div>
-
-            {/* 5. CUSTOMERS */}
-            <div className="bg-[#111114] border border-[#202024] p-3.5 sm:p-4 rounded-xl shadow-md">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-red-950/40 border border-red-500/40 flex items-center justify-center text-[#E50914] shrink-0">
-                  <Users className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
-                    CUSTOMERS
-                  </span>
-                  <div className="text-xl sm:text-2xl font-black text-white mt-0.5">1,284</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-2 text-[11px]">
-                <span className="text-emerald-400 font-bold">↗ 16%</span>
-                <span className="text-zinc-500 text-[10px]">vs last 7 days</span>
-              </div>
-            </div>
-
-            {/* 6. MOVIE VIEWS */}
-            <div className="bg-[#111114] border border-[#202024] p-3.5 sm:p-4 rounded-xl shadow-md">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-amber-950/40 border border-amber-500/40 flex items-center justify-center text-[#D4AF37] shrink-0">
-                  <Play className="w-4 h-4 fill-[#D4AF37]" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
-                    MOVIE VIEWS
-                  </span>
-                  <div className="text-xl sm:text-2xl font-black text-white mt-0.5">126.8K</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-2 text-[11px]">
-                <span className="text-emerald-400 font-bold">↗ 48%</span>
-                <span className="text-zinc-500 text-[10px]">vs last 7 days</span>
-              </div>
-            </div>
-          </div>
+          )}
 
           {/* ========================================================
-              MIDDLE SECTION: ORDERS OVERVIEW (LEFT) + VIDEO/PHOTO VIEWS (RIGHT)
+              WORDPRESS WELCOME PANEL (DISMISSIBLE)
              ======================================================== */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-            {/* LEFT COLUMN: Orders Overview (8 cols) */}
-            <div className="lg:col-span-8 bg-[#111114] border border-[#202024] rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col justify-between">
-              <div>
-                {/* Header row: Orders Overview, Search, Filter */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-[#D4AF37]" />
-                    <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">
-                      Orders Overview
-                    </h3>
+          {showWelcomePanel && visibleWidgets.welcome && (
+            <div className="bg-[#1d2327] border border-[#2c3338] p-5 rounded-lg shadow relative">
+              <button
+                type="button"
+                onClick={() => setShowWelcomePanel(false)}
+                className="absolute top-3 right-3 text-[#8c8f94] hover:text-white p-1 cursor-pointer text-xs"
+                title="Dismiss"
+              >
+                Dismiss
+              </button>
+              
+              <div className="flex items-center gap-3 mb-3">
+                <Crown className="w-6 h-6 text-[#D4AF37]" />
+                <div>
+                  <h2 className="text-base sm:text-lg font-bold text-white">
+                    Welcome to WordPress 6.7.1 • DJ Emma Pro Studio
+                  </h2>
+                  <p className="text-xs text-[#8c8f94]">
+                    We’ve assembled some quick links to help you manage your entertainment catalog:
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-3 border-t border-[#2c3338] text-xs">
+                {/* Column 1: Get Started */}
+                <div className="space-y-2">
+                  <h4 className="font-bold text-white uppercase text-[11px] tracking-wider text-[#72aee6]">
+                    Get Started
+                  </h4>
+                  <p className="text-[#8c8f94]">Upload or publish nonstops directly into the on-site player:</p>
+                  <button
+                    type="button"
+                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')}
+                    className="px-3.5 py-1.5 rounded bg-[#2271b1] hover:bg-[#135e96] text-white font-bold transition-all shadow-sm cursor-pointer flex items-center gap-1.5"
+                  >
+                    <PlusCircle className="w-3.5 h-3.5" />
+                    <span>Add New Nonstop Mix</span>
+                  </button>
+                  <p className="text-[11px] text-[#8c8f94]">
+                    or, <span onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="text-[#72aee6] hover:underline cursor-pointer">upload a 3D Logo file</span>
+                  </p>
+                </div>
+
+                {/* Column 2: Next Steps */}
+                <div className="space-y-2">
+                  <h4 className="font-bold text-white uppercase text-[11px] tracking-wider">
+                    Next Steps
+                  </h4>
+                  <ul className="space-y-1.5 text-[#c3c4c7]">
+                    <li className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer" onClick={() => setOrderFilter('DJ Drops')}>
+                      <Mic className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>Manage DJ Drop Client Orders (12)</span>
+                    </li>
+                    <li className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer" onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')}>
+                      <Film className="w-3.5 h-3.5 text-[#f0b849]" />
+                      <span>Configure Ateso Translated Movies (18)</span>
+                    </li>
+                    <li className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer" onClick={onBackToStore}>
+                      <ExternalLink className="w-3.5 h-3.5 text-[#34D399]" />
+                      <span>Preview Live Website Streaming Player</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Column 3: More Actions */}
+                <div className="space-y-2">
+                  <h4 className="font-bold text-white uppercase text-[11px] tracking-wider">
+                    More Actions
+                  </h4>
+                  <ul className="space-y-1.5 text-[#c3c4c7]">
+                    <li className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer" onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('inquiries')}>
+                      <MessageSquare className="w-3.5 h-3.5 text-[#e056fd]" />
+                      <span>Manage WhatsApp Client Inquiries (14)</span>
+                    </li>
+                    <li className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer" onClick={() => setShowGoogleModal(true)}>
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#4285F4]" />
+                      <span>Inspect Google SEO Search Card Indexing</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-zinc-400">
+                      <Zap className="w-3.5 h-3.5 text-amber-400" />
+                      <span>CDN Status: Ultra HD 4K Streaming Active</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              WORDPRESS 2-COLUMN DASHBOARD WIDGETS GRID
+             ======================================================== */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            
+            {/* WIDGET 1: AT A GLANCE */}
+            {visibleWidgets.atAGlance && (
+              <div className="bg-[#1d2327] border border-[#2c3338] rounded-lg shadow p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-[#2c3338] pb-2">
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-[#72aee6]" />
+                    <span>At a Glance</span>
+                  </h3>
+                  <span className="text-[11px] text-[#8c8f94]">Site Content Summary</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-y-2 text-xs text-[#c3c4c7]">
+                  <div 
+                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')}
+                    className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer"
+                  >
+                    <Music className="w-3.5 h-3.5 text-[#E50914]" />
+                    <span><strong className="text-white font-bold">{tracks.length || 25}</strong> Nonstop Mixtapes</span>
+                  </div>
+
+                  <div 
+                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')}
+                    className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer"
+                  >
+                    <Film className="w-3.5 h-3.5 text-[#f0b849]" />
+                    <span><strong className="text-white font-bold">{atesoMovies.length || 18}</strong> Ateso Movies</span>
+                  </div>
+
+                  <div 
+                    onClick={() => setOrderFilter('DJ Drops')}
+                    className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer"
+                  >
+                    <Mic className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span><strong className="text-white font-bold">12</strong> DJ Voice Drop Orders</span>
+                  </div>
+
+                  <div 
+                    onClick={() => setOrderFilter('3D Logos')}
+                    className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer"
+                  >
+                    <Box className="w-3.5 h-3.5 text-[#34D399]" />
+                    <span><strong className="text-white font-bold">{logos.length || 16}</strong> 3D Logos</span>
+                  </div>
+
+                  <div 
+                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('inquiries')}
+                    className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-[#e056fd]" />
+                    <span><strong className="text-white font-bold">14</strong> Client Comments</span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <div className="relative w-44 sm:w-56">
-                      <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        value={orderSearch}
-                        onChange={(e) => setOrderSearch(e.target.value)}
-                        placeholder="Search orders..."
-                        className="w-full bg-[#18181c] border border-[#26262b] focus:border-[#E50914] focus:outline-none rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-zinc-500"
-                      />
-                    </div>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Storage: <strong className="text-white font-bold">4.8 GB</strong> / 25 GB</span>
+                  </div>
+                </div>
 
+                <div className="pt-2 border-t border-[#2c3338] text-[11px] text-[#8c8f94] flex items-center justify-between">
+                  <span>Running <strong>DJ Emma Pro Luxury Cinema Theme</strong></span>
+                  <span className="text-emerald-400 font-mono font-bold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    100% Online
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* WIDGET 2: WOOCOMMERCE STATUS & REVENUE */}
+            {visibleWidgets.wooStatus && (
+              <div className="bg-[#1d2327] border border-[#2c3338] rounded-lg shadow p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-[#2c3338] pb-2">
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <ShoppingCart className="w-4 h-4 text-[#7f54b3]" />
+                    <span>WooCommerce Status</span>
+                  </h3>
+                  <span className="text-[11px] text-[#8c8f94]">This Month</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                  <div className="bg-[#101517] p-2.5 rounded border border-[#2c3338]">
+                    <span className="text-[10px] text-[#8c8f94] block uppercase font-mono">Net Sales</span>
+                    <span className="text-base font-black text-[#D4AF37] font-mono mt-0.5 block">UGX 4.85M</span>
+                    <span className="text-[9px] text-emerald-400 font-bold">↗ 28.4%</span>
+                  </div>
+
+                  <div className="bg-[#101517] p-2.5 rounded border border-[#2c3338]">
+                    <span className="text-[10px] text-[#8c8f94] block uppercase font-mono">Orders</span>
+                    <span className="text-base font-black text-white font-mono mt-0.5 block">24</span>
+                    <span className="text-[9px] text-[#72aee6]">5 pending</span>
+                  </div>
+
+                  <div className="bg-[#101517] p-2.5 rounded border border-[#2c3338]">
+                    <span className="text-[10px] text-[#8c8f94] block uppercase font-mono">Avg Value</span>
+                    <span className="text-base font-black text-white font-mono mt-0.5 block">UGX 85K</span>
+                    <span className="text-[9px] text-emerald-400 font-bold">↗ 12%</span>
+                  </div>
+
+                  <div className="bg-[#101517] p-2.5 rounded border border-[#2c3338]">
+                    <span className="text-[10px] text-[#8c8f94] block uppercase font-mono">Customers</span>
+                    <span className="text-base font-black text-white font-mono mt-0.5 block">1,284</span>
+                    <span className="text-[9px] text-[#34D399]">Active</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs pt-1">
+                  <span className="text-[#8c8f94]">Top Service: <strong>Custom Voice Drops</strong></span>
+                  <button 
+                    type="button" 
+                    onClick={() => setOrderFilter('All')} 
+                    className="text-[#72aee6] hover:underline font-bold"
+                  >
+                    View Orders List &rarr;
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* WIDGET 3: QUICK DRAFT */}
+            {visibleWidgets.quickDraft && (
+              <div className="bg-[#1d2327] border border-[#2c3338] rounded-lg shadow p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-[#2c3338] pb-2">
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-[#f0b849]" />
+                    <span>Quick Draft</span>
+                  </h3>
+                  <span className="text-[11px] text-[#8c8f94]">Write thoughts / ideas</span>
+                </div>
+
+                {draftSavedToast && (
+                  <div className="p-2 bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 rounded text-xs flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>{draftSavedToast}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleSaveDraft} className="space-y-2">
+                  <input
+                    type="text"
+                    value={draftTitle}
+                    onChange={(e) => setDraftTitle(e.target.value)}
+                    placeholder="Title: e.g. New Ateso Mixtape Vol 2..."
+                    className="w-full bg-[#101517] border border-[#2c3338] focus:border-[#2271b1] focus:outline-none rounded px-3 py-1.5 text-xs text-white placeholder-[#8c8f94]"
+                  />
+                  <textarea
+                    value={draftContent}
+                    onChange={(e) => setDraftContent(e.target.value)}
+                    rows={3}
+                    placeholder="What's on your mind? Note down tracklist, client drop script ideas, voice effects..."
+                    className="w-full bg-[#101517] border border-[#2c3338] focus:border-[#2271b1] focus:outline-none rounded px-3 py-1.5 text-xs text-white placeholder-[#8c8f94] resize-none"
+                  />
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] text-[#8c8f94]">Saved locally in WordPress store</span>
                     <button
-                      type="button"
-                      className="px-3 py-1.5 rounded-lg bg-[#18181c] border border-[#26262b] text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-800 transition-colors"
+                      type="submit"
+                      disabled={!draftTitle.trim()}
+                      className="px-3 py-1 bg-[#2271b1] hover:bg-[#135e96] disabled:opacity-50 text-white rounded text-xs font-bold transition-colors cursor-pointer"
                     >
-                      <Filter className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>Filter</span>
+                      Save Draft
                     </button>
                   </div>
+                </form>
+
+                {/* Recent Drafts Preview */}
+                <div className="pt-2 border-t border-[#2c3338] space-y-1.5 text-xs">
+                  <p className="text-[10px] text-[#8c8f94] font-mono uppercase">Recent Drafts:</p>
+                  {draftsList.map((d) => (
+                    <div key={d.id} className="p-1.5 bg-[#101517] rounded border border-[#2c3338]/60 flex items-center justify-between">
+                      <div>
+                        <span className="font-semibold text-white">{d.title}</span>
+                        <span className="text-[10px] text-[#8c8f94] ml-2 font-mono">{d.date}</span>
+                      </div>
+                      <span className="text-[10px] text-[#72aee6] hover:underline cursor-pointer">Edit</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* WIDGET 4: ACTIVITY & RECENT COMMENTS */}
+            {visibleWidgets.activity && (
+              <div className="bg-[#1d2327] border border-[#2c3338] rounded-lg shadow p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-[#2c3338] pb-2">
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-[#34D399]" />
+                    <span>Activity</span>
+                  </h3>
+                  <span className="text-[11px] text-[#8c8f94]">Recently Published & Feedback</span>
                 </div>
 
-                {/* Filter Pills */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 hide-scrollbar">
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <p className="text-[10px] text-[#8c8f94] uppercase font-mono mb-1">Recently Published:</p>
+                    <ul className="space-y-1">
+                      <li className="flex items-center justify-between py-1 border-b border-[#2c3338]/40">
+                        <span className="text-white font-medium flex items-center gap-1.5">
+                          <Flame className="w-3.5 h-3.5 text-[#E50914]" />
+                          <span>STREET ANTHEM 90 • DJ EMMA PRO & WAKANDA DJs</span>
+                        </span>
+                        <span className="text-[10px] text-zinc-500 font-mono">Today, 08:30 AM</span>
+                      </li>
+                      <li className="flex items-center justify-between py-1 border-b border-[#2c3338]/40">
+                        <span className="text-white font-medium flex items-center gap-1.5">
+                          <Music className="w-3.5 h-3.5 text-[#f0b849]" />
+                          <span>2024 ATESO VIDEO MIX VOL 1 VS AFROBEATS</span>
+                        </span>
+                        <span className="text-[10px] text-zinc-500 font-mono">Sep 28, 2025</span>
+                      </li>
+                      <li className="flex items-center justify-between py-1">
+                        <span className="text-white font-medium flex items-center gap-1.5">
+                          <Music className="w-3.5 h-3.5 text-[#34D399]" />
+                          <span>BEST OF VYROOTA NONSTOP 2026</span>
+                        </span>
+                        <span className="text-[10px] text-zinc-500 font-mono">Sep 24, 2025</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] text-[#8c8f94] uppercase font-mono mb-1">Recent Client Comments:</p>
+                    <div className="p-2 bg-[#101517] rounded border border-[#2c3338] space-y-1">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="font-bold text-white">Alex From Soroti</span>
+                        <span className="text-[10px] text-[#8c8f94]">Yesterday</span>
+                      </div>
+                      <p className="text-zinc-300 text-[11px] italic">
+                        "The Street Anthem 90 is fire! Downloaded straight to my phone. Big up DJ Emma Pro!"
+                      </p>
+                      <div className="flex items-center gap-2 pt-1 text-[10px] text-[#72aee6]">
+                        <span className="hover:underline cursor-pointer">Approve</span>
+                        <span>|</span>
+                        <span className="hover:underline cursor-pointer">Reply</span>
+                        <span>|</span>
+                        <span className="text-red-400 hover:underline cursor-pointer">Trash</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ========================================================
+              WIDGET 5: WOOCOMMERCE ORDERS DATA TABLE (FULL WIDTH)
+             ======================================================== */}
+          {visibleWidgets.ordersTable && (
+            <div className="bg-[#1d2327] border border-[#2c3338] rounded-lg shadow p-4 sm:p-5 space-y-4">
+              
+              {/* Header with Title & Filter Tabs */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2c3338] pb-3">
+                <div className="flex items-center gap-2">
+                  <ShoppingCart className="w-4 h-4 text-[#7f54b3]" />
+                  <h3 className="font-bold text-white text-base">WooCommerce Orders</h3>
+                  <span className="text-xs text-[#8c8f94]">({filteredOrders.length} displayed)</span>
+                </div>
+
+                {/* Status Tabs */}
+                <div className="flex items-center gap-1 overflow-x-auto pb-1 text-xs">
                   {[
                     'All',
                     'DJ Drops',
@@ -874,550 +1237,284 @@ export default function WordPressAdminDashboard({
                     'Pending',
                     'Processing',
                     'Completed',
-                    'Paid',
-                    'Unpaid'
+                    'Paid'
                   ].map((f) => (
                     <button
                       key={f}
                       type="button"
                       onClick={() => setOrderFilter(f)}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+                      className={`px-2.5 py-1 rounded text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                         orderFilter === f
-                          ? 'bg-[#E50914] text-white font-bold'
-                          : 'bg-[#18181c] text-zinc-400 hover:text-white hover:bg-zinc-800 border border-[#26262b]'
+                          ? 'bg-[#2271b1] text-white font-bold'
+                          : 'bg-[#101517] text-[#c3c4c7] hover:text-white hover:bg-[#2c3338] border border-[#2c3338]'
                       }`}
                     >
                       {f}
                     </button>
                   ))}
                 </div>
+              </div>
 
-                {/* Table */}
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="border-b border-[#202024] text-[10px] font-mono uppercase tracking-wider text-zinc-500">
-                        <th className="py-2.5 px-3 font-semibold">ORDER ID</th>
-                        <th className="py-2.5 px-3 font-semibold">CUSTOMER</th>
-                        <th className="py-2.5 px-3 font-semibold">SERVICE</th>
-                        <th className="py-2.5 px-3 font-semibold">DATE</th>
-                        <th className="py-2.5 px-3 font-semibold">PAYMENT</th>
-                        <th className="py-2.5 px-3 font-semibold">STATUS</th>
-                        <th className="py-2.5 px-3 font-semibold">AMOUNT</th>
-                        <th className="py-2.5 px-3 font-semibold text-center">ACTION</th>
-                        <th className="py-2.5 px-2"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#18181d] text-xs">
-                      {filteredOrders.map((o) => (
-                        <tr
-                          key={o.id}
-                          className="hover:bg-[#16161a] transition-colors cursor-pointer"
-                          onClick={() => setSelectedOrder(o)}
-                        >
-                          {/* ORDER ID */}
-                          <td className="py-2.5 px-3 font-mono font-bold text-white">{o.id}</td>
+              {/* Bulk Actions & Search Toolbar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <select className="bg-[#101517] border border-[#2c3338] text-xs text-[#c3c4c7] px-2.5 py-1.5 rounded focus:outline-none">
+                    <option>Bulk actions</option>
+                    <option>Change status to Processing</option>
+                    <option>Change status to Completed</option>
+                    <option>Move to Trash</option>
+                  </select>
+                  <button
+                    type="button"
+                    className="px-3 py-1.5 bg-[#2c3338] hover:bg-[#3c434a] text-white rounded text-xs font-semibold border border-[#3c434a] transition-colors cursor-pointer"
+                  >
+                    Apply
+                  </button>
+                </div>
 
-                          {/* CUSTOMER */}
-                          <td className="py-2.5 px-3 font-medium text-white">{o.customer}</td>
+                {/* Search Box */}
+                <div className="relative w-full sm:w-64">
+                  <Search className="w-3.5 h-3.5 text-[#8c8f94] absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={orderSearch}
+                    onChange={(e) => setOrderSearch(e.target.value)}
+                    placeholder="Search orders, customers..."
+                    className="w-full bg-[#101517] border border-[#2c3338] focus:border-[#2271b1] focus:outline-none rounded pl-8 pr-3 py-1.5 text-xs text-white placeholder-[#8c8f94]"
+                  />
+                </div>
+              </div>
 
-                          {/* SERVICE WITH ICON */}
-                          <td className="py-2.5 px-3">
-                            <div className="flex items-center gap-1.5 text-zinc-200">
-                              {o.serviceType === 'DJ Drop' && <Mic className="w-3.5 h-3.5 text-[#D4AF37]" />}
-                              {o.serviceType === '3D Logo' && <Box className="w-3.5 h-3.5 text-[#E50914]" />}
-                              {o.serviceType === 'Movie' && <Film className="w-3.5 h-3.5 text-[#D4AF37]" />}
-                              <span>{o.service}</span>
-                            </div>
-                          </td>
+              {/* Data Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-[#2c3338] text-[11px] font-mono uppercase tracking-wider text-[#8c8f94] bg-[#101517]/60">
+                      <th className="py-2.5 px-3">
+                        <input type="checkbox" className="accent-[#2271b1]" />
+                      </th>
+                      <th className="py-2.5 px-3 font-semibold">Order</th>
+                      <th className="py-2.5 px-3 font-semibold">Service</th>
+                      <th className="py-2.5 px-3 font-semibold">Date</th>
+                      <th className="py-2.5 px-3 font-semibold">Payment</th>
+                      <th className="py-2.5 px-3 font-semibold">Status</th>
+                      <th className="py-2.5 px-3 font-semibold">Total</th>
+                      <th className="py-2.5 px-3 font-semibold text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#2c3338]/60 text-xs">
+                    {filteredOrders.map((o) => (
+                      <tr
+                        key={o.id}
+                        className="hover:bg-[#101517] transition-colors cursor-pointer group"
+                        onClick={() => setSelectedOrder(o)}
+                      >
+                        <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
+                          <input type="checkbox" className="accent-[#2271b1]" />
+                        </td>
 
-                          {/* DATE */}
-                          <td className="py-2.5 px-3 font-mono text-zinc-400 text-[11px] whitespace-nowrap">
-                            {o.date}
-                          </td>
+                        {/* Order ID & Customer */}
+                        <td className="py-3 px-3">
+                          <span className="font-bold text-[#72aee6] font-mono block hover:underline">
+                            {o.id}
+                          </span>
+                          <span className="text-[#c3c4c7] font-medium">{o.customer}</span>
+                        </td>
 
-                          {/* PAYMENT BADGE */}
-                          <td className="py-2.5 px-3">
-                            {o.payment === 'Paid' && (
-                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#064E3B]/80 text-[#34D399] border border-[#059669]/40">
-                                Paid
-                              </span>
-                            )}
-                            {o.payment === 'Payment Pending' && (
-                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#78350F]/80 text-[#FBBF24] border border-[#D97706]/40 whitespace-nowrap">
-                                Payment Pending
-                              </span>
-                            )}
-                            {o.payment === 'Unpaid' && (
-                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#7F1D1D]/80 text-[#F87171] border border-[#DC2626]/40">
-                                Unpaid
-                              </span>
-                            )}
-                          </td>
+                        {/* Service Requested */}
+                        <td className="py-3 px-3">
+                          <div className="flex items-center gap-1.5 text-white">
+                            {o.serviceType === 'DJ Drop' && <Mic className="w-3.5 h-3.5 text-[#D4AF37]" />}
+                            {o.serviceType === '3D Logo' && <Box className="w-3.5 h-3.5 text-[#E50914]" />}
+                            {o.serviceType === 'Movie' && <Film className="w-3.5 h-3.5 text-[#f0b849]" />}
+                            <span>{o.service}</span>
+                          </div>
+                        </td>
 
-                          {/* STATUS BADGE */}
-                          <td className="py-2.5 px-3">
-                            {o.status === 'Processing' && (
-                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#451A03]/90 text-[#F59E0B] border border-[#D97706]/50">
-                                Processing
-                              </span>
-                            )}
-                            {o.status === 'Completed' && (
-                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#064E3B]/80 text-[#34D399] border border-[#059669]/40">
-                                Completed
-                              </span>
-                            )}
-                            {o.status === 'Quality Check' && (
-                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#451A03]/90 text-[#F59E0B] border border-[#D97706]/50 whitespace-nowrap">
-                                Quality Check
-                              </span>
-                            )}
-                            {o.status === 'Pending Payment' && (
-                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#78350F]/80 text-[#FBBF24] border border-[#D97706]/40 whitespace-nowrap">
-                                Pending Payment
-                              </span>
-                            )}
-                            {o.status === 'Cancelled' && (
-                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#27272A] text-[#A1A1AA] border border-[#3F3F46]">
-                                Cancelled
-                              </span>
-                            )}
-                          </td>
+                        {/* Date */}
+                        <td className="py-3 px-3 text-[#8c8f94] font-mono text-[11px] whitespace-nowrap">
+                          {o.date}
+                        </td>
 
-                          {/* AMOUNT */}
-                          <td className="py-2.5 px-3 font-mono font-bold text-white whitespace-nowrap">
-                            {o.amount}
-                          </td>
+                        {/* Payment */}
+                        <td className="py-3 px-3">
+                          {o.payment === 'Paid' ? (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#064e3b] text-[#34d399] border border-[#059669]/40">
+                              Paid
+                            </span>
+                          ) : (
+                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#78350f] text-[#fbbf24] border border-[#d97706]/40">
+                              {o.payment}
+                            </span>
+                          )}
+                        </td>
 
-                          {/* ACTION BUTTON */}
-                          <td className="py-2.5 px-3 text-center">
+                        {/* Status */}
+                        <td className="py-3 px-3">
+                          <span className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-bold ${
+                            o.status === 'Completed' 
+                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/40' 
+                              : o.status === 'Processing'
+                                ? 'bg-amber-950 text-amber-400 border border-amber-500/40'
+                                : o.status === 'Quality Check'
+                                  ? 'bg-blue-950 text-blue-400 border border-blue-500/40'
+                                  : 'bg-zinc-800 text-zinc-300'
+                          }`}>
+                            {o.status}
+                          </span>
+                        </td>
+
+                        {/* Amount */}
+                        <td className="py-3 px-3 font-mono font-bold text-[#D4AF37]">
+                          {o.amount}
+                        </td>
+
+                        {/* Actions */}
+                        <td className="py-3 px-3 text-center" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center justify-center gap-1.5">
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedOrder(o);
-                              }}
-                              className="px-3 py-0.5 rounded bg-[#18181c] hover:bg-[#E50914] text-zinc-300 hover:text-white border border-[#26262b] text-[11px] font-semibold transition-colors cursor-pointer"
+                              onClick={() => setSelectedOrder(o)}
+                              className="p-1 rounded hover:bg-[#2c3338] text-[#72aee6] hover:text-white"
+                              title="View Order Details"
                             >
-                              View
+                              <Eye className="w-3.5 h-3.5" />
                             </button>
-                          </td>
-
-                          {/* MORE THREE DOTS */}
-                          <td className="py-2.5 px-2 text-right text-zinc-500 hover:text-white">
-                            <MoreVertical className="w-3.5 h-3.5 inline cursor-pointer" />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            {/* RIGHT COLUMN: Video Views & Photo Views (4 cols) */}
-            <div className="lg:col-span-4 space-y-4">
-              {/* CARD 1: Video Views */}
-              <div className="bg-[#111114] border border-[#202024] rounded-2xl p-4 shadow-xl">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-red-950/60 border border-red-500/40 flex items-center justify-center text-[#E50914]">
-                      <Play className="w-3 h-3 fill-[#E50914]" />
-                    </div>
-                    <h4 className="text-xs font-bold text-white">Video Views</h4>
-                  </div>
-                  <span className="text-[10px] font-bold text-[#E50914] hover:underline cursor-pointer">
-                    View All
-                  </span>
-                </div>
-
-                <div className="text-[10px] text-zinc-400 font-mono">Total Video Views</div>
-                <div className="flex items-baseline gap-2 mt-0.5">
-                  <span className="text-xl sm:text-2xl font-black text-white">126.8K</span>
-                  <span className="text-emerald-400 font-bold text-xs flex items-center">
-                    ↗ 48% <span className="text-zinc-500 font-normal text-[10px] ml-1">vs last 7 days</span>
-                  </span>
-                </div>
-
-                {/* Red Line Spline Chart */}
-                <div className="h-28 w-full mt-2">
-                  <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="chartRedGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#E50914" stopOpacity="0.4" />
-                        <stop offset="100%" stopColor="#E50914" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-
-                    {/* Gradient Area */}
-                    <path
-                      d="M 15,90 Q 75,80 140,75 T 260,50 T 385,20 L 385,115 L 15,115 Z"
-                      fill="url(#chartRedGrad)"
-                    />
-
-                    {/* Red Spline Line */}
-                    <path
-                      d="M 15,90 Q 75,80 140,75 T 260,50 T 385,20"
-                      fill="none"
-                      stroke="#E50914"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-
-                    {/* Glowing dots */}
-                    {[
-                      { cx: 15, cy: 90 },
-                      { cx: 76, cy: 82 },
-                      { cx: 138, cy: 75 },
-                      { cx: 200, cy: 68 },
-                      { cx: 262, cy: 50 },
-                      { cx: 323, cy: 38 },
-                      { cx: 385, cy: 20 }
-                    ].map((dot, idx) => (
-                      <circle
-                        key={idx}
-                        cx={dot.cx}
-                        cy={dot.cy}
-                        r="3.5"
-                        fill="#FFFFFF"
-                        stroke="#E50914"
-                        strokeWidth="2"
-                        className="shadow-[0_0_8px_#E50914]"
-                      />
+                            <a
+                              href={`https://wa.me/256780527361?text=Hello%20${encodeURIComponent(o.customer)},%20this%20is%20DJ%20Emma%20Pro%20regarding%20Order%20${o.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1 rounded hover:bg-[#2c3338] text-emerald-400 hover:text-emerald-300"
+                              title="Chat with customer on WhatsApp"
+                            >
+                              <Send className="w-3.5 h-3.5" />
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
                     ))}
-                  </svg>
-                </div>
-
-                {/* X-axis days */}
-                <div className="flex justify-between text-[9px] text-zinc-500 font-mono mt-1 pt-1.5 border-t border-[#1d1d21]">
-                  <span>22 Sep</span>
-                  <span>23 Sep</span>
-                  <span>24 Sep</span>
-                  <span>25 Sep</span>
-                  <span>26 Sep</span>
-                  <span>27 Sep</span>
-                  <span>28 Sep</span>
-                </div>
+                  </tbody>
+                </table>
               </div>
 
-              {/* CARD 2: Photo Views */}
-              <div className="bg-[#111114] border border-[#202024] rounded-2xl p-4 shadow-xl">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-md bg-amber-950/60 border border-amber-500/40 flex items-center justify-center text-[#D4AF37]">
-                      <ImageIcon className="w-3 h-3 text-[#D4AF37]" />
-                    </div>
-                    <h4 className="text-xs font-bold text-white">Photo Views</h4>
-                  </div>
-                  <span className="text-[10px] font-bold text-[#D4AF37] hover:underline cursor-pointer">
-                    View All
-                  </span>
+              {/* Table Footer with Pagination */}
+              <div className="pt-2 border-t border-[#2c3338] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#8c8f94]">
+                <div>
+                  <span>Showing {filteredOrders.length} of 24 items</span>
                 </div>
-
-                <div className="text-[10px] text-zinc-400 font-mono">Total Photo Views</div>
-                <div className="flex items-baseline gap-2 mt-0.5">
-                  <span className="text-xl sm:text-2xl font-black text-white">58.4K</span>
-                  <span className="text-emerald-400 font-bold text-xs flex items-center">
-                    ↗ 35% <span className="text-zinc-500 font-normal text-[10px] ml-1">vs last 7 days</span>
-                  </span>
-                </div>
-
-                {/* Gold Vertical Bar Chart */}
-                <div className="h-28 w-full mt-2 flex items-end justify-between gap-2 px-1">
-                  {[
-                    { day: '22 Sep', h: 32 },
-                    { day: '23 Sep', h: 42 },
-                    { day: '24 Sep', h: 54 },
-                    { day: '25 Sep', h: 65 },
-                    { day: '26 Sep', h: 76 },
-                    { day: '27 Sep', h: 88 },
-                    { day: '28 Sep', h: 100 }
-                  ].map((bar, idx) => (
-                    <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                      <div
-                        style={{ height: `${bar.h}%` }}
-                        className="w-full bg-[#D4AF37] hover:bg-[#ffcf40] rounded-t-sm transition-all shadow-[0_0_6px_rgba(212,175,55,0.3)]"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                {/* X-axis days */}
-                <div className="flex justify-between text-[9px] text-zinc-500 font-mono mt-1 pt-1.5 border-t border-[#1d1d21]">
-                  <span>22 Sep</span>
-                  <span>23 Sep</span>
-                  <span>24 Sep</span>
-                  <span>25 Sep</span>
-                  <span>26 Sep</span>
-                  <span>27 Sep</span>
-                  <span>28 Sep</span>
+                <div className="flex items-center gap-1 font-mono text-[11px]">
+                  <button className="px-2 py-0.5 rounded border border-[#2c3338] bg-[#101517] disabled:opacity-40" disabled>&laquo;</button>
+                  <button className="px-2 py-0.5 rounded border border-[#2c3338] bg-[#101517] disabled:opacity-40" disabled>&lsaquo;</button>
+                  <span className="px-2 py-0.5 bg-[#2271b1] text-white font-bold rounded">1 of 3</span>
+                  <button className="px-2 py-0.5 rounded border border-[#2c3338] bg-[#101517] hover:bg-[#2c3338] text-white">&rsaquo;</button>
+                  <button className="px-2 py-0.5 rounded border border-[#2c3338] bg-[#101517] hover:bg-[#2c3338] text-white">&raquo;</button>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* ========================================================
-              BOTTOM ROW: RECENT MEDIA (50%) + QUICK ACTIONS (25%) + TOP SERVICES (25%)
+              WIDGET 6: RECENT MEDIA GALLERY
              ======================================================== */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-            {/* 1. RECENT MEDIA (6 cols) */}
-            <div className="lg:col-span-6 bg-[#111114] border border-[#202024] rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col justify-between">
-              <div>
-                {/* Header */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-white">
-                      <ImageIcon className="w-4 h-4 text-[#D4AF37]" />
-                      <span>Recent Media</span>
-                    </div>
-
-                    {/* Tab pills */}
-                    <div className="flex items-center gap-1 bg-[#18181c] p-0.5 rounded-full border border-[#26262b]">
-                      <button
-                        type="button"
-                        onClick={() => setMediaTab('Videos')}
-                        className={`px-3 py-0.5 rounded-full text-[11px] font-bold transition-colors cursor-pointer ${
-                          mediaTab === 'Videos' ? 'bg-[#E50914] text-white shadow-sm' : 'text-zinc-400 hover:text-white'
-                        }`}
-                      >
-                        Videos
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setMediaTab('Photos')}
-                        className={`px-3 py-0.5 rounded-full text-[11px] font-bold transition-colors cursor-pointer ${
-                          mediaTab === 'Photos' ? 'bg-[#E50914] text-white shadow-sm' : 'text-zinc-400 hover:text-white'
-                        }`}
-                      >
-                        Photos
-                      </button>
-                    </div>
+          {visibleWidgets.recentMedia && (
+            <div className="bg-[#1d2327] border border-[#2c3338] rounded-lg shadow p-4 sm:p-5 space-y-4">
+              <div className="flex items-center justify-between border-b border-[#2c3338] pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5 text-sm font-bold text-white">
+                    <ImageIcon className="w-4 h-4 text-[#D4AF37]" />
+                    <span>Recent Media Library</span>
                   </div>
 
-                  <span className="text-[11px] font-bold text-[#E50914] hover:underline cursor-pointer">
-                    View All
-                  </span>
-                </div>
-
-                {/* 5 Media Cards Row */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
-                  {(mediaTab === 'Videos' ? RECENT_VIDEOS : RECENT_PHOTOS).map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => setPreviewMedia(item)}
-                      className="bg-[#18181c] border border-[#26262b] hover:border-zinc-600 rounded-xl overflow-hidden group cursor-pointer transition-all flex flex-col justify-between"
+                  {/* Tabs */}
+                  <div className="flex items-center gap-1 bg-[#101517] p-0.5 rounded border border-[#2c3338]">
+                    <button
+                      type="button"
+                      onClick={() => setMediaTab('Videos')}
+                      className={`px-3 py-0.5 rounded text-xs font-bold transition-colors cursor-pointer ${
+                        mediaTab === 'Videos' ? 'bg-[#2271b1] text-white shadow-sm' : 'text-[#8c8f94] hover:text-white'
+                      }`}
                     >
-                      {/* Image Thumbnail with duration overlay */}
-                      <div className="aspect-[4/3] relative bg-black overflow-hidden">
-                        <img
-                          src={item.thumbnail}
-                          alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-85 group-hover:opacity-100"
-                        />
-                        {/* Play button icon in center */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
-                          <div className="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white">
-                            <Play className="w-2.5 h-2.5 fill-white translate-x-0.5" />
-                          </div>
-                        </div>
+                      Videos & Nonstops
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMediaTab('Photos')}
+                      className={`px-3 py-0.5 rounded text-xs font-bold transition-colors cursor-pointer ${
+                        mediaTab === 'Photos' ? 'bg-[#2271b1] text-white shadow-sm' : 'text-[#8c8f94] hover:text-white'
+                      }`}
+                    >
+                      Artwork & Photos
+                    </button>
+                  </div>
+                </div>
 
-                        {/* Duration badge */}
-                        <span className="absolute bottom-1 right-1 px-1 py-0.2 rounded bg-black/80 text-[9px] font-mono text-white font-bold backdrop-blur-sm">
-                          {item.duration}
-                        </span>
+                <button
+                  type="button"
+                  onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('files')}
+                  className="text-xs text-[#72aee6] hover:underline font-bold"
+                >
+                  Manage All Media &rarr;
+                </button>
+              </div>
+
+              {/* 5 Media Cards Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                {(mediaTab === 'Videos' ? RECENT_VIDEOS : RECENT_PHOTOS).map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => setPreviewMedia(item)}
+                    className="bg-[#101517] border border-[#2c3338] hover:border-[#72aee6] rounded-lg overflow-hidden group cursor-pointer transition-all flex flex-col justify-between"
+                  >
+                    <div className="aspect-[4/3] relative bg-black overflow-hidden">
+                      <img
+                        src={item.thumbnail}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
+                        <div className="w-7 h-7 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white">
+                          <Play className="w-3 h-3 fill-white ml-0.5" />
+                        </div>
                       </div>
+                      <span className="absolute bottom-1 right-1 px-1.5 py-0.2 rounded bg-black/85 text-[9px] font-mono text-white font-bold">
+                        {item.duration}
+                      </span>
+                    </div>
 
-                      {/* Info */}
-                      <div className="p-2">
-                        <div className="flex items-start justify-between gap-1">
-                          <h5 className="text-[11px] font-bold text-white line-clamp-1 group-hover:text-[#E50914] transition-colors">
-                            {item.title}
-                          </h5>
-                          <MoreVertical className="w-3 h-3 text-zinc-500 shrink-0" />
-                        </div>
-                        <p className="text-[9px] text-zinc-500 font-mono mt-0.5">{item.date}</p>
-                        <div className="flex items-center gap-1 text-[9px] text-zinc-400 font-mono mt-1">
-                          <Eye className="w-2.5 h-2.5 text-zinc-500" />
-                          <span>{item.views}</span>
-                        </div>
+                    <div className="p-2.5">
+                      <h5 className="text-xs font-bold text-white line-clamp-1 group-hover:text-[#72aee6] transition-colors">
+                        {item.title}
+                      </h5>
+                      <div className="flex items-center justify-between text-[10px] text-[#8c8f94] font-mono mt-1">
+                        <span>{item.date}</span>
+                        <span>{item.views}</span>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
+          )}
 
-            {/* 2. QUICK ACTIONS (3 cols) */}
-            <div className="lg:col-span-3 bg-[#111114] border border-[#202024] rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col justify-between">
-              <div>
-                {/* Header */}
-                <div className="flex items-center gap-2 mb-3">
-                  <Zap className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]/20" />
-                  <h3 className="text-sm font-bold text-white">Quick Actions</h3>
-                </div>
-
-                {/* 2x2 Grid of Action Buttons */}
-                <div className="grid grid-cols-2 gap-2.5">
-                  {/* Button 1: New DJ Drop Order (Solid Red) */}
-                  <button
-                    type="button"
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('drops')}
-                    className="h-24 rounded-xl bg-[#E50914] hover:bg-[#ff0f1e] text-white p-2.5 flex flex-col items-center justify-center gap-2 shadow-lg shadow-red-950/40 cursor-pointer active:scale-95 transition-all text-center"
-                  >
-                    <Mic className="w-5 h-5 text-white" />
-                    <span className="text-[11px] font-bold leading-tight">New DJ Drop Order</span>
-                  </button>
-
-                  {/* Button 2: New 3D Logo Order (Gold outline) */}
-                  <button
-                    type="button"
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')}
-                    className="h-24 rounded-xl bg-[#18181c] hover:bg-zinc-800 text-white border border-[#D4AF37]/50 hover:border-[#D4AF37] p-2.5 flex flex-col items-center justify-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all text-center"
-                  >
-                    <Box className="w-5 h-5 text-[#D4AF37]" />
-                    <span className="text-[11px] font-bold leading-tight text-white">New 3D Logo Order</span>
-                  </button>
-
-                  {/* Button 3: Add Movie */}
-                  <button
-                    type="button"
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')}
-                    className="h-24 rounded-xl bg-[#18181c] hover:bg-zinc-800 text-white border border-[#26262b] hover:border-zinc-600 p-2.5 flex flex-col items-center justify-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all text-center"
-                  >
-                    <Film className="w-5 h-5 text-zinc-300" />
-                    <span className="text-[11px] font-bold leading-tight text-white">Add Movie</span>
-                  </button>
-
-                  {/* Button 4: Add Service */}
-                  <button
-                    type="button"
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('inquiries')}
-                    className="h-24 rounded-xl bg-[#18181c] hover:bg-zinc-800 text-white border border-[#26262b] hover:border-zinc-600 p-2.5 flex flex-col items-center justify-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all text-center"
-                  >
-                    <PlusCircle className="w-5 h-5 text-zinc-300" />
-                    <span className="text-[11px] font-bold leading-tight text-white">Add Service</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. TOP SERVICES (3 cols) */}
-            <div className="lg:col-span-3 bg-[#111114] border border-[#202024] rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col justify-between">
-              <div>
-                {/* Header */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <Crown className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]/30" />
-                    <h3 className="text-sm font-bold text-white">Top Services</h3>
-                  </div>
-                  <span className="text-[11px] font-bold text-[#D4AF37] hover:underline cursor-pointer">
-                    View All
-                  </span>
-                </div>
-
-                {/* Progress bars list */}
-                <div className="space-y-3 pt-1">
-                  {/* Item 1: DJ Drops */}
-                  <div>
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <div className="flex items-center gap-1.5 font-bold text-white">
-                        <div className="w-4 h-4 rounded-full bg-red-950/60 border border-red-500/40 flex items-center justify-center text-[#E50914]">
-                          <Mic className="w-2.5 h-2.5" />
-                        </div>
-                        <span>DJ Drops</span>
-                      </div>
-                      <span className="text-[11px] font-mono text-zinc-400">128 orders</span>
-                    </div>
-                    <div className="w-full bg-[#18181c] rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-[#E50914] h-full rounded-full" style={{ width: '85%' }}></div>
-                    </div>
-                  </div>
-
-                  {/* Item 2: 3D Logos */}
-                  <div>
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <div className="flex items-center gap-1.5 font-bold text-white">
-                        <div className="w-4 h-4 rounded-full bg-amber-950/60 border border-amber-500/40 flex items-center justify-center text-[#D4AF37]">
-                          <Box className="w-2.5 h-2.5" />
-                        </div>
-                        <span>3D Logos</span>
-                      </div>
-                      <span className="text-[11px] font-mono text-zinc-400">86 orders</span>
-                    </div>
-                    <div className="w-full bg-[#18181c] rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-[#D4AF37] h-full rounded-full" style={{ width: '65%' }}></div>
-                    </div>
-                  </div>
-
-                  {/* Item 3: Movies */}
-                  <div>
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <div className="flex items-center gap-1.5 font-bold text-white">
-                        <div className="w-4 h-4 rounded-full bg-blue-950/60 border border-blue-500/40 flex items-center justify-center text-[#3B82F6]">
-                          <Film className="w-2.5 h-2.5" />
-                        </div>
-                        <span>Movies</span>
-                      </div>
-                      <span className="text-[11px] font-mono text-zinc-400">42 orders</span>
-                    </div>
-                    <div className="w-full bg-[#18181c] rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-[#3B82F6] h-full rounded-full" style={{ width: '45%' }}></div>
-                    </div>
-                  </div>
-
-                  {/* Item 4: Posters */}
-                  <div>
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <div className="flex items-center gap-1.5 font-bold text-white">
-                        <div className="w-4 h-4 rounded-full bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-[#A855F7]">
-                          <ImageIcon className="w-2.5 h-2.5" />
-                        </div>
-                        <span>Posters</span>
-                      </div>
-                      <span className="text-[11px] font-mono text-zinc-400">28 orders</span>
-                    </div>
-                    <div className="w-full bg-[#18181c] rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-[#A855F7] h-full rounded-full" style={{ width: '30%' }}></div>
-                    </div>
-                  </div>
-
-                  {/* Item 5: 2D Logos */}
-                  <div>
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <div className="flex items-center gap-1.5 font-bold text-white">
-                        <div className="w-4 h-4 rounded-full bg-teal-950/60 border border-teal-500/40 flex items-center justify-center text-[#06B6D4]">
-                          <Zap className="w-2.5 h-2.5" />
-                        </div>
-                        <span>2D Logos</span>
-                      </div>
-                      <span className="text-[11px] font-mono text-zinc-400">19 orders</span>
-                    </div>
-                    <div className="w-full bg-[#18181c] rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-[#06B6D4] h-full rounded-full" style={{ width: '20%' }}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </main>
       </div>
 
       {/* ========================================================
-          FOOTER BAR
+          WORDPRESS FOOTER BAR (Official style)
          ======================================================== */}
-      <footer className="h-10 bg-[#0c0c0e]/95 backdrop-blur-md border-t border-[#1f1f23]/80 px-4 sm:px-6 flex items-center justify-between text-[11px] text-zinc-500 font-mono select-none relative z-10">
+      <footer className="h-8 bg-[#1d2327] border-t border-[#2c3338] px-4 flex items-center justify-between text-[11px] text-[#8c8f94] select-none z-20">
         <div className="flex items-center gap-2">
-          <span className="text-zinc-300 font-bold">DJ EMMA PRO</span>
+          <span>Thank you for creating with <a href="https://wordpress.org/" target="_blank" rel="noopener noreferrer" className="text-[#72aee6] hover:underline font-bold">WordPress</a>.</span>
           <span>|</span>
-          <span>Official Studio & Nonstop Broadcast</span>
+          <span className="text-white font-bold">DJ EMMA PRO Studio</span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span>Powered by WordPress + WooCommerce</span>
+        <div className="flex items-center gap-3">
+          <span>Version 6.7.1</span>
           <span>|</span>
-          <span className="text-zinc-400">Your Success, Our Priority</span>
-          <Crown className="w-3 h-3 text-[#D4AF37]" />
+          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="text-[#72aee6] hover:underline">
+            Back to top &uarr;
+          </a>
         </div>
       </footer>
 
@@ -1430,59 +1527,67 @@ export default function WordPressAdminDashboard({
           onClick={() => setSelectedOrder(null)}
         >
           <div 
-            className="bg-[#111114] border border-[#202024] rounded-2xl max-w-md w-full p-5 shadow-2xl relative"
+            className="bg-[#1d2327] border border-[#2c3338] rounded-lg max-w-lg w-full p-5 shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-[#202024] pb-3 mb-4">
+            <div className="flex items-center justify-between border-b border-[#2c3338] pb-3 mb-4">
               <div>
-                <span className="text-[10px] font-mono uppercase text-[#E50914] font-bold">Order Details</span>
+                <span className="text-[10px] font-mono uppercase text-[#72aee6] font-bold">WooCommerce Order Details</span>
                 <h3 className="text-lg font-black text-white">{selectedOrder.id} • {selectedOrder.customer}</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedOrder(null)}
-                className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800"
+                className="p-1 rounded text-[#8c8f94] hover:text-white hover:bg-[#2c3338] cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2 bg-[#18181c] p-3 rounded-xl border border-[#26262b]">
+              <div className="grid grid-cols-2 gap-3 bg-[#101517] p-3.5 rounded border border-[#2c3338]">
                 <div>
-                  <span className="text-zinc-500 text-[10px] block font-mono">SERVICE</span>
-                  <span className="font-bold text-white">{selectedOrder.service}</span>
+                  <span className="text-[#8c8f94] text-[10px] block font-mono">SERVICE</span>
+                  <span className="font-bold text-white text-sm">{selectedOrder.service}</span>
                 </div>
                 <div>
-                  <span className="text-zinc-500 text-[10px] block font-mono">AMOUNT</span>
-                  <span className="font-bold text-[#D4AF37] font-mono">{selectedOrder.amount}</span>
+                  <span className="text-[#8c8f94] text-[10px] block font-mono">TOTAL AMOUNT</span>
+                  <span className="font-bold text-[#D4AF37] font-mono text-sm">{selectedOrder.amount}</span>
                 </div>
                 <div>
-                  <span className="text-zinc-500 text-[10px] block font-mono">DATE</span>
+                  <span className="text-[#8c8f94] text-[10px] block font-mono">DATE ORDERED</span>
                   <span className="text-zinc-300 font-mono">{selectedOrder.date}</span>
                 </div>
                 <div>
-                  <span className="text-zinc-500 text-[10px] block font-mono">STATUS</span>
+                  <span className="text-[#8c8f94] text-[10px] block font-mono">ORDER STATUS</span>
                   <span className="font-bold text-emerald-400">{selectedOrder.status}</span>
+                </div>
+                <div>
+                  <span className="text-[#8c8f94] text-[10px] block font-mono">PAYMENT METHOD</span>
+                  <span className="font-bold text-zinc-200">Mobile Money (MTN / Airtel Uganda)</span>
+                </div>
+                <div>
+                  <span className="text-[#8c8f94] text-[10px] block font-mono">PAYMENT STATUS</span>
+                  <span className="font-bold text-[#34D399]">{selectedOrder.payment}</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-[#202024] flex items-center justify-between">
+            <div className="mt-5 pt-3 border-t border-[#2c3338] flex items-center justify-between">
               <a
-                href={`https://wa.me/256780527361?text=Hello%20${encodeURIComponent(selectedOrder.customer)},%20this%20is%20DJ%20Emma%20Pro%20FX%20regarding%20Order%20${selectedOrder.id}`}
+                href={`https://wa.me/256780527361?text=Hello%20${encodeURIComponent(selectedOrder.customer)},%20this%20is%20DJ%20Emma%20Pro%20regarding%20your%20Order%20${selectedOrder.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md"
+                className="px-3.5 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow"
               >
-                <span>WhatsApp Client</span>
+                <span>WhatsApp Customer</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
 
               <button
                 type="button"
                 onClick={() => setSelectedOrder(null)}
-                className="px-3 py-1.5 rounded-lg bg-[#18181c] hover:bg-zinc-800 text-zinc-300 text-xs font-semibold"
+                className="px-4 py-1.5 rounded bg-[#2c3338] hover:bg-[#3c434a] text-white text-xs font-semibold cursor-pointer"
               >
                 Close
               </button>
@@ -1500,24 +1605,24 @@ export default function WordPressAdminDashboard({
           onClick={() => setPreviewMedia(null)}
         >
           <div 
-            className="bg-[#111114] border border-[#202024] rounded-2xl max-w-2xl w-full p-4 shadow-2xl relative"
+            className="bg-[#1d2327] border border-[#2c3338] rounded-lg max-w-2xl w-full p-4 shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#202024]">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#2c3338]">
               <div>
                 <h4 className="text-white font-bold text-sm">{previewMedia.title}</h4>
-                <p className="text-xs text-zinc-400 font-mono">{previewMedia.date} • {previewMedia.views} views</p>
+                <p className="text-xs text-[#8c8f94] font-mono">{previewMedia.date} • {previewMedia.views} views</p>
               </div>
               <button
                 type="button"
                 onClick={() => setPreviewMedia(null)}
-                className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800"
+                className="p-1 rounded text-[#8c8f94] hover:text-white hover:bg-[#2c3338] cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="aspect-video bg-black rounded-xl overflow-hidden flex items-center justify-center">
+            <div className="aspect-video bg-black rounded overflow-hidden flex items-center justify-center">
               <img
                 src={previewMedia.thumbnail}
                 alt={previewMedia.title}
