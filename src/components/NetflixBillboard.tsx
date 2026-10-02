@@ -20,12 +20,37 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
   const [isMuted, setIsMuted] = useState(false);
   const [prevVolume, setPrevVolume] = useState(volume);
   const [isPlayingDirectVideo, setIsPlayingDirectVideo] = useState(false);
+  const [selectedBillboardId, setSelectedBillboardId] = useState<'vyroota' | 'reggae'>('vyroota');
 
   if (isLoading) {
     return <BillboardSkeleton />;
   }
 
-  const featuredTrack: AudioTrack = tracks[0] || {
+  const vyrootaTrack: AudioTrack = tracks.find(t => t.youtubeId === '17uskDXOuvY') || {
+    id: 3,
+    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO FX',
+    artist: 'DJ EMMA PRO FX',
+    durationLabel: '52:18 Nonstop Mix',
+    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786103/best_of_vyroota_full_mixtape.mp3',
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Nonstop_2026/v1789786103/best_of_vyroota_full_mixtape.mp3',
+    filename: 'Best_Of_Vyroota_Nonstop_2026.mp3',
+    thumbnail: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
+    backdrop: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
+    matchScore: 99,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K • Spatial Audio',
+    genres: ['Vyroota Nonstop', 'YouTube Premiere', 'Ugandan Hits', 'Afrobeats'],
+    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO FX. Continuous streaming of Vyroota acoustic gems, club bangers, and chart-topping Ugandan hits. Direct play on site & fast phone download.',
+    isTrending: true,
+    isVideo: true,
+    youtubeId: '17uskDXOuvY',
+    youtubeUrl: 'https://youtu.be/17uskDXOuvY?si=vsg9XUaI1t83bI0L',
+    videoUrl: 'https://www.youtube.com/embed/17uskDXOuvY',
+    topRank: 1
+  };
+
+  const reggaeTrack: AudioTrack = tracks[0] || {
     id: 1,
     title: 'ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO',
     artist: 'DJ EMMA PRO',
@@ -44,7 +69,10 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
     youtubeId: 'TcVAuZcXB5U'
   };
 
-  const isCurrentPlaying = isPlaying && currentTrackIndex === 0;
+  const featuredTrack: AudioTrack = selectedBillboardId === 'vyroota' ? vyrootaTrack : reggaeTrack;
+  const featuredTrackIndex = tracks.findIndex(t => t.id === featuredTrack.id);
+
+  const isCurrentPlaying = isPlaying && currentTrackIndex === (featuredTrackIndex >= 0 ? featuredTrackIndex : 0);
 
   const handleToggleMute = () => {
     if (isMuted) {
@@ -62,24 +90,25 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2, ease: "easeOut" }}
-      className="relative w-full min-h-[82vh] lg:min-h-[92vh] flex items-center bg-[#141414] overflow-hidden select-none"
+      className="relative w-full min-h-[82vh] lg:min-h-[92vh] flex items-center bg-transparent overflow-hidden select-none"
     >
-      {/* Background Poster Image (Cinematic Wallpaper) */}
-      <div className="absolute inset-0">
+      {/* Background Poster Image (Cinematic Wallpaper with Translucency) */}
+      <div className="absolute inset-0 opacity-65">
         <img
-          src={featuredTrack.backdrop || "https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg"}
+          key={featuredTrack.id}
+          src={featuredTrack.backdrop || "https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg"}
           alt="DJ Emma Pro FX Featured Billboard"
-          className="w-full h-full object-cover object-center lg:object-right-top brightness-90 filter"
+          className="w-full h-full object-cover object-center lg:object-right-top brightness-90 filter transition-opacity duration-700"
           referrerPolicy="no-referrer"
         />
 
-        {/* Netflix Multi-direction Gradient Vignettes */}
+        {/* Netflix Multi-direction Gradient Vignettes (Translucent so website background shows through) */}
         {/* Dark bottom fade into content rows */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         {/* Dark left fade for text legibility */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/85 to-transparent w-full lg:w-3/4" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-transparent w-full lg:w-3/4" />
         {/* Top bar vignette */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/80 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/70 to-transparent" />
       </div>
 
       {/* Direct Interactive Video Player Modal/Container when playing */}
@@ -89,7 +118,7 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="absolute inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col justify-center items-center p-4 sm:p-8"
+            className="absolute inset-0 z-40 bg-black/90 backdrop-blur-xl flex flex-col justify-center items-center p-4 sm:p-8"
           >
             <div className="w-full max-w-5xl">
               <div className="flex items-center justify-between pb-3 mb-2 border-b border-zinc-800">
@@ -100,7 +129,7 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
                   </span>
                   <span className="text-white font-black text-sm sm:text-base tracking-wide flex items-center gap-2">
                     <Youtube className="w-4 h-4 text-[#E50914] fill-current" />
-                    STREAMING DIRECT FROM WEBSITE: ONE DROP REGGEA MIX VOL 1
+                    STREAMING DIRECT FROM WEBSITE: {featuredTrack.title}
                   </span>
                 </div>
                 <button
@@ -116,8 +145,8 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
               {/* YouTube Responsive iFrame Player */}
               <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(229,9,20,0.4)] border border-red-600/40 bg-black">
                 <iframe
-                  src="https://www.youtube-nocookie.com/embed/TcVAuZcXB5U?autoplay=1&rel=0&modestbranding=1&enablejsapi=1"
-                  title="ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO"
+                  src={`https://www.youtube-nocookie.com/embed/${featuredTrack.youtubeId || '17uskDXOuvY'}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`}
+                  title={featuredTrack.title}
                   className="w-full h-full border-0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
@@ -142,6 +171,34 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
       {/* Billboard Main Content */}
       <div className="relative z-10 max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 w-full pt-28 pb-16 lg:pt-36 lg:pb-24">
         <div className="max-w-2xl lg:max-w-3xl">
+          {/* Nonstop Display Switcher Tabs */}
+          <div className="inline-flex items-center p-1 bg-black/60 backdrop-blur-md rounded-full border border-white/15 mb-4 shadow-xl">
+            <button
+              type="button"
+              onClick={() => setSelectedBillboardId('vyroota')}
+              className={`flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                selectedBillboardId === 'vyroota'
+                  ? 'bg-[#E50914] text-white shadow-md'
+                  : 'text-zinc-300 hover:text-white'
+              }`}
+            >
+              <Flame className="w-3.5 h-3.5" />
+              <span>NONSTOP: BEST OF VYROOTA</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedBillboardId('reggae')}
+              className={`flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                selectedBillboardId === 'reggae'
+                  ? 'bg-[#E50914] text-white shadow-md'
+                  : 'text-zinc-300 hover:text-white'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>ONE DROP REGGAE VOL 1</span>
+            </button>
+          </div>
+
           {/* Netflix Series Tag */}
           <div className="flex items-center gap-2 mb-3">
             <div className="w-5 h-7 rounded-[2px] bg-[#E50914] flex items-center justify-center font-black text-white text-xs shadow-md">
@@ -153,11 +210,22 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
           </div>
 
           {/* Massive Display Title */}
-          <h1 className="font-bebas text-5xl sm:text-7xl lg:text-8xl tracking-tight text-white leading-[0.9] drop-shadow-2xl uppercase">
-            ONE DROP REGGEA MIX <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
-              VOL 1 <span className="text-[#E50914]">BY DJ EMMA PRO</span>
-            </span>
+          <h1 className="font-bebas text-4xl sm:text-6xl lg:text-7xl tracking-tight text-white leading-[0.95] drop-shadow-2xl uppercase">
+            {selectedBillboardId === 'vyroota' ? (
+              <>
+                BEST OF VYROOTA <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
+                  NONSTOP 2026 <span className="text-[#E50914]">BY DJ EMMA PRO</span>
+                </span>
+              </>
+            ) : (
+              <>
+                ONE DROP REGGEA MIX <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
+                  VOL 1 <span className="text-[#E50914]">BY DJ EMMA PRO</span>
+                </span>
+              </>
+            )}
           </h1>
 
           {/* Top 10 Badge & Match Indicators */}
@@ -169,7 +237,7 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
             </div>
 
             {/* Direct Playable Badge */}
-            <div className="flex items-center gap-1.5 bg-red-600/30 border border-red-500/50 text-red-300 px-2 py-0.5 rounded font-black tracking-wider text-xs">
+            <div className="flex items-center gap-1.5 bg-red-600/30 border border-red-500/50 text-red-300 px-2 py-0.5 rounded font-black tracking-wider text-xs backdrop-blur-sm">
               <Youtube className="w-3.5 h-3.5 fill-current" />
               <span>DIRECT WEBSITE VIDEO</span>
             </div>
@@ -183,19 +251,19 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
             <span className="text-zinc-400 font-medium">2026</span>
 
             {/* Maturity Rating */}
-            <span className="border border-zinc-600 px-1.5 py-0.5 text-[11px] text-zinc-300 font-mono rounded">
+            <span className="border border-zinc-600/70 bg-black/30 px-1.5 py-0.5 text-[11px] text-zinc-300 font-mono rounded">
               TV-MA
             </span>
 
             {/* Quality Badges */}
-            <span className="border border-zinc-600 px-1.5 py-0.5 text-[10px] text-zinc-300 font-mono rounded">
+            <span className="border border-zinc-600/70 bg-black/30 px-1.5 py-0.5 text-[10px] text-zinc-300 font-mono rounded">
               ULTRA HD 4K
             </span>
-            <span className="border border-zinc-600 px-1.5 py-0.5 text-[10px] text-zinc-300 font-mono rounded hidden sm:inline">
+            <span className="border border-zinc-600/70 bg-black/30 px-1.5 py-0.5 text-[10px] text-zinc-300 font-mono rounded hidden sm:inline">
               SPATIAL AUDIO
             </span>
-            <span className="bg-white/10 px-2 py-0.5 text-[11px] text-zinc-300 rounded hidden md:inline">
-              Nonstop Edition
+            <span className="bg-white/10 px-2 py-0.5 text-[11px] text-zinc-300 rounded hidden md:inline backdrop-blur-sm">
+              {featuredTrack.durationLabel || 'Nonstop Edition'}
             </span>
           </div>
 
@@ -205,7 +273,7 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
           </div>
 
           {/* Synopsis */}
-          <p className="text-zinc-300 text-sm sm:text-base lg:text-lg line-clamp-3 mb-7 font-sans leading-relaxed drop-shadow-md max-w-xl">
+          <p className="text-zinc-200 text-sm sm:text-base lg:text-lg line-clamp-3 mb-7 font-sans leading-relaxed drop-shadow-md max-w-xl">
             {featuredTrack.description}
           </p>
 
@@ -234,7 +302,8 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
                   togglePlay();
                 } else {
                   recordMixtapePlayed(featuredTrack);
-                  playTrack(0);
+                  const targetIndex = tracks.findIndex(t => t.id === featuredTrack.id);
+                  playTrack(targetIndex >= 0 ? targetIndex : 0);
                 }
               }}
               className="inline-flex items-center justify-center gap-2.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded bg-white hover:bg-white/80 active:scale-95 text-black font-bold text-sm sm:text-base tracking-wide transition-all shadow-xl cursor-pointer"
@@ -260,7 +329,7 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
               rel="noopener noreferrer"
               onClick={() => downloadTrack(featuredTrack)}
               title="Download to phone directly"
-              className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded bg-zinc-800/90 hover:bg-zinc-700 active:scale-95 text-white font-bold text-sm sm:text-base tracking-wide transition-all border border-zinc-700 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded bg-zinc-900/80 hover:bg-zinc-800 active:scale-95 text-white font-bold text-sm sm:text-base tracking-wide transition-all border border-zinc-700/80 backdrop-blur-md cursor-pointer"
             >
               <Download className="w-5 h-5 text-[#E50914] stroke-[2.5]" />
               <span className="hidden sm:inline">{t('hero.download')}</span>
@@ -269,7 +338,7 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
             {/* More Info Button */}
             <button
               onClick={() => onOpenModal(featuredTrack)}
-              className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded bg-zinc-600/70 hover:bg-zinc-600/90 active:scale-95 text-white font-bold text-sm sm:text-base tracking-wide transition-all backdrop-blur-md cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded bg-zinc-700/60 hover:bg-zinc-600/80 active:scale-95 text-white font-bold text-sm sm:text-base tracking-wide transition-all backdrop-blur-md cursor-pointer border border-white/10"
             >
               <Info className="w-5 h-5" />
               <span>{t('hero.info')}</span>
@@ -311,7 +380,7 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
         <button
           onClick={handleToggleMute}
           title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
-          className="w-10 h-10 rounded-full border border-white/40 bg-black/50 hover:bg-black/80 flex items-center justify-center text-white mr-4 transition-colors cursor-pointer"
+          className="w-10 h-10 rounded-full border border-white/40 bg-black/50 hover:bg-black/80 flex items-center justify-center text-white mr-4 transition-colors cursor-pointer backdrop-blur-sm"
         >
           {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
         </button>

@@ -106,7 +106,7 @@ export function Footer() {
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-zinc-600 text-xs font-bold tracking-widest">
-            © 2026 DJ EMMA PRO FX. ALL RIGHTS RESERVED.
+            © 2026 DJ EMMA PRO. ALL RIGHTS RESERVED.
           </p>
           <div className="flex gap-4 text-zinc-600 text-xs font-bold tracking-widest">
             <a href="#" className="hover:text-white transition-colors">TERMS</a>

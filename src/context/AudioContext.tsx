@@ -69,22 +69,26 @@ export const AUDIO_TRACKS: AudioTrack[] = [
   },
   {
     id: 3,
-    title: 'BEST OF VYROOTA FULL MIXTAPE',
+    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO FX',
     artist: 'DJ EMMA PRO FX',
-    durationLabel: 'Vyroota Nonstop',
+    durationLabel: '52:18 Nonstop Mix',
     url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786103/best_of_vyroota_full_mixtape.mp3',
-    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Full_Mixtape/v1789786103/best_of_vyroota_full_mixtape.mp3',
-    filename: 'Best_Of_Vyroota_Full_Mixtape.mp3',
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
-    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
-    matchScore: 98,
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Nonstop_2026/v1789786103/best_of_vyroota_full_mixtape.mp3',
+    filename: 'Best_Of_Vyroota_Nonstop_2026.mp3',
+    thumbnail: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
+    backdrop: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
+    matchScore: 99,
     year: 2026,
-    ageRating: 'TV-MA',
+    ageRating: 'All Ages',
     quality: 'Ultra HD 4K • Spatial Audio',
-    genres: ['Vyroota Hits', 'Nonstop Party', 'Afrobeats'],
-    description: 'The definitive Best of Vyroota full mixtape expertly blended by DJ Emma Pro FX.',
+    genres: ['Vyroota Nonstop', 'YouTube Premiere', 'Ugandan Hits', 'Afrobeats'],
+    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO FX. Continuous streaming of Vyroota acoustic gems, club bangers, and chart-topping Ugandan hits.',
     isTrending: true,
-    topRank: 3
+    isVideo: true,
+    youtubeId: '17uskDXOuvY',
+    youtubeUrl: 'https://youtu.be/17uskDXOuvY?si=vsg9XUaI1t83bI0L',
+    videoUrl: 'https://www.youtube.com/embed/17uskDXOuvY',
+    topRank: 2
   },
   {
     id: 4,
@@ -260,7 +264,7 @@ interface AudioContextType {
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
-const TRACKS_STORAGE_KEY = 'dj_emma_audio_tracks_v12';
+const TRACKS_STORAGE_KEY = 'dj_emma_audio_tracks_v14_vyroota';
 
 export function AudioProvider({ children }: { children: ReactNode }) {
   const [tracks, setTracks] = useState<AudioTrack[]>(() => {
@@ -269,9 +273,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       if (saved) {
         const parsed: AudioTrack[] = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // If stored tracks don't have the YouTube video as #1, reset to new AUDIO_TRACKS
+          // If stored tracks don't have the YouTube video as #1 or Vyroota video, reset to new AUDIO_TRACKS
           const hasFeaturedYoutubeVideo = parsed[0]?.youtubeId === 'TcVAuZcXB5U';
-          if (!hasFeaturedYoutubeVideo) {
+          const hasVyrootaVideo = parsed.some(t => t?.youtubeId === '17uskDXOuvY');
+          if (!hasFeaturedYoutubeVideo || !hasVyrootaVideo) {
             localStorage.removeItem(TRACKS_STORAGE_KEY);
             return AUDIO_TRACKS;
           }

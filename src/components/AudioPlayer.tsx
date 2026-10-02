@@ -16,7 +16,7 @@ export default function AudioPlayer() {
             LATEST DJ <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-400">MIXES & EPISODES</span>
           </h2>
           <p className="text-zinc-300 max-w-xl mx-auto font-sans text-sm sm:text-base">
-            Listen and download official DJ EMMA PRO FX nonstops and mixtapes directly to your phone in high fidelity audio.
+            Listen and download official DJ EMMA PRO nonstops and mixtapes directly to your phone in high fidelity audio.
           </p>
         </div>
 

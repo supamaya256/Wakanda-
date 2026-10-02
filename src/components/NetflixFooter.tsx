@@ -193,7 +193,7 @@ export default function NetflixFooter({ onOpenAtesoMovies, onOpenStudioManager }
 
         {/* Brand Copyright */}
         <p className="text-[11px] text-zinc-600">
-          DJ EMMA PRO FX UGANDA • Cinematic DJ Branding, Watch Ateso Movies, Nonstop Audio Streaming & 3D Visual Effects.
+          DJ EMMA PRO UGANDA • Cinematic DJ Branding, Watch Ateso Movies, Nonstop Audio Streaming & 3D Visual Effects.
         </p>
       </div>
     </footer>

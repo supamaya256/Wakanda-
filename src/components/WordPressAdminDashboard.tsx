@@ -266,14 +266,14 @@ export default function WordPressAdminDashboard({
   }, [orderFilter, orderSearch]);
 
   return (
-    <div className="min-h-screen bg-[#08080a] text-white font-sans selection:bg-[#E50914] selection:text-white flex flex-col antialiased relative overflow-x-hidden">
-      {/* Background Image Layer (Requested by User: DJ Emma Pro FX Signature Visual Showcase - Eco Optimized) */}
+    <div className="min-h-screen bg-[#08080a]/40 text-white font-sans selection:bg-[#E50914] selection:text-white flex flex-col antialiased relative overflow-x-hidden">
+      {/* Background Image Layer (Transparent Glass Theme - DJ Emma Background Picture Clearly Visible) */}
       <div 
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-30 filter brightness-90 contrast-110"
-        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_960/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-75 filter brightness-95 contrast-110"
+        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_1440/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
       />
       {/* Cinematic dark ambient overlay for sharp readable UI panels */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#08080a]/85 via-[#08080a]/75 to-[#08080a]/90 backdrop-blur-[1px]" />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 backdrop-blur-[0.5px]" />
 
       {/* ========================================================
           TOP NAVBAR
@@ -1408,7 +1408,7 @@ export default function WordPressAdminDashboard({
          ======================================================== */}
       <footer className="h-10 bg-[#0c0c0e]/95 backdrop-blur-md border-t border-[#1f1f23]/80 px-4 sm:px-6 flex items-center justify-between text-[11px] text-zinc-500 font-mono select-none relative z-10">
         <div className="flex items-center gap-2">
-          <span className="text-zinc-300 font-bold">DJ EMMA PRO FX</span>
+          <span className="text-zinc-300 font-bold">DJ EMMA PRO</span>
           <span>|</span>
           <span>Official Studio & Nonstop Broadcast</span>
         </div>

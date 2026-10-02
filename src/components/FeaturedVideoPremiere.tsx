@@ -150,6 +150,21 @@ export interface PremiereVideoItem {
 
 const PREMIERE_VIDEOS: PremiereVideoItem[] = [
   {
+    id: 'best-of-vyroota-nonstop-2026',
+    youtubeId: '17uskDXOuvY',
+    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO FX',
+    artist: 'DJ EMMA PRO FX',
+    category: 'Nonstop Mixtape',
+    tags: ['New Release', 'Viral', 'Mixtape'],
+    thumbnail: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
+    duration: '52:18',
+    views: '96.4K Views',
+    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO FX. Continuous streaming of Vyroota acoustic hits, club bangers, and chart-topping Ugandan anthems.',
+    matchScore: 99,
+    audioTrackId: 3,
+    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Nonstop_2026/v1789786103/best_of_vyroota_full_mixtape.mp3'
+  },
+  {
     id: 'one-drop-reggae-vol-1',
     youtubeId: 'TcVAuZcXB5U',
     title: 'ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO',

@@ -222,10 +222,22 @@ export default function WatchAtesoMoviesPage({ onBackToStore, onOpenStudioManage
     return matchesSearch;
   });
 
+  const bgImageUrl = isDataSaver 
+    ? 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:low,w_640/v1790550689/file_00000000bda08211910e147fbb531635.png'
+    : 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_1440/v1790550689/file_00000000bda08211910e147fbb531635.png';
+
   return (
-    <div className="min-h-screen bg-[#141414] text-white selection:bg-[#E50914] selection:text-white font-sans pb-20 select-none">
-      {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-50 bg-[#141414]/95 backdrop-blur-md border-b border-zinc-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <div className="min-h-screen bg-[#0a0a0f]/40 text-white selection:bg-[#E50914] selection:text-white font-sans pb-20 select-none relative">
+      {/* Background Image Layer (Transparent Glass Theme) */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-80 filter brightness-95 contrast-110"
+        style={{ backgroundImage: `url('${bgImageUrl}')` }}
+      />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 backdrop-blur-[0.5px]" />
+
+      <div className="relative z-10">
+        {/* Top Navigation Bar */}
+        <header className="sticky top-0 z-50 bg-[#0a0a0f]/80 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
             onClick={onBackToStore}
@@ -865,6 +877,7 @@ export default function WatchAtesoMoviesPage({ onBackToStore, onOpenStudioManage
           }}
         />
       </main>
+      </div>
     </div>
   );
 }

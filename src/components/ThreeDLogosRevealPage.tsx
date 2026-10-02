@@ -213,11 +213,23 @@ export default function ThreeDLogosRevealPage({
     }, 1500);
   };
 
+  const bgImageUrl = isDataSaver 
+    ? 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:low,w_640/v1790550689/file_00000000bda08211910e147fbb531635.png'
+    : 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_1440/v1790550689/file_00000000bda08211910e147fbb531635.png';
+
   return (
     <div
-      className="min-h-screen bg-[#07070a] text-zinc-100 font-sans selection:bg-[#E50914] selection:text-white pb-24 overflow-x-hidden"
+      className="min-h-screen bg-[#07070a]/50 text-zinc-100 font-sans selection:bg-[#E50914] selection:text-white pb-24 overflow-x-hidden relative"
       onContextMenu={triggerAntiDownloadNotice}
     >
+      {/* Background Image Layer (Transparent Glass Theme) */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-75 filter brightness-95 contrast-110"
+        style={{ backgroundImage: `url('${bgImageUrl}')` }}
+      />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-black/55 via-black/35 to-black/65 backdrop-blur-[0.5px]" />
+
+      <div className="relative z-10">
       {/* Anti-Download Toast Notification */}
       <AnimatePresence>
         {protectedToast && (
@@ -539,7 +551,7 @@ export default function ThreeDLogosRevealPage({
               {/* Watermark Overlay (Studio Proof & Security) */}
               <div className="absolute top-3 left-4 pointer-events-none flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md border border-white/10 text-[10px] font-mono tracking-wider text-zinc-300">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                <span>DJ EMMA PRO FX • 3D LOGO REVEAL</span>
+                <span>DJ EMMA PRO • 3D LOGO REVEAL</span>
                 <span className="text-zinc-500">|</span>
                 <span className="text-emerald-400 font-bold">360p</span>
               </div>
@@ -1073,6 +1085,7 @@ export default function ThreeDLogosRevealPage({
           </div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

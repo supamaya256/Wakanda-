@@ -240,7 +240,7 @@ export default function NetflixNavbar({
           <a
             href="#"
             className="flex items-center gap-2 group cursor-pointer shrink-0"
-            title="DJ EMMA PRO FX - Netflix Dashboard"
+            title="DJ EMMA PRO - Netflix Dashboard"
           >
             {/* Netflix Stylized Red Brand */}
             <div className="flex items-baseline">
@@ -248,7 +248,7 @@ export default function NetflixNavbar({
                 DJ EMMA
               </span>
               <span className="ml-1.5 px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-bold font-mono tracking-widest bg-[#E50914] text-white">
-                PRO FX
+                PRO
               </span>
             </div>
           </a>

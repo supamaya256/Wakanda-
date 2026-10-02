@@ -126,7 +126,7 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E50914]"></span>
             </span>
             <span className="text-white font-black uppercase tracking-wider text-xs sm:text-sm">
-              WELCOME TO DJ EMMA PRO FX
+              WELCOME TO DJ EMMA PRO
             </span>
             <span className="text-zinc-600">·</span>
             <span className="text-amber-400 font-bold uppercase text-[11px] sm:text-xs">
@@ -279,7 +279,7 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                 {/* Studio Watermark Overlay */}
                 <div className="absolute top-3 left-3 pointer-events-none flex items-center gap-2 bg-black/70 backdrop-blur-sm px-2.5 py-1 rounded text-[10px] font-mono text-zinc-200 border border-white/10">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                  <span>DJ EMMA PRO FX • 3D LOGO REVEAL</span>
+                  <span>DJ EMMA PRO • 3D LOGO REVEAL</span>
                 </div>
 
                 <div className="absolute top-3 right-3 pointer-events-none bg-black/70 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-semibold text-amber-400 border border-amber-500/30">

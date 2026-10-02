@@ -33,7 +33,7 @@ interface GoogleSearchVisibilityModalProps {
 export default function GoogleSearchVisibilityModal({
   isOpen,
   onClose,
-  initialQuery = 'DJ EMMA PRO FX'
+  initialQuery = 'DJ EMMA PRO'
 }: GoogleSearchVisibilityModalProps) {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -45,9 +45,9 @@ export default function GoogleSearchVisibilityModal({
 
   const quickSearches = [
     {
-      title: 'DJ EMMA PRO FX',
+      title: 'DJ EMMA PRO',
       category: 'Brand Search',
-      query: 'DJ EMMA PRO FX',
+      query: 'DJ EMMA PRO',
       description: 'Official artist brand, studio catalog & nonstop broadcasts',
       icon: Sparkles,
       iconColor: 'text-amber-400'
@@ -79,7 +79,7 @@ export default function GoogleSearchVisibilityModal({
     {
       title: 'Site Indexing on Google',
       category: 'Google Index',
-      query: `site:djemmapro.com OR "DJ EMMA PRO FX"`,
+      query: `site:djemmapro.com OR "DJ EMMA PRO"`,
       description: 'Verify all pages currently indexed by Googlebot',
       icon: Globe,
       iconColor: 'text-blue-400'
@@ -87,7 +87,7 @@ export default function GoogleSearchVisibilityModal({
   ];
 
   const handleOpenGoogle = (customQ?: string, type: 'web' | 'images' | 'videos' = 'web') => {
-    const q = encodeURIComponent(customQ || searchQuery || 'DJ EMMA PRO FX');
+    const q = encodeURIComponent(customQ || searchQuery || 'DJ EMMA PRO');
     let googleUrl = `https://www.google.com/search?q=${q}`;
     if (type === 'images') googleUrl = `https://www.google.com/search?tbm=isch&q=${q}`;
     if (type === 'videos') googleUrl = `https://www.google.com/search?tbm=vid&q=${q}`;
@@ -95,7 +95,7 @@ export default function GoogleSearchVisibilityModal({
   };
 
   const handleCopyGoogleLink = (q?: string) => {
-    const queryToCopy = q || searchQuery || 'DJ EMMA PRO FX';
+    const queryToCopy = q || searchQuery || 'DJ EMMA PRO';
     const link = `https://www.google.com/search?q=${encodeURIComponent(queryToCopy)}`;
     navigator.clipboard.writeText(link).then(() => {
       setCopiedLink(true);
@@ -300,7 +300,7 @@ export default function GoogleSearchVisibilityModal({
                     onClick={() => handleOpenGoogle()}
                     className="text-base sm:text-lg font-medium text-[#8ab4f8] hover:underline cursor-pointer leading-snug"
                   >
-                    DJ EMMA PRO FX | Professional DJ Drops, 3D Logo Reveal & Ateso Movies
+                    DJ EMMA PRO | Professional DJ Drops, 3D Logo Reveal & Ateso Movies
                   </h4>
 
                   {/* Rating / Rich Snippet Details */}
@@ -322,7 +322,7 @@ export default function GoogleSearchVisibilityModal({
 
                   {/* Meta Description */}
                   <p className="text-xs sm:text-sm text-zinc-300 mt-2 leading-relaxed">
-                    Official DJ EMMA PRO FX studio. Order custom DJ voice drops, download 3D logo reveal animations including Electric Shockwave, and watch exclusive Ateso translated action movies.
+                    Official DJ EMMA PRO studio. Order custom DJ voice drops, download 3D logo reveal animations including Electric Shockwave, and watch exclusive Ateso translated action movies.
                   </p>
 
                   {/* Google Sitelinks Grid (High Visibility) */}

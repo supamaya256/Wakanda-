@@ -58,7 +58,7 @@ export default function AdminCommandDeck({
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-              <span>DJ EMMA PRO FX</span>
+              <span>DJ EMMA PRO</span>
               <span className="text-zinc-500 font-normal text-sm sm:text-base">• Content Management Console</span>
             </h2>
             <p className="text-xs text-zinc-400 mt-0.5 max-w-2xl">

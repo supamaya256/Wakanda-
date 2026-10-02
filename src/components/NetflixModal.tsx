@@ -1299,7 +1299,7 @@ export default function NetflixModal({ track: propTrack, onClose, onSelectTrack 
               </div>
               <div>
                 <span className="text-zinc-500">Production Studio:</span>{' '}
-                <span className="text-[#E50914] font-bold">DJ EMMA PRO FX STUDIOS</span>
+                <span className="text-[#E50914] font-bold">DJ EMMA PRO STUDIOS</span>
               </div>
             </div>
           </div>

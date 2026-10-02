@@ -915,13 +915,13 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] text-white font-sans selection:bg-[#E50914] selection:text-white pb-32 relative overflow-x-hidden">
-      {/* Background Image Layer (Requested by User: DJ Emma Pro FX Signature Visual Showcase - Eco Optimized) */}
+    <div className="min-h-screen bg-[#0d0d12]/40 text-white font-sans selection:bg-[#E50914] selection:text-white pb-32 relative overflow-x-hidden">
+      {/* Background Image Layer (Transparent Glass Theme - DJ Emma Background Picture Clearly Visible) */}
       <div 
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25 filter brightness-85 contrast-110"
-        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_960/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-75 filter brightness-95 contrast-110"
+        style={{ backgroundImage: `url('https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_1440/v1790550689/file_00000000bda08211910e147fbb531635.png')` }}
       />
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#111111]/85 via-[#111111]/75 to-[#111111]/90 backdrop-blur-[1px]" />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 backdrop-blur-[0.5px]" />
 
       <div className="relative z-10">
       {/* Hidden audio element for previewing */}
@@ -968,7 +968,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
 
           <div className="flex items-center gap-2">
             <span className="text-[#E50914] font-black font-bebas text-2xl sm:text-3xl tracking-wide">
-              DJ EMMA PRO FX
+              DJ EMMA PRO
             </span>
             {isAdmin ? (
               <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/50 tracking-widest uppercase flex items-center gap-1 shadow-sm">

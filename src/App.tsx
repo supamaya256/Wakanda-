@@ -286,22 +286,23 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
 
   const { isDataSaver } = useDataSaver();
   const bgImageUrl = isDataSaver 
-    ? 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:low,w_480/v1790550689/file_00000000bda08211910e147fbb531635.png'
-    : 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_960/v1790550689/file_00000000bda08211910e147fbb531635.png';
+    ? 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:low,w_640/v1790550689/file_00000000bda08211910e147fbb531635.png'
+    : 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_1440/v1790550689/file_00000000bda08211910e147fbb531635.png';
 
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="min-h-screen bg-[#141414] text-white selection:bg-[#E50914] selection:text-white font-sans overflow-x-hidden pt-[36px] pb-28 sm:pb-24 relative"
+      className="min-h-screen bg-[#0a0a0f]/40 text-white selection:bg-[#E50914] selection:text-white font-sans overflow-x-hidden pt-[36px] pb-28 sm:pb-24 relative"
     >
-      {/* Background Image Layer (Optimized for Data Saver: 98% less MB) */}
+      {/* Background Image Layer (Transparent Glass Theme - DJ Emma Background Picture Clearly Visible) */}
       <div 
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25 filter brightness-80 contrast-115"
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-80 filter brightness-95 contrast-110 transition-opacity duration-700"
         style={{ backgroundImage: `url('${bgImageUrl}')` }}
       />
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#141414]/85 via-[#141414]/75 to-[#141414]/90 backdrop-blur-[1px]" />
+      {/* Subtle Transparent Glass Vignette */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 backdrop-blur-[0.5px]" />
 
       <div className="relative z-10">
         {/* Netflix Top Navigation Bar */}
@@ -562,7 +563,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
           </motion.div>
 
           {/* ===================================================================
-              ACT 3: DJ EMMA PRO FX PRODUCTION SUITE (Voice Drops, 3D Logos, Orders)
+              ACT 3: DJ EMMA PRO PRODUCTION SUITE (Voice Drops, 3D Logos, Orders)
              =================================================================== */}
           <div className="pt-10 sm:pt-14 px-4 sm:px-8 lg:px-12">
             <div className="border-t border-zinc-800/80 pt-8">
@@ -575,7 +576,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
                 </span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                DJ Emma Pro FX Production Studio
+                DJ Emma Pro Production Studio
               </h2>
               <p className="text-zinc-400 text-xs sm:text-base max-w-2xl mt-1">
                 Custom studio voice drops, club sound FX, and 3D animated station logos produced with studio-grade fidelity and direct WhatsApp delivery.
