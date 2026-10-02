@@ -73,10 +73,10 @@ const DEFAULT_SUBTITLE_TRACKS: SubtitleTrack[] = [
     id: 'sub-en',
     label: 'English (Studio Lyrics & DJ Drops)',
     lang: 'en',
-    vttContent: `WEBVTT - DJ Emma Pro FX Studio Premiere
+    vttContent: `WEBVTT - DJ Emma Pro Studio Premiere
 
 00:00:01.000 --> 00:00:05.500
-[DJ Emma Pro FX] Official Studio Master Premiere
+[DJ Emma Pro] Official Studio Master Premiere
 
 00:00:06.000 --> 00:00:11.500
 ONE DROP REGGAE MIX VOL 1 • Soroti City Broadcast
@@ -85,7 +85,7 @@ ONE DROP REGGAE MIX VOL 1 • Soroti City Broadcast
 Feel the heavy conscious roots & dub bassline vibrations
 
 00:00:18.500 --> 00:00:24.500
-"You are listening to the official sound of DJ Emma Pro FX!"
+"You are listening to the official sound of DJ Emma Pro!"
 
 00:00:25.000 --> 00:00:32.000
 Mastered in lossless 320kbps fidelity with live voice tags
@@ -150,25 +150,40 @@ export interface PremiereVideoItem {
 
 const PREMIERE_VIDEOS: PremiereVideoItem[] = [
   {
+    id: 'street-anthem-90-wakanda',
+    videoUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790955038/STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs__DIVINE_DEEJAY_UG_FIRE_FLAMES_DJs_-1.mp3',
+    title: 'STREET ANTHEM 90 • DJ EMMA PRO & WAKANDA DJs',
+    artist: 'DJ EMMA PRO x DIVINE DEEJAY UG (FIRE FLAMES DJs)',
+    category: 'Top Featured Nonstop',
+    tags: ['New Release', 'Viral', 'Mixtape'],
+    thumbnail: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png',
+    duration: '58:40',
+    views: '128.5K Views',
+    description: 'Top Featured Nonstop: STREET ANTHEM 90 by DJ EMMA PRO from Wakanda DJs & Divine Deejay UG Fire Flames DJs. High-energy street bangers, viral Ugandan hits, and non-stop hype transitions.',
+    matchScore: 100,
+    audioTrackId: 1,
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Street_Anthem_90_DJ_Emma_Pro_Wakanda_DJs/v1790955038/STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs__DIVINE_DEEJAY_UG_FIRE_FLAMES_DJs_-1.mp3'
+  },
+  {
     id: 'best-of-vyroota-nonstop-2026',
     youtubeId: '17uskDXOuvY',
-    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO FX',
-    artist: 'DJ EMMA PRO FX',
+    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO',
+    artist: 'DJ EMMA PRO',
     category: 'Nonstop Mixtape',
     tags: ['New Release', 'Viral', 'Mixtape'],
     thumbnail: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
     duration: '52:18',
     views: '96.4K Views',
-    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO FX. Continuous streaming of Vyroota acoustic hits, club bangers, and chart-topping Ugandan anthems.',
+    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO. Continuous streaming of Vyroota acoustic hits, club bangers, and chart-topping Ugandan anthems.',
     matchScore: 99,
-    audioTrackId: 3,
+    audioTrackId: 18,
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Nonstop_2026/v1789786103/best_of_vyroota_full_mixtape.mp3'
   },
   {
     id: 'one-drop-reggae-vol-1',
     youtubeId: 'TcVAuZcXB5U',
     title: 'ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO',
-    artist: 'DJ EMMA PRO FX',
+    artist: 'DJ EMMA PRO',
     category: 'Reggae Nonstop Mixtape',
     tags: ['New Release', 'Viral', 'Mixtape'],
     thumbnail: 'https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg',
@@ -176,7 +191,7 @@ const PREMIERE_VIDEOS: PremiereVideoItem[] = [
     views: '84.6K Views',
     description: 'Official YouTube Premiere: ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO. Smooth conscious reggae vibes, heavy dub basslines, and studio-grade audio. Anyone can play and stream directly from the website.',
     matchScore: 99,
-    audioTrackId: 1,
+    audioTrackId: 16,
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_Emma_Pro_One_Drop_Reggae_Mix_Vol_1/v1789786241/ONE_DROP_REGGEA_MIX_VOL_ONE.mp3'
   },
   {
@@ -301,7 +316,7 @@ const PREMIERE_VIDEOS: PremiereVideoItem[] = [
     youtubeId: undefined,
     videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789611461/episode_2_dj_emma_pro_ft_mc_ricky.mp4',
     title: 'EPISODE 2 • DJ EMMA PRO FT MC RICKY',
-    artist: 'DJ EMMA PRO FX',
+    artist: 'DJ EMMA PRO',
     category: 'Live Club Hype Mixtape',
     tags: ['Viral', 'Mixtape'],
     thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
@@ -309,7 +324,7 @@ const PREMIERE_VIDEOS: PremiereVideoItem[] = [
     views: '76.4K Views',
     description: 'High energy non-stop club banger mixtape mixed live by DJ Emma Pro featuring MC Ricky.',
     matchScore: 98,
-    audioTrackId: 4,
+    audioTrackId: 19,
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_Emma_Pro_ft_MC_Ricky_Episode_2/v1789786272/episode_2_dj_emma_pro_ft_mc_ricky.mp3'
   },
   {
@@ -317,15 +332,15 @@ const PREMIERE_VIDEOS: PremiereVideoItem[] = [
     youtubeId: undefined,
     videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789785554/best_of_acholi_nonstop_traditional.mp3',
     title: 'BEST OF ACHOLI NONSTOP TRADITIONAL',
-    artist: 'DJ EMMA PRO FX',
+    artist: 'DJ EMMA PRO',
     category: 'Traditional Culture Mixtape',
     tags: ['Mixtape', 'New Release'],
     thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
     duration: '52:45',
     views: '63.9K Views',
-    description: 'The finest collection of Acholi traditional nonstop rhythms expertly curated by DJ Emma Pro FX.',
+    description: 'The finest collection of Acholi traditional nonstop rhythms expertly curated by DJ Emma Pro.',
     matchScore: 99,
-    audioTrackId: 2,
+    audioTrackId: 17,
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Acholi_Nonstop_Traditional/v1789785554/best_of_acholi_nonstop_traditional.mp3'
   },
   {
@@ -333,15 +348,15 @@ const PREMIERE_VIDEOS: PremiereVideoItem[] = [
     youtubeId: undefined,
     videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786103/best_of_vyroota_full_mixtape.mp3',
     title: 'BEST OF VYROOTA FULL MIXTAPE',
-    artist: 'DJ EMMA PRO FX',
+    artist: 'DJ EMMA PRO',
     category: 'Afrobeats Mixtape',
     tags: ['Mixtape', 'Viral'],
     thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
     duration: '45:15',
     views: '58.3K Views',
-    description: 'The definitive Best of Vyroota full mixtape expertly blended by DJ Emma Pro FX.',
+    description: 'The definitive Best of Vyroota full mixtape expertly blended by DJ Emma Pro.',
     matchScore: 98,
-    audioTrackId: 3,
+    audioTrackId: 18,
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Full_Mixtape/v1789786103/best_of_vyroota_full_mixtape.mp3'
   }
 ];

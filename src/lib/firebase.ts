@@ -6,8 +6,6 @@ import {
   persistentLocalCache, 
   persistentMultipleTabManager,
   memoryLocalCache,
-  doc,
-  getDocFromServer,
   setLogLevel
 } from "firebase/firestore";
 import firebaseConfigJson from "../../firebase-applet-config.json";
@@ -27,9 +25,9 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 const databaseId = (import.meta as any).env?.VITE_FIREBASE_DATABASE_ID || firebaseConfigJson.firestoreDatabaseId;
 
-// Configure log level to suppress harmless client connection retry noise
+// Configure log level to suppress harmless client connection retry noise and offline warnings
 try {
-  setLogLevel('error');
+  setLogLevel('silent');
 } catch {
   // Ignored if unsupported
 }
@@ -44,39 +42,13 @@ try {
   localCache = memoryLocalCache();
 }
 
-// Initialize Firestore with auto-detecting WebChannel/long-polling transport
+// Initialize Firestore with force long-polling transport for rock-solid iframe and proxy reliability
 const db = initializeFirestore(app, {
   localCache,
-  experimentalAutoDetectLongPolling: true,
+  experimentalForceLongPolling: true,
 }, databaseId);
 
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
-
-// Non-blocking connection verification per Firebase skill guidelines
-if (typeof window !== 'undefined') {
-  const verifyConnection = async () => {
-    try {
-      await getDocFromServer(doc(db, 'test', 'connection'));
-    } catch (error: any) {
-      // Offline mode or initial connection establishment is fully supported by localCache
-      if (
-        error?.code === 'unavailable' || 
-        error?.code === 'permission-denied' ||
-        error?.message?.includes('the client is offline')
-      ) {
-        // Safe offline operation mode
-      }
-    }
-  };
-
-  if (document.readyState === 'complete') {
-    setTimeout(verifyConnection, 1500);
-  } else {
-    window.addEventListener('load', () => {
-      setTimeout(verifyConnection, 1500);
-    }, { once: true });
-  }
-}
 
 export { app, auth, db, storage, googleProvider };

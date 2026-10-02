@@ -49,6 +49,8 @@ export default function StarRating({ trackId, readonly = false, size = 'md', sho
           setAverage(totalScore / totalCount);
         }
       }
+    }, () => {
+      // Gracefully handle offline or network reconnects
     });
 
     return () => unsubscribe();

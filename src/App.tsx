@@ -43,6 +43,7 @@ import MobileBottomNav from './components/MobileBottomNav';
 import FeaturedVideoPremiere from './components/FeaturedVideoPremiere';
 import ThreeDLogosRevealPage from './components/ThreeDLogosRevealPage';
 import ThreeDLogosWelcomeHero from './components/ThreeDLogosWelcomeHero';
+import TopStreetAnthemBanner from './components/TopStreetAnthemBanner';
 import { WatchHistoryProvider } from './context/WatchHistoryContext';
 import FloatingBackToTop from './components/FloatingBackToTop';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -347,6 +348,11 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
       />
 
       <main>
+        {/* TOP NONSTOP DISPLAY: STREET ANTHEM 90 FEATURED AT THE TOP */}
+        {!searchQuery.trim() && (
+          <TopStreetAnthemBanner onOpenModal={(track) => setSelectedTrack(track)} />
+        )}
+
         {/* FIRST TO WELCOME VISITORS: 3D LOGO REVEAL HERO ON TOP OF BILLBOARD */}
         {!searchQuery.trim() && (
           <ThreeDLogosWelcomeHero
@@ -511,13 +517,56 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
 
 
 
-          {/* Row 3: Cultural & Reggae Vibes • Curated for You */}
+          {/* Row 2: Wakanda DJs Live Mixtapes & Battle Scratch */}
+          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
+            <NetflixRow
+              id="wakanda-battles"
+              title="Wakanda DJs • Live Mixtapes & Battle Scratch"
+              subtitle="High-Energy Turntablism, Street Anthems & Live MC Ricky Sessions"
+              tracks={tracks.filter(t => 
+                t.title.includes('WAKANDA') || 
+                t.title.includes('STREET ANTHEM') || 
+                t.title.includes('CHALLENGE SCRATCH') || 
+                t.title.includes('LIVE MIXTAPE') || 
+                t.title.includes('ALIEN SKIN') || 
+                t.title.includes('CLUB BANGERS') ||
+                t.title.includes('EPISODE')
+              )}
+              onOpenModal={(track) => setSelectedTrack(track)}
+              isLoading={isFeedLoading || isFilterLoading}
+            />
+          </motion.div>
+
+          {/* Row 3: Ateso Cultural & Gospel Video Nonstops */}
+          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
+            <NetflixRow
+              id="ateso-gospel-cultural"
+              title="Ateso Cultural & Gospel Video Nonstops"
+              subtitle="Authentic Teso Rhythms & Uplifting Gospel Praises by DJ Emma Pro"
+              tracks={tracks.filter(t => 
+                t.title.includes('ATESO') || 
+                t.title.includes('GOSPEL') || 
+                t.title.includes('ACHOLI')
+              )}
+              onOpenModal={(track) => setSelectedTrack(track)}
+              isLoading={isFeedLoading || isFilterLoading}
+            />
+          </motion.div>
+
+          {/* Row 4: Ugandan Hits, Dancehall & Reggae Vibes */}
           <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
             <NetflixRow
               id="reggae-afro"
-              title="Cultural & Reggae Vibes • Curated for You"
-              subtitle="Handcrafted Transitions by DJ Emma Pro FX"
-              tracks={[tracks[3], tracks[1], tracks[0], tracks[2]].filter(Boolean)}
+              title="Ugandan Hits, Dancehall & Reggae Vibes"
+              subtitle="East African Chart-Toppers & Smooth Transitions by DJ Emma Pro"
+              tracks={tracks.filter(t => 
+                t.title.includes('UGANDAN MUSIC') || 
+                t.title.includes('DANCEHALL') || 
+                t.title.includes('REGGEA') || 
+                t.title.includes('VYROOTA') || 
+                t.title.includes('SURPRISE') || 
+                t.title.includes('NEW HITS')
+              )}
               onOpenModal={(track) => setSelectedTrack(track)}
               isLoading={isFeedLoading || isFilterLoading}
             />

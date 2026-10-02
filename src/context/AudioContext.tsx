@@ -27,6 +27,286 @@ export interface AudioTrack {
 export const AUDIO_TRACKS: AudioTrack[] = [
   {
     id: 1,
+    title: 'STREET ANTHEM 90 • DJ EMMA PRO & WAKANDA DJs',
+    artist: 'DJ EMMA PRO x DIVINE DEEJAY UG (FIRE FLAMES DJs)',
+    durationLabel: '58:40 Master Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790955038/STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs__DIVINE_DEEJAY_UG_FIRE_FLAMES_DJs_-1.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Street_Anthem_90_DJ_Emma_Pro_Wakanda_DJs/v1790955038/STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs__DIVINE_DEEJAY_UG_FIRE_FLAMES_DJs_-1.mp3',
+    filename: 'Street_Anthem_90_DJ_Emma_Pro_Wakanda_DJs.mp3',
+    thumbnail: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png',
+    backdrop: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png',
+    matchScore: 99,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K • Studio Master 320kbps',
+    genres: ['Street Anthem', 'Afrobeats', 'Ugandan Hits', 'Wakanda DJs'],
+    description: 'Top Featured Nonstop: STREET ANTHEM 90 by DJ EMMA PRO from Wakanda DJs & Divine Deejay UG Fire Flames DJs. High-energy street bangers, viral Ugandan hits, and non-stop hype transitions. Stream on site or download directly to your phone.',
+    isTrending: true,
+    topRank: 1
+  },
+  {
+    id: 2,
+    title: '2024 ATESO VIDEO MIX VOL 1 VS AFROBEATS & UGANDAN HITS',
+    artist: 'DJ EMMA PRO',
+    durationLabel: '50:15 Nonstop Mix',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790953594/2024_ATESP_VIDEO_MIX_VOLUME_1_VS_AFROBEATS_AND_UGANDAN_HITS_BY_DJ_EMMA_PRO.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:2024_Ateso_Video_Mix_Vol_1_DJ_Emma_Pro/v1790953594/2024_ATESP_VIDEO_MIX_VOLUME_1_VS_AFROBEATS_AND_UGANDAN_HITS_BY_DJ_EMMA_PRO.mp3',
+    filename: '2024_Ateso_Video_Mix_Vol_1_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_000000007a30824389bfed070b58d613.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_000000007a30824389bfed070b58d613.png',
+    matchScore: 99,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K • Studio Master',
+    genres: ['Ateso Nonstop', 'Afrobeats', 'Ugandan Hits'],
+    description: '2024 Ateso Video Mix Volume 1 featuring the hottest Afrobeats and Ugandan club hits mixed live by DJ Emma Pro.',
+    isTrending: true,
+    topRank: 2
+  },
+  {
+    id: 3,
+    title: 'BEST OF ATESO GOSPEL VIDEO NONSTOP MIX • WAKANDA EDITION',
+    artist: 'DJ EMMA PRO (WAKANDA DJs)',
+    durationLabel: '46:30 Gospel Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790953809/BEST_OF_ATESO_GOSPEL_VIDEO_NONSTOP_MIX_BY_DJ_EMMA_PRO__WAKANDA__Christmas_480p.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Best_Of_Ateso_Gospel_Nonstop_DJ_Emma_Pro/v1790953809/BEST_OF_ATESO_GOSPEL_VIDEO_NONSTOP_MIX_BY_DJ_EMMA_PRO__WAKANDA__Christmas_480p.mp3',
+    filename: 'Best_Of_Ateso_Gospel_Nonstop_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550683/file_00000000981482069a72d0e793ac5391.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550683/file_00000000981482069a72d0e793ac5391.png',
+    matchScore: 98,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K • Spatial Audio',
+    genres: ['Ateso Gospel', 'Praise & Worship', 'Christmas Nonstop'],
+    description: 'Uplifting and powerful Ateso gospel praise and worship video nonstop mix curated by DJ Emma Pro Wakanda.',
+    isTrending: true,
+    topRank: 3
+  },
+  {
+    id: 4,
+    title: 'ATESO NONSTOP SERIES • EPISODE 1',
+    artist: 'DJ EMMA PRO',
+    durationLabel: '42:15 Cultural Mix',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790953809/ATESO_NONSTOP_SERRIES_BY_DJ_EMMA_PRO_1.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Ateso_Nonstop_Series_Episode_1_DJ_Emma_Pro/v1790953809/ATESO_NONSTOP_SERRIES_BY_DJ_EMMA_PRO_1.mp3',
+    filename: 'Ateso_Nonstop_Series_Episode_1_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550667/IMG-20260723-WA0032.jpg',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550667/IMG-20260723-WA0032.jpg',
+    matchScore: 99,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Dolby Master 320k',
+    genres: ['Ateso Series', 'Teso Traditional', 'Cultural Vibe'],
+    description: 'Official Ateso Nonstop Series Episode 1 by DJ Emma Pro. Rich local cultural sounds and modern Teso rhythms.',
+    isTrending: true,
+    topRank: 4
+  },
+  {
+    id: 5,
+    title: 'NEW HITS VS OLD HITS • FULL MIXTAPE',
+    artist: 'DJ EMMA PRO x DJ MOSES PRO (WAKANDA DJs)',
+    durationLabel: '54:10 Throwback Mix',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790954881/NEW_HITS_VS_OLD_HITS_TRIAL_FULL_MIXTAPE_BY_DJ_EMMA_PRO_x_DJ_MOSES_PRO__WAKANDA_DJS_PRESENTS_256k.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:New_Hits_Vs_Old_Hits_Mixtape_DJ_Emma_Pro/v1790954881/NEW_HITS_VS_OLD_HITS_TRIAL_FULL_MIXTAPE_BY_DJ_EMMA_PRO_x_DJ_MOSES_PRO__WAKANDA_DJS_PRESENTS_256k.mp3',
+    filename: 'New_Hits_Vs_Old_Hits_Mixtape_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550669/IMG-20260713-WA0056.jpg',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550669/IMG-20260713-WA0056.jpg',
+    matchScore: 98,
+    year: 2026,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K',
+    genres: ['New vs Old Hits', 'Throwback Hits', 'Club Banger'],
+    description: 'Wakanda DJs presents: New Hits vs Old Hits full mixtape blended with master transitions by DJ Emma Pro & DJ Moses Pro.',
+    isTrending: true,
+    topRank: 5
+  },
+  {
+    id: 6,
+    title: 'LIVE MIXTAPE 2025 • KAMPALA UGANDA',
+    artist: 'DJ EMMA PRO FT MC RICKY',
+    durationLabel: '51:40 Live Party',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790954721/LIVE_MIXTAPE_BY_DJ_EMMA_PRO_FT_MC_RICKY_2025_MIX_KAMPALA_UGANADA_1.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Live_Mixtape_2025_Kampala_DJ_Emma_Pro_ft_MC_Ricky/v1790954721/LIVE_MIXTAPE_BY_DJ_EMMA_PRO_FT_MC_RICKY_2025_MIX_KAMPALA_UGANADA_1.mp3',
+    filename: 'Live_Mixtape_2025_Kampala_DJ_Emma_Pro_ft_MC_Ricky.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
+    matchScore: 99,
+    year: 2025,
+    ageRating: 'TV-MA',
+    quality: 'Ultra HD 4K • Live Master',
+    genres: ['Live Hype', 'Club Mixtape', 'Kampala Nightlife'],
+    description: 'Electrifying live party mixtape from Kampala Uganda featuring MC Ricky and non-stop club bangers by DJ Emma Pro.',
+    isTrending: true,
+    topRank: 6
+  },
+  {
+    id: 7,
+    title: 'CHALLENGE SCRATCH • KING OF SCRATCH EDITION',
+    artist: 'DJ EMMA PRO (THE TOMPAL KING OF SCRATCH)',
+    durationLabel: '38:20 Battle Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790953880/CHALLENGE_SCRATCH_HOT_JULLY_2022_MIXED_BY_DJ_EMMA_PRO_THE_TOMPAL_FROM_UGANDA_KING_OF_SCRATCH_0761542434_FOR_MORE_INFORM.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Challenge_Scratch_King_Of_Scratch_DJ_Emma_Pro/v1790953880/CHALLENGE_SCRATCH_HOT_JULLY_2022_MIXED_BY_DJ_EMMA_PRO_THE_TOMPAL_FROM_UGANDA_KING_OF_SCRATCH_0761542434_FOR_MORE_INFORM.mp3',
+    filename: 'Challenge_Scratch_King_Of_Scratch_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 97,
+    year: 2024,
+    ageRating: 'All Ages',
+    quality: 'Turntable Master',
+    genres: ['Turntablism', 'Scratch Challenge', 'Ugandan Street'],
+    description: 'Masterclass scratch and battle skills by DJ Emma Pro, the King of Scratch from Uganda.',
+    isTrending: true,
+    topRank: 7
+  },
+  {
+    id: 8,
+    title: 'WAKANDA DJZ CONNECTION MIXTAPE',
+    artist: 'DJ KING G x DJ EMMA PRO',
+    durationLabel: '47:50 Duo Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790954191/Current_Djz_Wakanda_Djz_Connection_From_2022_To_2023_Mixtape_Dj_King_G_Dj_Emma_Pro._1.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Wakanda_Djz_Connection_Mixtape_Dj_King_G_Dj_Emma_Pro/v1790954191/Current_Djz_Wakanda_Djz_Connection_From_2022_To_2023_Mixtape_Dj_King_G_Dj_Emma_Pro._1.mp3',
+    filename: 'Wakanda_Djz_Connection_Mixtape_Dj_King_G_Dj_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png',
+    matchScore: 98,
+    year: 2024,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K',
+    genres: ['Wakanda Connection', 'Afrobeat Nonstop', 'East African Hits'],
+    description: 'Wakanda Deejays Connection mixtape combining the heavy selection of DJ King G and DJ Emma Pro.',
+    isTrending: true,
+    topRank: 8
+  },
+  {
+    id: 9,
+    title: 'THE CHALLENGE SCRATCH 2 HIT SONGS',
+    artist: 'DJ EMMA PRO (WAKANDA DJs)',
+    durationLabel: '36:15 Battle Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790953152/The_challenge_scratch_two_hit_songs__by_DJ_Emma_pro_from_wakanda_DJZ_480p.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:The_Challenge_Scratch_Two_Hit_Songs_DJ_Emma_Pro/v1790953152/The_challenge_scratch_two_hit_songs__by_DJ_Emma_pro_from_wakanda_DJZ_480p.mp3',
+    filename: 'The_Challenge_Scratch_Two_Hit_Songs_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_000000007a30824389bfed070b58d613.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_000000007a30824389bfed070b58d613.png',
+    matchScore: 97,
+    year: 2024,
+    ageRating: 'All Ages',
+    quality: '480p Master Audio',
+    genres: ['Scratch Battle', 'Hit Songs Mashup', 'Wakanda Style'],
+    description: 'Challenge scratch volume 2 featuring rapid-fire vinyl scratching and chart-topping Ugandan hit songs.',
+    isTrending: true,
+    topRank: 9
+  },
+  {
+    id: 10,
+    title: 'LATEST UGANDAN MUSIC 2024 • HOT MIX',
+    artist: 'DJ EMMA PRO x DJ DIVINE 256',
+    durationLabel: '53:05 Hot Mix',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790954327/LATEST_UGANDAN_MUSIC_2024_MIXED_BY_DJ_EMMA_PRO_X_DJ_DIVINE_256.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Latest_Ugandan_Music_2024_DJ_Emma_Pro_x_DJ_Divine_256/v1790954327/LATEST_UGANDAN_MUSIC_2024_MIXED_BY_DJ_EMMA_PRO_X_DJ_DIVINE_256.mp3',
+    filename: 'Latest_Ugandan_Music_2024_DJ_Emma_Pro_x_DJ_Divine_256.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550683/file_00000000981482069a72d0e793ac5391.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550683/file_00000000981482069a72d0e793ac5391.png',
+    matchScore: 99,
+    year: 2024,
+    ageRating: 'All Ages',
+    quality: 'Ultra HD 4K • Spatial Audio',
+    genres: ['Ugandan Hits 2024', 'Dancehall', 'Afropop'],
+    description: 'The biggest and latest 2024 Ugandan songs mixed with surgical precision by DJ Emma Pro and DJ Divine 256.',
+    isTrending: true,
+    topRank: 10
+  },
+  {
+    id: 11,
+    title: 'ALIEN SKIN VS PALLASO • WAKANDA MIX',
+    artist: 'DJ EMMA PRO (WAKANDA MIX)',
+    durationLabel: '44:20 Clash Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790954532/Latest_2023__ALIEN_SKIN_Vs_PALLASO__DJ_EMMA_PRO_WAKANDA_Mix_256k.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Alien_Skin_Vs_Pallaso_Wakanda_Mix_DJ_Emma_Pro/v1790954532/Latest_2023__ALIEN_SKIN_Vs_PALLASO__DJ_EMMA_PRO_WAKANDA_Mix_256k.mp3',
+    filename: 'Alien_Skin_Vs_Pallaso_Wakanda_Mix_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550667/IMG-20260723-WA0032.jpg',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550667/IMG-20260723-WA0032.jpg',
+    matchScore: 98,
+    year: 2024,
+    ageRating: '16+',
+    quality: 'Studio Master 256k',
+    genres: ['Fangone Forest', 'Pallaso vs Alien Skin', 'Ugandan Dancehall'],
+    description: 'The legendary musical clash: Alien Skin vs Pallaso in an explosive head-to-head Wakanda nonstop mix by DJ Emma Pro.',
+    isTrending: true
+  },
+  {
+    id: 12,
+    title: 'DJ EMMA PRO • SURPRISE NONSTOP MIX',
+    artist: 'DJ EMMA PRO',
+    durationLabel: '49:15 Surprise Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790954104/DJ_EMMA_PRO__SUPRISE__NONSTOP__2022_MIX_2.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:DJ_Emma_Pro_Surprise_Nonstop_Mix/v1790954104/DJ_EMMA_PRO__SUPRISE__NONSTOP__2022_MIX_2.mp3',
+    filename: 'DJ_Emma_Pro_Surprise_Nonstop_Mix.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550669/IMG-20260713-WA0056.jpg',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550669/IMG-20260713-WA0056.jpg',
+    matchScore: 96,
+    year: 2024,
+    ageRating: 'All Ages',
+    quality: 'High Fidelity Master',
+    genres: ['Surprise Nonstop', 'Club Party', 'All-Genre Hype'],
+    description: 'An unpredictable, high-energy party mix packed with surprises, smooth blends, and club favorites.',
+    isTrending: true
+  },
+  {
+    id: 13,
+    title: '2025 CLUB BANGERS MIXXX VOL 1',
+    artist: 'DJ JOSH PRO OFISHOL x DJ EMMA PRO',
+    durationLabel: '55:30 Club Banger',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790953611/2025_mixtape_CLUB_BANGERS_MIXXX_VOL_1_DJ_JOSH_PRO_OFISHOL_X_DJ_EMMA_PRO_256k.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:2025_Club_Bangers_Mix_Vol_1_DJ_Josh_Pro_x_DJ_Emma_Pro/v1790953611/2025_mixtape_CLUB_BANGERS_MIXXX_VOL_1_DJ_JOSH_PRO_OFISHOL_X_DJ_EMMA_PRO_256k.mp3',
+    filename: '2025_Club_Bangers_Mix_Vol_1_DJ_Josh_Pro_x_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
+    matchScore: 99,
+    year: 2025,
+    ageRating: 'TV-MA',
+    quality: 'Ultra HD 4K • 256kbps',
+    genres: ['2025 Club Bangers', 'Amapiano / Afrobeats', 'Festival Hype'],
+    description: '2025 Club Bangers Volume 1 — the ultimate weekend party weapon by DJ Josh Pro Ofishol and DJ Emma Pro.',
+    isTrending: true
+  },
+  {
+    id: 14,
+    title: 'EPISODE 4 MIX SERIES • DJ EMMA PRO x MC SAMMY',
+    artist: 'DJ EMMA PRO x MC SAMMY',
+    durationLabel: '48:30 Hype Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790954274/episode_four_mix_searies_dj_emma_pro_x_mc_sammy_1.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Episode_Four_Mix_Series_DJ_Emma_Pro_x_MC_Sammy/v1790954274/episode_four_mix_searies_dj_emma_pro_x_mc_sammy_1.mp3',
+    filename: 'Episode_Four_Mix_Series_DJ_Emma_Pro_x_MC_Sammy.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+    matchScore: 98,
+    year: 2025,
+    ageRating: 'TV-MA',
+    quality: 'Studio Master',
+    genres: ['Live Hypeman', 'Club Series', 'Dancehall & Afro'],
+    description: 'Episode 4 of the official DJ Emma Pro mix series with high-octane hype vocals from MC Sammy.',
+    isTrending: true
+  },
+  {
+    id: 15,
+    title: 'DANCEHALL MIX VOL 19 • WAKANDA ACADEMY',
+    artist: 'DJ NATHAN KIM SELECTOR FT DJ EMMA PRO',
+    durationLabel: '52:00 Dancehall Nonstop',
+    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790954020/DANCEHALL_MIX_VOL_19_2023_MIXED_BY_DJ_NATHAN_KIM_SELECTOR_FT_DJ_EMMA_PRO_4RM_WAKANDA_DEEJAYS_ACADEMY_hearthis.at.mp3',
+    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Dancehall_Mix_Vol_19_DJ_Nathan_Kim_Selector_ft_DJ_Emma_Pro/v1790954020/DANCEHALL_MIX_VOL_19_2023_MIXED_BY_DJ_NATHAN_KIM_SELECTOR_FT_DJ_EMMA_PRO_4RM_WAKANDA_DEEJAYS_ACADEMY_hearthis.at.mp3',
+    filename: 'Dancehall_Mix_Vol_19_DJ_Nathan_Kim_Selector_ft_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png',
+    backdrop: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png',
+    matchScore: 99,
+    year: 2024,
+    ageRating: 'All Ages',
+    quality: 'HearThis Master',
+    genres: ['Dancehall Vol 19', 'Jamaican Riddims', 'Wakanda Academy'],
+    description: 'Heavyweight Caribbean dancehall riddims mixed by DJ Nathan Kim Selector featuring DJ Emma Pro from Wakanda Deejays Academy.',
+    isTrending: true
+  },
+  {
+    id: 16,
     title: 'ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO',
     artist: 'DJ EMMA PRO',
     durationLabel: 'YouTube Premiere Nonstop',
@@ -49,9 +329,9 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     topRank: 1
   },
   {
-    id: 2,
+    id: 17,
     title: 'BEST OF ACHOLI NONSTOP TRADITIONAL',
-    artist: 'DJ EMMA PRO FX',
+    artist: 'DJ EMMA PRO',
     durationLabel: 'Traditional Nonstop',
     url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789785554/best_of_acholi_nonstop_traditional.mp3',
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Acholi_Nonstop_Traditional/v1789785554/best_of_acholi_nonstop_traditional.mp3',
@@ -63,14 +343,14 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     ageRating: 'All Ages',
     quality: 'Ultra HD 4K • Studio Master',
     genres: ['Acholi Traditional', 'Roots & Culture'],
-    description: 'The finest collection of Acholi traditional nonstop rhythms expertly curated by DJ Emma Pro FX.',
+    description: 'The finest collection of Acholi traditional nonstop rhythms expertly curated by DJ Emma Pro.',
     isTrending: true,
     topRank: 2
   },
   {
-    id: 3,
-    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO FX',
-    artist: 'DJ EMMA PRO FX',
+    id: 18,
+    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO',
+    artist: 'DJ EMMA PRO',
     durationLabel: '52:18 Nonstop Mix',
     url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786103/best_of_vyroota_full_mixtape.mp3',
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Nonstop_2026/v1789786103/best_of_vyroota_full_mixtape.mp3',
@@ -82,7 +362,7 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     ageRating: 'All Ages',
     quality: 'Ultra HD 4K • Spatial Audio',
     genres: ['Vyroota Nonstop', 'YouTube Premiere', 'Ugandan Hits', 'Afrobeats'],
-    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO FX. Continuous streaming of Vyroota acoustic gems, club bangers, and chart-topping Ugandan hits.',
+    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO. Continuous streaming of Vyroota acoustic gems, club bangers, and chart-topping Ugandan hits.',
     isTrending: true,
     isVideo: true,
     youtubeId: '17uskDXOuvY',
@@ -91,7 +371,7 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     topRank: 2
   },
   {
-    id: 4,
+    id: 19,
     title: 'EPISODE 2 DJ EMMA PRO FT MC RICKY',
     artist: 'DJ EMMA PRO FT MC RICKY',
     durationLabel: 'Live Club Hype',
@@ -110,9 +390,9 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     topRank: 4
   },
   {
-    id: 5,
+    id: 20,
     title: 'OLD SOUTH AFRICA MUSIC MC RICKY',
-    artist: 'DJ EMMA PRO FX FT MC RICKY',
+    artist: 'DJ EMMA PRO FT MC RICKY',
     durationLabel: 'Classic Kwaito Mix',
     url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786279/Old_South_Africa_music_MC_RICKY.mp3',
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Old_South_Africa_Music_MC_Ricky/v1789786279/Old_South_Africa_music_MC_RICKY.mp3',
@@ -129,7 +409,7 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     topRank: 5
   },
   {
-    id: 6,
+    id: 21,
     title: 'EPISODE 1 BY MC RICKY FT DJ EMMA PRO',
     artist: 'MC RICKY FT DJ EMMA PRO',
     durationLabel: 'Episode 1 Hype',
@@ -143,14 +423,14 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     ageRating: 'TV-MA',
     quality: 'Ultra HD 4K • Studio Master',
     genres: ['Hype & Dancehall', 'Club Banger'],
-    description: 'Episode 1 featuring MC Ricky hype master and DJ Emma Pro FX on the turntables.',
+    description: 'Episode 1 featuring MC Ricky hype master and DJ Emma Pro on the turntables.',
     isTrending: true,
     topRank: 6
   },
   {
-    id: 7,
+    id: 22,
     title: 'FULL ATESO MIXTAPE 2026',
-    artist: 'DJ EMMA PRO FX',
+    artist: 'DJ EMMA PRO',
     durationLabel: 'Ateso Nonstop',
     url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786374/full_ateso_mixtape_2026.mp3',
     downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_EMMA_PRO_Full_Ateso_Mixtape_2026/v1789786374/full_ateso_mixtape_2026.mp3',
@@ -162,12 +442,12 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     ageRating: 'TV-MA',
     quality: 'HD Lossless',
     genres: ['Ateso Cultural', 'Eastern Uganda', 'Party Mix'],
-    description: 'The absolute best Ateso cultural and modern club mixtape of 2026 curated by DJ Emma Pro FX.',
+    description: 'The absolute best Ateso cultural and modern club mixtape of 2026 curated by DJ Emma Pro.',
     isTrending: true,
     topRank: 7
   },
   {
-    id: 8,
+    id: 23,
     title: 'DJ EMMA PRO INTRO DUBPLATE',
     artist: 'DJ EMMA PRO',
     durationLabel: 'Intro Dubplate',
@@ -181,12 +461,12 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     ageRating: 'All Ages',
     quality: 'Studio Master',
     genres: ['Dubplate', 'Intro'],
-    description: 'Exclusive custom DJ Emma Pro FX intro dubplate.',
+    description: 'Exclusive custom DJ Emma Pro intro dubplate.',
     isTrending: false,
     topRank: 8
   },
   {
-    id: 9,
+    id: 24,
     title: 'ATESO VIBES EXCLUSIVE',
     artist: 'DJ EMMA PRO',
     durationLabel: 'Exclusive Mix',
@@ -205,7 +485,7 @@ export const AUDIO_TRACKS: AudioTrack[] = [
     topRank: 9
   },
   {
-    id: 10,
+    id: 25,
     title: 'AMITO STELLA MIX',
     artist: 'DJ EMMA PRO',
     durationLabel: 'Special Mix',
@@ -264,7 +544,7 @@ interface AudioContextType {
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
-const TRACKS_STORAGE_KEY = 'dj_emma_audio_tracks_v14_vyroota';
+const TRACKS_STORAGE_KEY = 'dj_emma_audio_tracks_v22_street_anthem_art';
 
 export function AudioProvider({ children }: { children: ReactNode }) {
   const [tracks, setTracks] = useState<AudioTrack[]>(() => {
@@ -273,10 +553,11 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       if (saved) {
         const parsed: AudioTrack[] = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // If stored tracks don't have the YouTube video as #1 or Vyroota video, reset to new AUDIO_TRACKS
-          const hasFeaturedYoutubeVideo = parsed[0]?.youtubeId === 'TcVAuZcXB5U';
-          const hasVyrootaVideo = parsed.some(t => t?.youtubeId === '17uskDXOuvY');
-          if (!hasFeaturedYoutubeVideo || !hasVyrootaVideo) {
+          // If stored tracks don't have Street Anthem 90 with new art, reset to new AUDIO_TRACKS
+          const hasStreetAnthemTop = parsed[0]?.url?.includes('STREET_ANTHEM_90') || parsed[0]?.title?.includes('STREET ANTHEM 90');
+          const hasNewArt = parsed[0]?.thumbnail?.includes('file_00000000956c82439256c2a0ce77b093');
+          const hasAllNonstops = parsed.length >= 15;
+          if (!hasStreetAnthemTop || !hasAllNonstops || !hasNewArt) {
             localStorage.removeItem(TRACKS_STORAGE_KEY);
             return AUDIO_TRACKS;
           }
@@ -284,19 +565,19 @@ export function AudioProvider({ children }: { children: ReactNode }) {
             ...t,
             id: t.id || (idx + 1),
             title: t.title || 'Nonstop Mixtape',
-            artist: t.artist || 'DJ EMMA PRO FX',
+            artist: t.artist || 'DJ EMMA PRO',
             url: t.url || (t as any).audioUrl || '',
             downloadUrl: t.downloadUrl || t.url || '',
             filename: t.filename || `${t.title || 'track'}.mp3`,
             genres: Array.isArray(t.genres) ? t.genres : ['Nonstop Mix'],
             durationLabel: t.durationLabel || 'Nonstop',
-            thumbnail: t.thumbnail || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
-            backdrop: t.backdrop || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
+            thumbnail: t.thumbnail || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png',
+            backdrop: t.backdrop || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_00000000bda08211910e147fbb531635.png',
             matchScore: t.matchScore || 99,
             year: t.year || 2026,
             ageRating: t.ageRating || 'All Ages',
             quality: t.quality || 'Studio Master',
-            description: t.description || 'Mastered studio nonstop mixtape by DJ Emma Pro FX.'
+            description: t.description || 'Mastered studio nonstop mixtape by DJ Emma Pro.'
           }));
         }
       }
