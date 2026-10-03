@@ -45,7 +45,6 @@ import ThreeDLogosWelcomeHero from './components/ThreeDLogosWelcomeHero';
 import TopStreetAnthemBanner from './components/TopStreetAnthemBanner';
 import ContinueListeningBanner from './components/ContinueListeningBanner';
 import MyFavoritesSection from './components/MyFavoritesSection';
-import NetflixStickyPlayer from './components/NetflixStickyPlayer';
 import { FavoritesProvider, useFavorites } from './context/FavoritesContext';
 import { WatchHistoryProvider } from './context/WatchHistoryContext';
 import FloatingBackToTop from './components/FloatingBackToTop';
@@ -353,7 +352,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="min-h-screen bg-[#0a0a0f]/40 text-white selection:bg-[#E50914] selection:text-white font-sans overflow-x-hidden pt-[36px] pb-28 sm:pb-24 relative"
+      className="min-h-screen bg-[#0a0a0f]/40 text-white selection:bg-[#E50914] selection:text-white font-sans overflow-x-hidden pt-[36px] pb-16 md:pb-6 relative"
     >
       {/* Background Image Layer (Transparent Glass Theme - DJ Emma Background Picture Clearly Visible) */}
       <div 
@@ -1040,8 +1039,6 @@ function RootApp() {
         onCloseAllModals={() => setShowLoginModal(false)}
       />
       <NetflixDashboard onOpenLogin={handleOpenLogin} />
-      {/* Persistent Mini Player whenever audio is active */}
-      <NetflixStickyPlayer />
       <AdminAuthModal />
       {showLoginModal && (
         <LoginScreen 
