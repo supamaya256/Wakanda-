@@ -925,11 +925,18 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
 
       <div className="relative z-10">
       {/* Hidden audio element for previewing */}
-      <audio
-        ref={previewAudioRef}
-        onEnded={() => setIsPreviewAudioPlaying(false)}
-        onError={() => setIsPreviewAudioPlaying(false)}
-      />
+      {previewAudioUrl && (
+        <audio
+          ref={previewAudioRef}
+          src={previewAudioUrl}
+          preload="none"
+          onEnded={() => setIsPreviewAudioPlaying(false)}
+          onError={(e) => {
+            e.stopPropagation();
+            setIsPreviewAudioPlaying(false);
+          }}
+        />
+      )}
 
       {/* Floating Notification Toast */}
       {notification && (
@@ -2370,7 +2377,10 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
                       muted
                       loop
                       playsInline
-                      autoPlay
+                      preload="none"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLElement).style.display = 'none';
+                      }}
                       className="w-full h-full object-cover pointer-events-none"
                     />
                     <div className="absolute top-2 left-2 bg-black/80 px-2 py-0.5 rounded text-[10px] font-mono text-emerald-400 font-bold border border-white/10">

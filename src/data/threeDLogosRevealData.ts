@@ -41,6 +41,18 @@ export function ensure360pLogoUrl(url?: string | null): string {
   return url;
 }
 
+export const DEFAULT_3D_LOGO_REVEAL_EDITION = 'Edition #08';
+
+export function getDefault3DLogoRevealItem(): ThreeDLogoRevealItem {
+  const item = THREE_D_LOGOS_REVEAL_DATA.find(i => i.edition === DEFAULT_3D_LOGO_REVEAL_EDITION);
+  return item || THREE_D_LOGOS_REVEAL_DATA[7] || THREE_D_LOGOS_REVEAL_DATA[0];
+}
+
+export function getDefault3DLogoRevealIndex(): number {
+  const idx = THREE_D_LOGOS_REVEAL_DATA.findIndex(i => i.edition === DEFAULT_3D_LOGO_REVEAL_EDITION);
+  return idx !== -1 ? idx : 7;
+}
+
 export const THREE_D_LOGOS_REVEAL_DATA: ThreeDLogoRevealItem[] = [
   {
     id: '3d-reveal-electric-shockwave',
@@ -131,7 +143,8 @@ export const THREE_D_LOGOS_REVEAL_DATA: ThreeDLogoRevealItem[] = [
     videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/w_640,h_360,c_limit,q_auto:eco/v1790122966/InShot_20260901_180733541.mp4',
     category: 'Pyro & Impact',
     resolution: '360p Data Saver',
-    fps: 30
+    fps: 30,
+    featured: true
   },
   {
     id: '3d-reveal-09',

@@ -43,6 +43,10 @@ export default function VideoShowcase() {
                   onContextMenu={(e) => e.preventDefault()}
                   preload="none"
                   poster={video.thumbnail}
+                  onError={(e) => {
+                    e.stopPropagation();
+                    (e.currentTarget as HTMLElement).style.display = 'none';
+                  }}
                  />
               </div>
               <div className="p-5 flex flex-col justify-between h-[120px]">

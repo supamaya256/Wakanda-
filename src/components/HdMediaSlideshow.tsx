@@ -703,6 +703,10 @@ export default function HdMediaSlideshow({
                     autoPlay={false}
                     preload={preloadStrategy}
                     playsInline
+                    onError={(e) => {
+                      e.stopPropagation();
+                      console.warn('Fullscreen video load handled:', e);
+                    }}
                     className="max-h-[82vh] w-auto max-w-full rounded-2xl shadow-2xl border border-zinc-800 object-contain"
                   />
                 </div>

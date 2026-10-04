@@ -358,7 +358,7 @@ export const VOICE_DROPS_DATA: VoiceDropItem[] = [
     id: 'bi-q-a',
     title: 'BIG Q • POWERHOUSE ANTHEM',
     category: 'Heavyweight Sound Clash Drop',
-    audioUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789616849/bi_q_a.mp3',
+    audioUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789616848/AUD-20260911-WA0001.mp3',
     priceUgx: '15,000 UGX',
     priceUsd: '$5 USD',
     style: 'Epic Cinematic Vocal & Metallic Drop',

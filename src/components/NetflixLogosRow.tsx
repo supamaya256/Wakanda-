@@ -64,8 +64,9 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
   // Active / Center Stage 3D Video Player (Plays directly from the middle of the showcase without scrolling up)
   const [activeLogo, setActiveLogo] = useState<LogoItem>(() => {
     const list = Array.isArray(logos) && logos.length > 0 ? logos : LOGO_ITEMS_DATA;
+    const edition08Logo = list.find(l => l && (l.id === 'emma-pro-club-mix-intro' || l.videoUrl?.includes('InShot_20260901_180733541')));
     const electricLogo = list.find(l => l && (l.id === 'electric-shockwave-wa0011' || l.title?.toUpperCase().includes('ELECTRIC SHOCKWAVE')));
-    return electricLogo || list[0] || LOGO_ITEMS_DATA[0];
+    return edition08Logo || electricLogo || list[0] || LOGO_ITEMS_DATA[0];
   });
   const activeVideoRef = useRef<HTMLVideoElement>(null);
   const centerPlayerRef = useRef<HTMLDivElement>(null);
@@ -79,8 +80,9 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
   useEffect(() => {
     const list = Array.isArray(logos) && logos.length > 0 ? logos : LOGO_ITEMS_DATA;
     if (!activeLogo || !list.find(l => l && l.id === activeLogo.id) || !activeLogo.videoUrl) {
+      const edition08Logo = list.find(l => l && (l.id === 'emma-pro-club-mix-intro' || l.videoUrl?.includes('InShot_20260901_180733541')));
       const electricLogo = list.find(l => l && (l.id === 'electric-shockwave-wa0011' || l.title?.toUpperCase().includes('ELECTRIC SHOCKWAVE')));
-      setActiveLogo(electricLogo || list[0] || LOGO_ITEMS_DATA[0]);
+      setActiveLogo(edition08Logo || electricLogo || list[0] || LOGO_ITEMS_DATA[0]);
     }
   }, [logos, activeLogo]);
 
@@ -569,6 +571,9 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
               onLoadedMetadata={handleActiveLoadedMetadata}
               onPlay={() => setIsActivePlaying(true)}
               onPause={() => setIsActivePlaying(false)}
+              onError={(e) => {
+                console.warn('Active cinema video stream error handled:', e);
+              }}
               className="w-full h-full object-contain"
             />
 
@@ -786,7 +791,7 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                 >
                   {/* Left: Compact Video Preview Thumbnail */}
                   <div className="relative w-24 h-16 sm:w-28 sm:h-20 flex-shrink-0 rounded-md overflow-hidden bg-black border border-white/10 select-none">
-                    {isDataSaver && !isHovered && !isCurrentActive ? (
+                    {(!logo?.videoUrl || (!isHovered && !isCurrentActive)) ? (
                       <img
                         src={getCloudinaryPoster(logo?.videoUrl || '')}
                         alt={logo?.title || '3D Logo'}
@@ -796,25 +801,19 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                       />
                     ) : (
                       <video
-                        src={ensure480pUrl(logo?.videoUrl || '')}
+                        src={ensure480pUrl(logo.videoUrl)}
                         muted
                         loop
                         playsInline
-                        preload="none"
+                        autoPlay
+                        preload="metadata"
                         disablePictureInPicture
                         disableRemotePlayback
                         controlsList="nodownload noplaybackrate nofullscreen"
                         onContextMenu={(e) => e.preventDefault()}
                         onDragStart={(e) => e.preventDefault()}
-                        ref={(el) => {
-                          if (el) {
-                            if (isHovered || isCurrentActive) {
-                              el.play().catch(() => {});
-                            } else {
-                              el.pause();
-                              el.currentTime = 0;
-                            }
-                          }
+                        onError={(e) => {
+                          (e.currentTarget as HTMLElement).style.display = 'none';
                         }}
                         className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300 pointer-events-none select-none"
                       />
@@ -962,7 +961,7 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                 }`}
               >
                 <div className="relative w-24 h-16 sm:w-28 sm:h-20 flex-shrink-0 rounded-md overflow-hidden bg-black border border-white/10 select-none">
-                  {isDataSaver && !isHovered && !isCurrentActive ? (
+                  {(!logo?.videoUrl || (!isHovered && !isCurrentActive)) ? (
                     <img
                       src={getCloudinaryPoster(logo?.videoUrl || '')}
                       alt={logo?.title || '3D Logo'}
@@ -972,25 +971,19 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                     />
                   ) : (
                     <video
-                      src={ensure480pUrl(logo?.videoUrl || '')}
+                      src={ensure480pUrl(logo.videoUrl)}
                       muted
                       loop
                       playsInline
-                      preload="none"
+                      autoPlay
+                      preload="metadata"
                       disablePictureInPicture
                       disableRemotePlayback
                       controlsList="nodownload noplaybackrate nofullscreen"
                       onContextMenu={(e) => e.preventDefault()}
                       onDragStart={(e) => e.preventDefault()}
-                      ref={(el) => {
-                        if (el) {
-                          if (isHovered || isCurrentActive) {
-                            el.play().catch(() => {});
-                          } else {
-                            el.pause();
-                            el.currentTime = 0;
-                          }
-                        }
+                      onError={(e) => {
+                        (e.currentTarget as HTMLElement).style.display = 'none';
                       }}
                       className="w-full h-full object-cover pointer-events-none select-none"
                     />
@@ -1088,7 +1081,7 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                 >
                   {/* Top: Video Screen with Auto Play on Hover / Poster for Data Saver */}
                   <div className="relative aspect-video w-full bg-black overflow-hidden select-none">
-                    {isDataSaver && !isHovered && !isCurrentActive ? (
+                    {(!logo?.videoUrl || (!isHovered && !isCurrentActive)) ? (
                       <img
                         src={getCloudinaryPoster(logo?.videoUrl || '')}
                         alt={logo?.title || '3D Logo'}
@@ -1098,25 +1091,19 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                       />
                     ) : (
                       <video
-                        src={ensure480pUrl(logo?.videoUrl || '')}
+                        src={ensure480pUrl(logo.videoUrl)}
                         muted
                         loop
                         playsInline
-                        preload="none"
+                        autoPlay
+                        preload="metadata"
                         disablePictureInPicture
                         disableRemotePlayback
                         controlsList="nodownload noplaybackrate nofullscreen"
                         onContextMenu={(e) => e.preventDefault()}
                         onDragStart={(e) => e.preventDefault()}
-                        ref={(el) => {
-                          if (el) {
-                            if (isHovered || isCurrentActive) {
-                              el.play().catch(() => {});
-                            } else {
-                              el.pause();
-                              el.currentTime = 0;
-                            }
-                          }
+                        onError={(e) => {
+                          (e.currentTarget as HTMLElement).style.display = 'none';
                         }}
                         className="w-full h-full object-cover pointer-events-none select-none"
                       />
@@ -1286,6 +1273,9 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                 onPlay={() => setIsModalPlaying(true)}
                 onPause={() => setIsModalPlaying(false)}
                 onClick={toggleModalPlay}
+                onError={(e) => {
+                  console.warn('Modal video error handled:', e);
+                }}
                 className="w-full h-full object-contain cursor-pointer"
               />
 

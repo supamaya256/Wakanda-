@@ -29,7 +29,12 @@ import {
   Send,
   Eye
 } from 'lucide-react';
-import { THREE_D_LOGOS_REVEAL_DATA, ThreeDLogoRevealItem, ensure360pLogoUrl } from '../data/threeDLogosRevealData';
+import {
+  THREE_D_LOGOS_REVEAL_DATA,
+  ThreeDLogoRevealItem,
+  ensure360pLogoUrl,
+  getDefault3DLogoRevealItem
+} from '../data/threeDLogosRevealData';
 import { useDataSaver } from '../context/DataSaverContext';
 
 interface ThreeDLogosRevealPageProps {
@@ -57,8 +62,8 @@ export default function ThreeDLogosRevealPage({
     return '';
   };
 
-  // Active selected video in center Holo-Deck
-  const [activeItem, setActiveItem] = useState<ThreeDLogoRevealItem>(THREE_D_LOGOS_REVEAL_DATA[0]);
+  // Active selected video in center Holo-Deck (defaults to Edition #08)
+  const [activeItem, setActiveItem] = useState<ThreeDLogoRevealItem>(() => getDefault3DLogoRevealItem());
   const [isPlaying, setIsPlaying] = useState<boolean>(!isDataSaver);
   const [isMuted, setIsMuted] = useState<boolean>(true);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
@@ -84,6 +89,20 @@ export default function ThreeDLogosRevealPage({
   // Main stage video ref
   const stageVideoRef = useRef<HTMLVideoElement>(null);
   const carouselTrackRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll carousel track to active item
+  useEffect(() => {
+    if (carouselTrackRef.current) {
+      const activeIdx = THREE_D_LOGOS_REVEAL_DATA.findIndex(i => i.id === activeItem.id);
+      if (activeIdx !== -1 && carouselTrackRef.current.children[activeIdx]) {
+        (carouselTrackRef.current.children[activeIdx] as HTMLElement).scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+          block: 'nearest'
+        });
+      }
+    }
+  }, [activeItem.id]);
 
   // Categories
   const categories = useMemo(() => {
@@ -543,6 +562,9 @@ export default function ThreeDLogosRevealPage({
                   controlsList="nodownload nofullscreen noremoteplayback"
                   disablePictureInPicture
                   onContextMenu={triggerAntiDownloadNotice}
+                  onError={(e) => {
+                    console.warn('Stage video error handled:', e);
+                  }}
                   className="w-full h-full object-contain max-h-[540px] pointer-events-auto"
                   onClick={togglePlay}
                 />
@@ -721,7 +743,7 @@ export default function ThreeDLogosRevealPage({
                   onMouseEnter={() => setHoveredCardId(item.id)}
                   onMouseLeave={() => setHoveredCardId(null)}
                 >
-                  {isDataSaver && hoveredCardId !== item.id && !isSelected ? (
+                  {hoveredCardId !== item.id && !isSelected ? (
                     <img
                       src={getVideoPoster(item.videoUrl)}
                       alt={item.title}
@@ -740,6 +762,9 @@ export default function ThreeDLogosRevealPage({
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       onContextMenu={triggerAntiDownloadNotice}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLElement).style.display = 'none';
+                      }}
                       className="w-full h-full object-cover"
                     />
                   )}
@@ -831,7 +856,7 @@ export default function ThreeDLogosRevealPage({
                   onMouseEnter={() => setHoveredCardId(item.id)}
                   onMouseLeave={() => setHoveredCardId(null)}
                 >
-                  {isDataSaver && hoveredCardId !== item.id && !isCurrentlyActive ? (
+                  {hoveredCardId !== item.id && !isCurrentlyActive ? (
                     <img
                       src={getVideoPoster(item.videoUrl)}
                       alt={item.title}
@@ -850,6 +875,9 @@ export default function ThreeDLogosRevealPage({
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       onContextMenu={triggerAntiDownloadNotice}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLElement).style.display = 'none';
+                      }}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   )}

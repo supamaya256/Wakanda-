@@ -26,7 +26,7 @@ import HeartLikeButton from './HeartLikeButton';
 export type { VoiceDropItem };
 export { VOICE_DROPS_DATA };
 
-type ViewMode = 'four-rows' | 'grid' | 'single-row';
+type ViewMode = 'eight-rows' | 'grid' | 'single-row';
 
 interface NetflixDropsRowProps {
   isLoading?: boolean;
@@ -37,8 +37,8 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // Layout view mode: defaults to 'single-row' (Smooth Auto-Scrolling Horizontal Content Carousel)
-  const [viewMode, setViewMode] = useState<ViewMode>('single-row');
+  // Layout view mode: defaults to 'eight-rows' (8 Lines Down per column)
+  const [viewMode, setViewMode] = useState<ViewMode>('eight-rows');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
@@ -64,6 +64,7 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
   // Initialize audio player
   useEffect(() => {
     const audio = new Audio();
+    audio.preload = 'none';
     dropAudioRef.current = audio;
 
     const handleTimeUpdate = () => {
@@ -81,7 +82,8 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
       setActiveDropId(null);
     };
 
-    const handleError = () => {
+    const handleError = (e: Event) => {
+      e.stopPropagation();
       setIsPlayingDrop(false);
       setActiveDropId(null);
     };
@@ -95,6 +97,9 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
       audio.pause();
+      try {
+        audio.removeAttribute('src');
+      } catch {}
     };
   }, []);
 
@@ -310,9 +315,12 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
             >
               {filteredDrops.length} Real Samples
             </motion.span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-red-950/70 border border-red-500/40 text-red-300 font-bold uppercase tracking-wider">
+              {viewMode === 'eight-rows' ? '8 Lines Down' : viewMode === 'single-row' ? 'Single Row' : 'Grid'}
+            </span>
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 mt-1 max-w-2xl opacity-80">
-            Displayed in <strong className="text-white font-semibold">4 lines down per column</strong>. Click <strong className="text-white">Play</strong> to preview any drop with FX stutters, then click <strong className="text-[#46d369]">Order</strong> to customize with your own DJ name on WhatsApp!
+            Displayed in <strong className="text-white font-semibold">8 lines down per column (default)</strong>. Click <strong className="text-white">Play</strong> to preview any drop with FX stutters, then click <strong className="text-[#46d369]">Order</strong> to customize with your own DJ name on WhatsApp!
           </p>
         </motion.div>
 
@@ -322,16 +330,16 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
           <div className="bg-zinc-900 border border-zinc-700/80 rounded-lg p-1 flex items-center gap-1 text-xs">
             <button
               type="button"
-              onClick={() => setViewMode('four-rows')}
+              onClick={() => setViewMode('eight-rows')}
               className={`px-2.5 py-1 rounded flex items-center gap-1.5 transition-all cursor-pointer ${
-                viewMode === 'four-rows'
+                viewMode === 'eight-rows'
                   ? 'bg-[#E50914] text-white font-bold shadow'
                   : 'text-zinc-400 hover:text-white'
               }`}
-              title="4 Lines Down Scroll"
+              title="8 Lines Down Scroll"
             >
               <Columns4 className="w-3.5 h-3.5" />
-              <span>4 Lines Down</span>
+              <span>8 Lines Down</span>
             </button>
 
             <button
@@ -425,8 +433,8 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
         </div>
       </div>
 
-      {/* RENDER VIEW: 4 LINES DOWN PER COLUMN (DEFAULT) */}
-      {viewMode === 'four-rows' && (
+      {/* RENDER VIEW: 8 LINES DOWN PER COLUMN (DEFAULT) */}
+      {viewMode === 'eight-rows' && (
         <div className="relative">
           {showLeftArrow && (
             <button
@@ -441,7 +449,7 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
           <div
             ref={rowRef}
             onScroll={checkScrollPosition}
-            className="grid grid-rows-4 grid-flow-col auto-cols-[300px] sm:auto-cols-[380px] md:auto-cols-[420px] lg:auto-cols-[450px] gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar scroll-smooth py-2"
+            className="grid grid-rows-[repeat(8,minmax(0,1fr))] grid-flow-col auto-cols-[290px] sm:auto-cols-[360px] md:auto-cols-[400px] lg:auto-cols-[430px] gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-2"
           >
             {filteredDrops.map((drop) => {
               const isThisDropActive = activeDropId === drop.id && isPlayingDrop;

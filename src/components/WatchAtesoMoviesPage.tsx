@@ -378,6 +378,10 @@ export default function WatchAtesoMoviesPage({ onBackToStore, onOpenStudioManage
                     className="w-full h-full object-contain"
                     playsInline
                     controls={false}
+                    onError={(e) => {
+                      e.stopPropagation();
+                      console.warn('Movie video playback handled:', e);
+                    }}
                     onTimeUpdate={handleTimeUpdate}
                     onLoadedMetadata={handleLoadedMetadata}
                     onEnded={() => {

@@ -46,7 +46,15 @@ export default function TrustProofModal({ onClose }: TrustProofModalProps) {
       <div className="absolute inset-0 cursor-pointer" onClick={onClose} />
       
       {/* Hidden audio element */}
-      <audio ref={audioRef} src={TRUST_AUDIO_URL} />
+      <audio
+        ref={audioRef}
+        src={TRUST_AUDIO_URL}
+        preload="none"
+        onError={(e) => {
+          e.stopPropagation();
+          console.warn('Trust audio failed to load:', e);
+        }}
+      />
       
       <motion.div 
         initial={{ opacity: 0, scale: 0.9, y: 20 }}

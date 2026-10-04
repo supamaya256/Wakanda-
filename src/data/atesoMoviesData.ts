@@ -27,6 +27,10 @@ export interface AtesoMovie {
 export function get320pVideoUrl(url: string): string {
   if (!url) return '';
   if (url.includes('cloudinary.com') && url.includes('/video/upload/')) {
+    // If the video is full_ateso_mixtape_2026.mp4, keep raw url without on-the-fly transformations (which return 423)
+    if (url.includes('full_ateso_mixtape_2026.mp4')) {
+      return url.replace('/video/upload/w_320,c_limit,q_auto:low/', '/video/upload/');
+    }
     // If already has transformation, replace or prepend 320p profile
     if (!url.includes('w_320')) {
       return url.replace('/video/upload/', '/video/upload/w_320,c_limit,q_auto:low/');
@@ -87,8 +91,8 @@ export const ATESO_MOVIES_DATA: AtesoMovie[] = [
     genre: 'Action / Prison Break / Ateso Translation',
     quality: '320p Fast Stream • Smooth Low Data',
     thumbnail: 'https://cdn4.telesco.pe/file/DCtl4WcL88aeugxX22VAOd6GhBt5yMonEakYetfxbvoz8OVe-B8LJbPsZY14p9OlsSptqDeN4j9sBFqkUIac6qsQbl1ViOfCN43LgISUeh5-idRvZbl42Hvre7t9NjTcM9RWcauib_SF2K_x6Sex4AU12PQVM7krYdHeqDZ4dio2RMAPgmx5aeTlq3Zuiy2AJGv9YT81Bxvo6HWme9WzfHWhUtkeCtfLM0HqWlynLTJ6wwrAGjnpIV9i8A2gtcj0wkwlDUKP92FcOlsTe5P7ISbuSjiabhNGoc3NsnpDg6smDyoAoRpY1HY_y2lNCF6HVmDXEeNo5qyl5E36P2oRPw',
-    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/w_320,c_limit,q_auto:low/v1789611463/full_ateso_mixtape_2026.mp4',
-    videoUrl320: 'https://res.cloudinary.com/hbyqk5y0/video/upload/w_320,c_limit,q_auto:low/v1789611463/full_ateso_mixtape_2026.mp4',
+    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789611463/full_ateso_mixtape_2026.mp4',
+    videoUrl320: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789611463/full_ateso_mixtape_2026.mp4',
     telegramUrl: 'https://t.me/atesomoviesbox/487',
     youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
     description: 'POISON BREAK Episode 3: Michael is coerced by mob boss John Abruzzi. A new psych-ward inmate tests Michael’s patience and threatens to expose the hidden tattoos.',
@@ -167,8 +171,8 @@ export const ATESO_MOVIES_DATA: AtesoMovie[] = [
     genre: 'Action / Prison Break / Ateso Translation',
     quality: '320p Fast Stream • Smooth Low Data',
     thumbnail: 'https://cdn4.telesco.pe/file/KzLsrVd3ZN6MjU0LyJ_PRuGxVvUEYriVD_4EQhRxKlOlUyessnyHdN0G-PNP-Rad6_6EZnmQUXLd44sV6WlJ4jwqgj8LebDj9GWAgzzPgRwPZGNPSKtYrqPuabfThr8PCwrpMbtxcuftlSQ39rtJ5pm5dML5Gme6ffN6u6sciA3Ptk58RyVHNCzTwersUhFkRYJgXqQtcho4vLEmQvGd9A2Kc6CbpvyT8qZFVO6t9aXNETXKXOIbvX7sGsuTBDYBCmn1UCqlC2Byv2QXd6j3XzZD55Ezu9D-AE08Twxh5kpNdKFGuDGBDWZOTQscT4dqWm1E4dSotXhOAAPMgVic0g',
-    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/w_320,c_limit,q_auto:low/v1789611463/full_ateso_mixtape_2026.mp4',
-    videoUrl320: 'https://res.cloudinary.com/hbyqk5y0/video/upload/w_320,c_limit,q_auto:low/v1789611463/full_ateso_mixtape_2026.mp4',
+    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789611463/full_ateso_mixtape_2026.mp4',
+    videoUrl320: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789611463/full_ateso_mixtape_2026.mp4',
     telegramUrl: 'https://t.me/atesomoviesbox/492',
     youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
     description: 'POISON BREAK Episode 7: Prison riot reaches maximum danger. Michael crawls through burning ventilation ducts to rescue Dr. Sara Tancredi from hostile inmates.',

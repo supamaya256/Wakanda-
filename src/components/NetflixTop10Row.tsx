@@ -36,7 +36,15 @@ export default function NetflixTop10Row({ onOpenModal, isLoading = false }: Netf
   // Scroll Audio Autoplay
   useEffect(() => {
     if (isLoading) return;
-    scrollAudioRef.current = new Audio("https://res.cloudinary.com/hbyqk5y0/video/upload/v1789671239/wigman-2026-09-17-21-45-DJ-DROPS-BY-EMMA-PRO-AND-3D-ANIMATION-LOGO_S.mp3");
+    try {
+      const audio = new Audio("https://res.cloudinary.com/hbyqk5y0/video/upload/v1789671239/wigman-2026-09-17-21-45-DJ-DROPS-BY-EMMA-PRO-AND-3D-ANIMATION-LOGO_S.mp3");
+      audio.preload = "none";
+      audio.addEventListener("error", (e) => {
+        e.stopPropagation();
+        console.warn("Scroll audio load handled:", e);
+      });
+      scrollAudioRef.current = audio;
+    } catch {}
     
     const observer = new IntersectionObserver(
       (entries) => {

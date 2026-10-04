@@ -1,5 +1,5 @@
 import React, { useRef, useState, MouseEvent } from 'react';
-import { Play, Pause, Download, Plus, Check, Info, Sparkles, Volume2 } from 'lucide-react';
+import { Play, Pause, Download, Plus, Check, Info, Sparkles, Volume2, ChevronLeft, ChevronRight, Columns4, LayoutGrid, GalleryHorizontal } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAudio, AudioTrack } from '../context/AudioContext';
 import { useWatchHistory } from '../context/WatchHistoryContext';
@@ -7,6 +7,8 @@ import HeartLikeButton from './HeartLikeButton';
 import StarRating from './StarRating';
 import { RowSkeleton } from './NetflixSkeleton';
 import AutoScrollCarousel from './AutoScrollCarousel';
+
+export type RowViewMode = 'five-rows' | 'single-row' | 'grid';
 
 export interface NetflixRowProps {
   id?: string;
@@ -103,15 +105,18 @@ function TrackCardItem({
           loading="lazy"
         />
 
-        {/* Video Preview on Hover if available */}
-        {isHovered && track.url && (
+        {/* Video Preview on Hover only if real mp4/webm video exists */}
+        {isHovered && track.videoUrl && (track.videoUrl.endsWith('.mp4') || track.videoUrl.endsWith('.webm')) && (
           <video
-            src={track.url}
+            src={track.videoUrl}
             autoPlay
             muted
             loop
             playsInline
             preload="metadata"
+            onError={(e) => {
+              (e.currentTarget as HTMLElement).style.display = 'none';
+            }}
             className="absolute inset-0 w-full h-full object-cover object-center animate-fadeIn z-10"
           />
         )}
@@ -270,6 +275,192 @@ function TrackCardItem({
   );
 }
 
+interface NonstopCompactItemProps {
+  track: AudioTrack;
+  index: number;
+  isThisTrackPlaying: boolean;
+  onOpenModal: (track: AudioTrack) => void;
+  togglePlay: () => void;
+  playTrackById: (id: number) => void;
+  downloadTrack: (track: AudioTrack) => void;
+  currentTime: number;
+  duration: number;
+  recordMixtapePlayed?: (track: AudioTrack) => void;
+}
+
+function NonstopCompactItem({
+  track,
+  index,
+  isThisTrackPlaying,
+  onOpenModal,
+  togglePlay,
+  playTrackById,
+  downloadTrack,
+  currentTime,
+  duration,
+  recordMixtapePlayed
+}: NonstopCompactItemProps) {
+  const labelBadge = getPremiumLabel(track);
+
+  return (
+    <div
+      className={`group/item relative flex items-center justify-between gap-2.5 sm:gap-3 p-2 sm:p-2.5 rounded-lg bg-[#181818] hover:bg-[#222222] border transition-all duration-200 hover:shadow-xl active:scale-[0.98] ${
+        isThisTrackPlaying
+          ? 'border-[#E50914] shadow-[0_0_20px_rgba(229,9,20,0.4)] bg-[#1e1214] ring-1 ring-[#E50914]'
+          : 'border-white/10 hover:border-zinc-500'
+      }`}
+    >
+      {/* Left: 16:9 Thumbnail with Overlay & Play Button */}
+      <div 
+        onClick={() => onOpenModal(track)}
+        className="relative w-20 h-14 sm:w-24 sm:h-16 flex-shrink-0 rounded overflow-hidden bg-zinc-900 border border-white/10 cursor-pointer group/thumb"
+      >
+        <img
+          src={track.thumbnail}
+          alt={track.title}
+          className="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-300"
+          referrerPolicy="no-referrer"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-black/40 group-hover/thumb:bg-black/20 transition-colors flex items-center justify-center">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isThisTrackPlaying) {
+                togglePlay();
+              } else {
+                if (recordMixtapePlayed) recordMixtapePlayed(track);
+                playTrackById(track.id);
+              }
+            }}
+            title={isThisTrackPlaying ? 'Pause Playback' : 'Play Direct on Website'}
+            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-lg ${
+              isThisTrackPlaying
+                ? 'bg-[#E50914] text-white scale-105 shadow-[#E50914]/60'
+                : 'bg-white text-black hover:bg-[#E50914] hover:text-white hover:scale-110'
+            }`}
+          >
+            {isThisTrackPlaying ? (
+              <Pause className="w-3.5 h-3.5 fill-current" />
+            ) : (
+              <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+            )}
+          </button>
+        </div>
+
+        {/* Top-left N Badge */}
+        <span className="absolute top-1 left-1 w-3 h-3.5 rounded-[1px] bg-[#E50914] flex items-center justify-center font-black text-white text-[7px] shadow">
+          N
+        </span>
+
+        {/* Bottom-right Duration */}
+        <span className="absolute bottom-1 right-1 bg-black/80 backdrop-blur-xs font-mono text-[8px] text-zinc-300 px-1 rounded border border-white/10">
+          {track.durationLabel?.split(' ')[0] || 'Nonstop'}
+        </span>
+
+        {/* Playing Progress Bar Line */}
+        {isThisTrackPlaying && (
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-800">
+            <div
+              className="h-full bg-[#E50914] transition-all"
+              style={{
+                width: duration > 0 ? `${(currentTime / duration) * 100}%` : '50%'
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Middle: Nonstop Mix Information */}
+      <div className="flex-1 min-w-0 pr-1">
+        <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+          <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded shadow ${labelBadge.className}`}>
+            {labelBadge.text}
+          </span>
+          <span className="text-[9px] font-mono text-[#46d369] font-bold">
+            {track.matchScore || 99}% Match
+          </span>
+          <span className="text-[9px] font-mono text-zinc-400 hidden xs:inline">
+            • 320K LOSSLESS
+          </span>
+        </div>
+
+        <h3
+          onClick={() => onOpenModal(track)}
+          className="font-bold text-white text-xs sm:text-sm truncate leading-tight cursor-pointer hover:text-[#E50914] transition-colors mb-0.5"
+          title={track.title}
+        >
+          {track.title}
+        </h3>
+
+        <p className="text-zinc-400 text-[11px] truncate mb-1">
+          {track.artist}
+        </p>
+
+        <div className="flex items-center gap-1 flex-wrap">
+          {(track.genres || []).slice(0, 2).map((genre, gIdx) => (
+            <span key={gIdx} className="text-[9px] text-zinc-300 bg-white/5 px-1.5 py-0.2 rounded">
+              {genre}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Right: Actions */}
+      <div className="flex-shrink-0 flex items-center gap-1 sm:gap-1.5">
+        {/* Play/Pause Button */}
+        <button
+          type="button"
+          onClick={() => {
+            if (isThisTrackPlaying) {
+              togglePlay();
+            } else {
+              if (recordMixtapePlayed) recordMixtapePlayed(track);
+              playTrackById(track.id);
+            }
+          }}
+          title={isThisTrackPlaying ? 'Pause Playback' : 'Play Direct on Website'}
+          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+            isThisTrackPlaying
+              ? 'bg-[#E50914] text-white shadow-md shadow-[#E50914]/50'
+              : 'bg-zinc-800 hover:bg-[#E50914] text-white hover:scale-105'
+          }`}
+        >
+          {isThisTrackPlaying ? (
+            <Pause className="w-3.5 h-3.5 fill-current" />
+          ) : (
+            <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+          )}
+        </button>
+
+        {/* Direct Download to Phone Button */}
+        <button
+          type="button"
+          onClick={() => downloadTrack(track)}
+          title={`Download ${track.title} directly to phone`}
+          className="p-1.5 sm:p-2 rounded bg-zinc-800 hover:bg-[#E50914] text-zinc-300 hover:text-white transition-all cursor-pointer shadow-sm hover:scale-105"
+        >
+          <Download className="w-3.5 h-3.5" />
+        </button>
+
+        {/* Favorite Heart Button */}
+        <HeartLikeButton trackId={track.id} item={track} type="mixtape" size="sm" />
+
+        {/* More Info */}
+        <button
+          type="button"
+          onClick={() => onOpenModal(track)}
+          title="More Information & Recommendations"
+          className="p-1.5 sm:p-2 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors cursor-pointer hidden xs:inline-flex"
+        >
+          <Info className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function NetflixRow({
   id,
   title,
@@ -288,6 +479,29 @@ export default function NetflixRow({
       return [];
     }
   });
+
+  // Layout view mode: defaults to 'five-rows' (5 Lines Down per column) as requested
+  const [viewMode, setViewMode] = useState<RowViewMode>('five-rows');
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+
+  const checkScrollPosition = () => {
+    if (!rowRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = rowRef.current;
+    setShowLeftArrow(scrollLeft > 15);
+    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 15);
+  };
+
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (!rowRef.current) return;
+    const scrollAmount = rowRef.current.clientWidth * 0.75;
+    rowRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+    setTimeout(checkScrollPosition, 350);
+  };
 
   const [hoveredCardId, setHoveredCardId] = useState<number | null>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -333,7 +547,7 @@ export default function NetflixRow({
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="flex items-baseline gap-3 group"
+          className="flex items-baseline gap-3 group flex-wrap"
         >
           <motion.h2 
             className="text-lg sm:text-xl lg:text-2xl font-bold tracking-wide hover:text-[#E50914] transition-colors cursor-pointer flex items-center gap-2"
@@ -341,73 +555,196 @@ export default function NetflixRow({
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-zinc-100 via-white to-zinc-400 drop-shadow-sm group-hover:from-white group-hover:to-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all">
               {title}
             </span>
-            <motion.span 
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="text-xs text-[#E50914] font-normal tracking-normal group-hover:translate-x-1 transition-transform inline-flex items-center"
-            >
-              Auto-Sliding &rsaquo;
-            </motion.span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-red-950/70 border border-red-500/40 text-red-300 font-bold uppercase tracking-wider">
+              {viewMode === 'five-rows' ? '5 Lines Down' : viewMode === 'single-row' ? 'Single Row' : 'Grid'}
+            </span>
           </motion.h2>
           {subtitle && <span className="text-xs text-zinc-400 hidden sm:inline opacity-80">{subtitle}</span>}
         </motion.div>
 
-        {id === 'mixes' && tracks.length > 0 && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            type="button"
-            onClick={() => {
-              tracks.forEach((track, index) => {
-                setTimeout(() => {
-                  downloadTrack(track);
-                }, index * 800);
-              });
-            }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-zinc-800/80 hover:bg-[#E50914] text-white text-xs font-bold transition-all border border-zinc-700 hover:border-[#E50914] shadow-sm hover:shadow-lg hover:shadow-[#E50914]/20 self-start sm:self-auto cursor-pointer"
-            title="Download all visible tracks to your device"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Download All Tracks</span>
-          </motion.button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* View Mode Switcher */}
+          <div className="bg-zinc-900 border border-zinc-700/80 rounded-lg p-1 flex items-center gap-1 text-xs">
+            <button
+              type="button"
+              onClick={() => setViewMode('five-rows')}
+              className={`px-2.5 py-1 rounded flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === 'five-rows'
+                  ? 'bg-[#E50914] text-white font-bold shadow'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="5 Lines Down Scroll"
+            >
+              <Columns4 className="w-3.5 h-3.5" />
+              <span>5 Lines Down</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setViewMode('single-row')}
+              className={`px-2.5 py-1 rounded flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === 'single-row'
+                  ? 'bg-[#E50914] text-white font-bold shadow'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Single Carousel Row"
+            >
+              <GalleryHorizontal className="w-3.5 h-3.5" />
+              <span>Single Row</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setViewMode('grid')}
+              className={`px-2.5 py-1 rounded flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === 'grid'
+                  ? 'bg-[#E50914] text-white font-bold shadow'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Full Grid View"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Grid</span>
+            </button>
+          </div>
+
+          {id === 'mixes' && tracks.length > 0 && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              type="button"
+              onClick={() => {
+                tracks.forEach((track, index) => {
+                  setTimeout(() => {
+                    downloadTrack(track);
+                  }, index * 800);
+                });
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-zinc-800/80 hover:bg-[#E50914] text-white text-xs font-bold transition-all border border-zinc-700 hover:border-[#E50914] shadow-sm hover:shadow-lg hover:shadow-[#E50914]/20 cursor-pointer"
+              title="Download all visible tracks to your device"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download All</span>
+            </motion.button>
+          )}
+        </div>
       </div>
 
-      {/* Smooth Horizontal Auto-Scroll Content Carousel */}
-      <AutoScrollCarousel<AudioTrack>
-        id={id ? `${id}-carousel` : undefined}
-        items={tracks}
-        getItemKey={(t) => t.id}
-        speed={0.65}
-        resumeDelay={2500}
-        ariaLabel={`${title} carousel`}
-        renderItem={(track, index, _key, isCenter) => {
-          const isThisTrackPlaying = isPlaying && currentTrack?.id === track.id;
-          const inList = Array.isArray(myList) && myList.includes(track.id);
+      {/* RENDER VIEW: 5 LINES DOWN PER COLUMN (DEFAULT) */}
+      {viewMode === 'five-rows' && (
+        <div className="relative">
+          {showLeftArrow && (
+            <button
+              type="button"
+              onClick={() => handleScroll('left')}
+              className="absolute left-0 top-0 bottom-0 z-30 w-10 sm:w-12 bg-black/75 hover:bg-black text-white flex items-center justify-center transition-all opacity-85 hover:opacity-100 rounded-r cursor-pointer backdrop-blur-xs shadow-lg"
+              title="Scroll Left"
+            >
+              <ChevronLeft className="w-8 h-8" />
+            </button>
+          )}
 
-          return (
-            <TrackCardItem
-              track={track}
-              index={index}
-              isCenter={isCenter}
-              isThisTrackPlaying={isThisTrackPlaying}
-              inMyList={inList}
-              hoveredCardId={hoveredCardId}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onOpenModal={onOpenModal}
-              toggleMyList={toggleMyList}
-              isPlaying={isPlaying}
-              playTrackById={playTrackById}
-              togglePlay={togglePlay}
-              downloadTrack={downloadTrack}
-              duration={duration}
-              currentTime={currentTime}
-              recordMixtapePlayed={recordMixtapePlayed}
-            />
-          );
-        }}
-      />
+          <div
+            ref={rowRef}
+            onScroll={checkScrollPosition}
+            className="grid grid-rows-[repeat(5,minmax(0,1fr))] grid-flow-col auto-cols-[300px] sm:auto-cols-[360px] md:auto-cols-[400px] lg:auto-cols-[440px] gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-2"
+          >
+            {tracks.map((track, index) => {
+              const isThisTrackPlaying = isPlaying && currentTrack?.id === track.id;
+
+              return (
+                <NonstopCompactItem
+                  key={track.id}
+                  track={track}
+                  index={index}
+                  isThisTrackPlaying={isThisTrackPlaying}
+                  onOpenModal={onOpenModal}
+                  togglePlay={togglePlay}
+                  playTrackById={playTrackById}
+                  downloadTrack={downloadTrack}
+                  currentTime={currentTime}
+                  duration={duration}
+                  recordMixtapePlayed={recordMixtapePlayed}
+                />
+              );
+            })}
+          </div>
+
+          {showRightArrow && (
+            <button
+              type="button"
+              onClick={() => handleScroll('right')}
+              className="absolute right-0 top-0 bottom-0 z-30 w-10 sm:w-12 bg-black/75 hover:bg-black text-white flex items-center justify-center transition-all opacity-85 hover:opacity-100 rounded-l cursor-pointer backdrop-blur-xs shadow-lg"
+              title="Scroll Right"
+            >
+              <ChevronRight className="w-8 h-8" />
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* RENDER VIEW: CLASSIC SINGLE ROW AUTO-SCROLL CAROUSEL */}
+      {viewMode === 'single-row' && (
+        <AutoScrollCarousel<AudioTrack>
+          id={id ? `${id}-carousel` : undefined}
+          items={tracks}
+          getItemKey={(t) => t.id}
+          speed={0.65}
+          resumeDelay={2500}
+          ariaLabel={`${title} carousel`}
+          renderItem={(track, index, _key, isCenter) => {
+            const isThisTrackPlaying = isPlaying && currentTrack?.id === track.id;
+            const inList = Array.isArray(myList) && myList.includes(track.id);
+
+            return (
+              <TrackCardItem
+                track={track}
+                index={index}
+                isCenter={isCenter}
+                isThisTrackPlaying={isThisTrackPlaying}
+                inMyList={inList}
+                hoveredCardId={hoveredCardId}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onOpenModal={onOpenModal}
+                toggleMyList={toggleMyList}
+                isPlaying={isPlaying}
+                playTrackById={playTrackById}
+                togglePlay={togglePlay}
+                downloadTrack={downloadTrack}
+                duration={duration}
+                currentTime={currentTime}
+                recordMixtapePlayed={recordMixtapePlayed}
+              />
+            );
+          }}
+        />
+      )}
+
+      {/* RENDER VIEW: MULTI-COLUMN FULL GRID */}
+      {viewMode === 'grid' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 py-2">
+          {tracks.map((track, index) => {
+            const isThisTrackPlaying = isPlaying && currentTrack?.id === track.id;
+
+            return (
+              <NonstopCompactItem
+                key={track.id}
+                track={track}
+                index={index}
+                isThisTrackPlaying={isThisTrackPlaying}
+                onOpenModal={onOpenModal}
+                togglePlay={togglePlay}
+                playTrackById={playTrackById}
+                downloadTrack={downloadTrack}
+                currentTime={currentTime}
+                duration={duration}
+                recordMixtapePlayed={recordMixtapePlayed}
+              />
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 }

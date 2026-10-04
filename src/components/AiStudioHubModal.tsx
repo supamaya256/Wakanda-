@@ -397,7 +397,15 @@ export default function AiStudioHubModal({ onClose }: AiStudioHubModalProps) {
                         <span>Download MP3</span>
                       </a>
                     </div>
-                    <audio controls src={generatedAudioUrl} className="w-full" />
+                    <audio
+                      controls
+                      src={generatedAudioUrl}
+                      preload="none"
+                      onError={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="w-full"
+                    />
                   </div>
                 )}
               </div>
@@ -527,7 +535,15 @@ export default function AiStudioHubModal({ onClose }: AiStudioHubModalProps) {
 
                 {generatedVideoUrl && (
                   <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3 text-center">
-                    <video controls src={generatedVideoUrl} className="max-h-96 mx-auto rounded-xl shadow-lg border border-zinc-800" />
+                    <video
+                      controls
+                      src={generatedVideoUrl}
+                      preload="none"
+                      onError={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="max-h-96 mx-auto rounded-xl shadow-lg border border-zinc-800"
+                    />
                     <div>
                       <a
                         href={generatedVideoUrl}

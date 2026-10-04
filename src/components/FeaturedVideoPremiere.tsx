@@ -790,6 +790,10 @@ export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVide
                   controls
                   preload={preloadStrategy}
                   autoPlay={!isDataSaver && autoplayEnabled}
+                  onError={(e) => {
+                    e.stopPropagation();
+                    console.warn('Featured premiere video handled:', e);
+                  }}
                   onTimeUpdate={(e) => setPlaybackSeconds(Math.floor(e.currentTarget.currentTime))}
                   className="w-full h-full object-contain"
                 >

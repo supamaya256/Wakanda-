@@ -58,7 +58,6 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
   const [selectedTrack, setSelectedTrack] = useState<AudioTrack | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<AtesoMovie | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState<string>('All');
   const [currentView, setCurrentView] = useState<'store' | 'manager' | 'movies' | 'logos-reveal'>('store');
   const [studioInitialTab, setStudioInitialTab] = useState<'dashboard' | 'tracks' | 'drops' | 'custom-drops' | 'logos' | 'movies' | 'files'>('dashboard');
   const [isTrustModalOpen, setIsTrustModalOpen] = useState(false);
@@ -107,15 +106,6 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSelectGenre = (genre: string) => {
-    if (genre === selectedGenre) return;
-    setIsFilterLoading(true);
-    setSelectedGenre(genre);
-    setTimeout(() => {
-      setIsFilterLoading(false);
-    }, 380);
-  };
-
   const handleRefreshFeed = () => {
     setIsFeedLoading(true);
     setTimeout(() => {
@@ -158,9 +148,6 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
       // history or URL unavailable
     }
   }, [selectedTrack]);
-
-  // Derive available genres dynamically from tracks, prepended with 'All'
-  const availableGenres = ['All', 'Reggae', 'Ateso', 'Dancehall', 'Afrobeats', 'Video Mix'];
 
   let filteredTracks = Array.isArray(tracks) ? tracks : [];
   let filteredMovies: AtesoMovie[] = [];
@@ -208,32 +195,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
         return Boolean(titleMatch || styleMatch || catMatch || scriptMatch || tagMatch || generalDropMatch);
       });
     }
-  } else if (selectedGenre !== 'All') {
-    const gFilter = selectedGenre.toLowerCase();
-    filteredTracks = filteredTracks.filter(t => 
-      (Array.isArray(t?.genres) && t.genres.some(g => g && typeof g === 'string' && g.toLowerCase().includes(gFilter))) ||
-      (t?.title && t.title.toLowerCase().includes(gFilter))
-    );
   }
-
-  // Related Content (More Like This: recommend related mixes based on genre, artist, tags, popularity)
-  const relatedMixes = useMemo(() => {
-    if (!currentTrack || !tracks) return [];
-    const currentGenres = new Set((currentTrack.genres || []).map(g => g.toLowerCase()));
-    const otherTracks = tracks.filter(t => t.id !== currentTrack.id);
-    
-    return [...otherTracks].sort((a, b) => {
-      let scoreA = 0;
-      let scoreB = 0;
-      if (a.artist === currentTrack.artist) scoreA += 4;
-      if (b.artist === currentTrack.artist) scoreB += 4;
-      a.genres?.forEach(g => { if (currentGenres.has(g.toLowerCase())) scoreA += 3; });
-      b.genres?.forEach(g => { if (currentGenres.has(g.toLowerCase())) scoreB += 3; });
-      if (a.isTrending) scoreA += 1;
-      if (b.isTrending) scoreB += 1;
-      return scoreB - scoreA;
-    }).slice(0, 10);
-  }, [currentTrack, tracks]);
 
   if (currentView === 'manager') {
     return (
@@ -549,29 +511,23 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             }
           }}
         >
-          {/* Genre Filters & Quick Category Switcher */}
+          {/* DJ EMMA PRO NON STOPS Header Banner */}
           {!searchQuery.trim() && (
             <motion.div 
               variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } } }}
-              className="px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-2"
+              className="px-4 sm:px-8 lg:px-12 flex items-center justify-between gap-3 py-2"
             >
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-                {availableGenres.map(genre => (
-                  <button
-                    key={genre}
-                    onClick={() => handleSelectGenre(genre)}
-                    className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all shrink-0 cursor-pointer ${
-                      selectedGenre === genre 
-                        ? 'bg-white text-black shadow-lg shadow-white/10 scale-105' 
-                        : 'bg-zinc-800/80 text-zinc-300 border border-zinc-700 hover:bg-zinc-700 hover:text-white'
-                    }`}
-                  >
-                    {genre}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#E50914] animate-pulse" />
+                <span className="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
+                  DJ EMMA PRO NON STOPS
+                </span>
+                <span className="text-[11px] font-mono font-bold text-red-300 bg-red-950/70 border border-red-500/40 px-2.5 py-0.5 rounded-full">
+                  {filteredTracks.length} Master Nonstops
+                </span>
               </div>
 
-              <div className="flex items-center gap-3 self-end sm:self-auto shrink-0">
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={handleRefreshFeed}
@@ -582,11 +538,6 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
                   <RefreshCw className={`w-3 h-3 ${isFeedLoading ? 'animate-spin text-[#E50914]' : ''}`} />
                   <span>{isFeedLoading ? 'Loading...' : 'Refresh'}</span>
                 </button>
-                
-                <div className="hidden sm:flex items-center gap-2 text-xs text-zinc-400 font-mono">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span>{filteredTracks.length} Mixtapes Available</span>
-                </div>
               </div>
             </motion.div>
           )}
@@ -662,7 +613,7 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
           )}
 
           {/* Universal My Favorites Section (Mixtapes, Movies, DJ Drops) */}
-          {!searchQuery.trim() && selectedGenre === 'All' && (
+          {!searchQuery.trim() && (
             <MyFavoritesSection 
               onOpenModal={(track) => setSelectedTrack(track)}
               onWatchMovie={(movie) => {
@@ -673,31 +624,17 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             />
           )}
 
-          {/* Related Content (More Like This: recommend related mixes based on active playing mix) */}
-          {currentTrack && !searchQuery.trim() && relatedMixes.length > 0 && (
-            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-              <NetflixRow
-                id="more-like-this-live"
-                title={`More Like "${currentTrack.title.length > 36 ? currentTrack.title.slice(0, 34) + '...' : currentTrack.title}"`}
-                subtitle={`Recommended mixes curated by Genre (${currentTrack.genres?.[0] || 'Club Mix'}), DJ & Popularity`}
-                tracks={relatedMixes}
-                onOpenModal={(track) => setSelectedTrack(track)}
-                isLoading={isFeedLoading || isFilterLoading}
-              />
-            </motion.div>
-          )}
-
           {/* ===================================================================
-              ACT 1: STREAMING THEATRE (Nonstop DJ Mixtapes & Top Shows)
+              ACT 1: STREAMING THEATRE - ALL DJ EMMA PRO NON STOPS (NO CATEGORIES)
              =================================================================== */}
 
           {/* Recently Played */}
-          {recentTracks && recentTracks.length > 0 && !searchQuery.trim() && selectedGenre === 'All' && (
+          {recentTracks && recentTracks.length > 0 && !searchQuery.trim() && (
             <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
               <NetflixRow
                 id="recently-played"
-                title="Recently Played"
-                subtitle="Jump back into your recent tracks and mixes"
+                title="Recently Played Nonstops"
+                subtitle="Jump back into your recent nonstop tracks and mixes"
                 tracks={recentTracks}
                 onOpenModal={(track) => setSelectedTrack(track)}
                 isLoading={isFeedLoading || isFilterLoading}
@@ -705,124 +642,13 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
             </motion.div>
           )}
 
-          {/* Row 1: Trending Now • Video Nonstops & DJ Mixtapes */}
+          {/* ALL NONSTOPS IN ONE UNIFIED SECTION: DJ EMMA PRO NON STOPS */}
           <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
             <NetflixRow
               id="mixes"
-              title={selectedGenre === 'All' ? t('row.trending') : `${selectedGenre} Mixtapes`}
-              subtitle={selectedGenre === 'All' ? t('row.trendingSub') : `Browse our best ${selectedGenre} mixes`}
+              title="DJ EMMA PRO NON STOPS"
+              subtitle="All Official Street Anthems, Club Bangers, Cultural & Studio Nonstop Mixtapes • 5 Lines Down Default"
               tracks={filteredTracks}
-              onOpenModal={(track) => setSelectedTrack(track)}
-              isLoading={isFeedLoading || isFilterLoading}
-            />
-          </motion.div>
-
-          {/* Row 2: Latest Mixtapes • Fresh Releases 2026 */}
-          {!searchQuery.trim() && (
-            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-              <NetflixRow
-                id="latest-mixtapes"
-                title="Latest Mixtapes • New Releases"
-                subtitle="Fresh Studio Cuts, Official Street Anthems & Live Turntablism 2026"
-                tracks={tracks.filter(t => 
-                  t.year >= 2025 || 
-                  t.title.includes('2024') || 
-                  t.title.includes('2025') || 
-                  t.title.includes('2026') || 
-                  t.title.includes('NEW') ||
-                  t.isTrending
-                )}
-                onOpenModal={(track) => setSelectedTrack(track)}
-                isLoading={isFeedLoading || isFilterLoading}
-              />
-            </motion.div>
-          )}
-
-          {/* Row 3: Popular DJ Mixes & Ugandan Club Bangers */}
-          {!searchQuery.trim() && (
-            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-              <NetflixRow
-                id="popular-mixes"
-                title="Popular DJ Mixes & Club Bangers"
-                subtitle="High-Energy Dancefloor Fillers, Hype MC Collabs & Sound Clash Transitions"
-                tracks={tracks.filter(t => 
-                  t.title.includes('CLUB') || 
-                  t.title.includes('LIVE') || 
-                  t.title.includes('ALIEN') || 
-                  t.title.includes('SCRATCH') || 
-                  t.title.includes('DANCEHALL') ||
-                  t.title.includes('EPISODE')
-                )}
-                onOpenModal={(track) => setSelectedTrack(track)}
-                isLoading={isFeedLoading || isFilterLoading}
-              />
-            </motion.div>
-          )}
-
-          {/* Row 4: Wakanda DJs Live Mixtapes & Battle Scratch */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <NetflixRow
-              id="wakanda-battles"
-              title="Wakanda DJs • Live Mixtapes & Battle Scratch"
-              subtitle="High-Energy Turntablism, Street Anthems & Live MC Ricky Sessions"
-              tracks={tracks.filter(t => 
-                t.title.includes('WAKANDA') || 
-                t.title.includes('STREET ANTHEM') || 
-                t.title.includes('CHALLENGE SCRATCH') || 
-                t.title.includes('LIVE MIXTAPE') || 
-                t.title.includes('ALIEN SKIN') || 
-                t.title.includes('CLUB BANGERS') ||
-                t.title.includes('EPISODE')
-              )}
-              onOpenModal={(track) => setSelectedTrack(track)}
-              isLoading={isFeedLoading || isFilterLoading}
-            />
-          </motion.div>
-
-          {/* Row 5: Recommended For You • DJ Emma Pro Signature Curation */}
-          {!searchQuery.trim() && (
-            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-              <NetflixRow
-                id="recommended-for-you"
-                title="Recommended For You"
-                subtitle="Curated Nonstops Handcrafted for Nonstop Partying, Driving & Soundclashes"
-                tracks={tracks.filter(t => (t.matchScore || 0) >= 98 || t.isTrending)}
-                onOpenModal={(track) => setSelectedTrack(track)}
-                isLoading={isFeedLoading || isFilterLoading}
-              />
-            </motion.div>
-          )}
-
-          {/* Row 6: Ateso Cultural & Gospel Video Nonstops */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <NetflixRow
-              id="ateso-gospel-cultural"
-              title="Ateso Cultural & Gospel Video Nonstops"
-              subtitle="Authentic Teso Rhythms & Uplifting Gospel Praises by DJ Emma Pro"
-              tracks={tracks.filter(t => 
-                t.title.includes('ATESO') || 
-                t.title.includes('GOSPEL') || 
-                t.title.includes('ACHOLI')
-              )}
-              onOpenModal={(track) => setSelectedTrack(track)}
-              isLoading={isFeedLoading || isFilterLoading}
-            />
-          </motion.div>
-
-          {/* Row 7: Ugandan Hits, Dancehall & Reggae Vibes */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <NetflixRow
-              id="reggae-afro"
-              title="Ugandan Hits, Dancehall & Reggae Vibes"
-              subtitle="East African Chart-Toppers & Smooth Transitions by DJ Emma Pro"
-              tracks={tracks.filter(t => 
-                t.title.includes('UGANDAN MUSIC') || 
-                t.title.includes('DANCEHALL') || 
-                t.title.includes('REGGEA') || 
-                t.title.includes('VYROOTA') || 
-                t.title.includes('SURPRISE') || 
-                t.title.includes('NEW HITS')
-              )}
               onOpenModal={(track) => setSelectedTrack(track)}
               isLoading={isFeedLoading || isFilterLoading}
             />

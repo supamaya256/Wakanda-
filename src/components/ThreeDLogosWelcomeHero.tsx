@@ -23,7 +23,13 @@ import {
   Zap
 } from 'lucide-react';
 import { useDataSaver } from '../context/DataSaverContext';
-import { THREE_D_LOGOS_REVEAL_DATA, ThreeDLogoRevealItem, ensure360pLogoUrl } from '../data/threeDLogosRevealData';
+import {
+  THREE_D_LOGOS_REVEAL_DATA,
+  ThreeDLogoRevealItem,
+  ensure360pLogoUrl,
+  getDefault3DLogoRevealIndex,
+  getDefault3DLogoRevealItem
+} from '../data/threeDLogosRevealData';
 
 interface ThreeDLogosWelcomeHeroProps {
   onOpenLogosReveal: () => void;
@@ -32,9 +38,9 @@ interface ThreeDLogosWelcomeHeroProps {
 export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogosWelcomeHeroProps) {
   const { isDataSaver, shouldAutoplay, preloadStrategy, getOptimizedMediaUrl } = useDataSaver();
 
-  // Active welcome video (defaults to Edition #01 or #11)
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const activeLogo: ThreeDLogoRevealItem = THREE_D_LOGOS_REVEAL_DATA[activeIndex] || THREE_D_LOGOS_REVEAL_DATA[0];
+  // Active welcome video (defaults to Edition #08)
+  const [activeIndex, setActiveIndex] = useState<number>(() => getDefault3DLogoRevealIndex());
+  const activeLogo: ThreeDLogoRevealItem = THREE_D_LOGOS_REVEAL_DATA[activeIndex] || getDefault3DLogoRevealItem();
 
   const [isPlaying, setIsPlaying] = useState<boolean>(!isDataSaver);
   const [isMuted, setIsMuted] = useState<boolean>(true);
@@ -42,6 +48,16 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const ribbonRef = useRef<HTMLDivElement>(null);
+
+  // Scroll ribbon so active edition button is visible
+  useEffect(() => {
+    if (ribbonRef.current) {
+      const activeBtn = ribbonRef.current.children[activeIndex] as HTMLElement | undefined;
+      if (activeBtn) {
+        activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+  }, [activeIndex]);
 
   // Play next / prev logo
   const handleNext = () => {
@@ -256,6 +272,9 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                   controlsList="nodownload nofullscreen noremoteplayback"
                   disablePictureInPicture
                   onContextMenu={handleContextMenu}
+                  onError={(e) => {
+                    console.warn('Welcome hero video playback handled:', e);
+                  }}
                   className="w-full h-full object-contain max-h-[420px]"
                   onClick={togglePlay}
                 />

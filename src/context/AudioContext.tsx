@@ -950,7 +950,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     const audio = audioRef.current;
     if (!audio) return;
     
-    audio.preload = 'auto';
+    audio.preload = 'metadata';
     audio.volume = volume;
 
     const onTimeUpdate = () => {
@@ -1031,7 +1031,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener('error', onError);
       audio.removeEventListener('stalled', onStalled);
       audio.pause();
-      audio.src = '';
+      try {
+        audio.removeAttribute('src');
+      } catch {}
     };
   }, []);
 
@@ -1247,7 +1249,12 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       {/* Global Audio Player - preload none to save mobile bandwidth */}
       <audio 
         ref={audioRef}
+        src={currentTrack?.url || undefined}
         preload="none"
+        onError={(e) => {
+          // Gracefully suppress unhandled error event
+          e.stopPropagation();
+        }}
       />
 
       {/* Phone Download Notification Toast */}
