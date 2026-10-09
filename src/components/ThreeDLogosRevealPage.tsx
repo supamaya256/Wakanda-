@@ -89,6 +89,12 @@ export default function ThreeDLogosRevealPage({
   // Main stage video ref
   const stageVideoRef = useRef<HTMLVideoElement>(null);
   const carouselTrackRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef<boolean>(true);
+  const [stageVideoError, setStageVideoError] = useState<boolean>(false);
+
+  useEffect(() => {
+    setStageVideoError(false);
+  }, [activeItem.id]);
 
   // Auto-scroll carousel track to active item
   useEffect(() => {
@@ -145,10 +151,18 @@ export default function ThreeDLogosRevealPage({
     }
   }, [playbackSpeed, activeItem]);
 
-  // Auto-play when active item changes
+  // Auto-play when active item changes (skip seek on mount)
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     if (stageVideoRef.current) {
-      stageVideoRef.current.currentTime = 0;
+      try {
+        if (stageVideoRef.current.readyState >= 1) {
+          stageVideoRef.current.currentTime = 0;
+        }
+      } catch {}
       stageVideoRef.current.play().catch(() => {});
       setIsPlaying(true);
     }
@@ -525,8 +539,8 @@ export default function ThreeDLogosRevealPage({
                   : 'scale-100'
               }`}
             >
-              {/* Visual Display: Lightweight Poster when Data Saver is on and video is not yet playing */}
-              {isDataSaver && !isPlaying ? (
+              {/* Visual Display: Lightweight Poster when Data Saver is on and video is not yet playing, or on error */}
+              {(isDataSaver && !isPlaying) || stageVideoError ? (
                 <div 
                   className="relative w-full h-full flex items-center justify-center cursor-pointer group/poster"
                   onClick={togglePlay}
@@ -552,7 +566,7 @@ export default function ThreeDLogosRevealPage({
                 <video
                   ref={stageVideoRef}
                   key={activeItem.videoUrl}
-                  src={ensure360pLogoUrl(activeItem.videoUrl)}
+                  poster={getVideoPoster(activeItem.videoUrl)}
                   autoPlay={isPlaying}
                   loop
                   playsInline
@@ -563,11 +577,15 @@ export default function ThreeDLogosRevealPage({
                   disablePictureInPicture
                   onContextMenu={triggerAntiDownloadNotice}
                   onError={(e) => {
+                    e.stopPropagation();
+                    setStageVideoError(true);
                     console.warn('Stage video error handled:', e);
                   }}
                   className="w-full h-full object-contain max-h-[540px] pointer-events-auto"
                   onClick={togglePlay}
-                />
+                >
+                  <source src={ensure360pLogoUrl(activeItem.videoUrl)} type="video/mp4" />
+                </video>
               )}
 
               {/* Watermark Overlay (Studio Proof & Security) */}

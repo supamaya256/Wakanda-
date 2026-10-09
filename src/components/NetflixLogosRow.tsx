@@ -572,10 +572,13 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
               onPlay={() => setIsActivePlaying(true)}
               onPause={() => setIsActivePlaying(false)}
               onError={(e) => {
+                e.stopPropagation();
                 console.warn('Active cinema video stream error handled:', e);
               }}
               className="w-full h-full object-contain"
-            />
+            >
+              <source src={getOptimizedMediaUrl(activeLogo?.videoUrl || LOGO_ITEMS_DATA[0]?.videoUrl, 'video')} type="video/mp4" />
+            </video>
 
             {/* Subtle Anti-Download Watermark Banner */}
             <div className="absolute top-3 left-3 z-10 pointer-events-none flex items-center gap-1.5 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded text-white border border-white/10 text-[10px] font-mono">

@@ -25,51 +25,11 @@ interface NetflixTop10RowProps {
 export default function NetflixTop10Row({ onOpenModal, isLoading = false }: NetflixTop10RowProps) {
   const rowRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const scrollAudioRef = useRef<HTMLAudioElement | null>(null);
-  const [hasPlayedScrollAudio, setHasPlayedScrollAudio] = useState(false);
 
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
   const { tracks, playTrack, downloadTrack } = useAudio();
-
-  // Scroll Audio Autoplay
-  useEffect(() => {
-    if (isLoading) return;
-    try {
-      const audio = new Audio("https://res.cloudinary.com/hbyqk5y0/video/upload/v1789671239/wigman-2026-09-17-21-45-DJ-DROPS-BY-EMMA-PRO-AND-3D-ANIMATION-LOGO_S.mp3");
-      audio.preload = "none";
-      audio.addEventListener("error", (e) => {
-        e.stopPropagation();
-        console.warn("Scroll audio load handled:", e);
-      });
-      scrollAudioRef.current = audio;
-    } catch {}
-    
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasPlayedScrollAudio && scrollAudioRef.current) {
-            scrollAudioRef.current.play().catch(e => console.warn("Scroll autoplay blocked:", e));
-            setHasPlayedScrollAudio(true);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-      if (scrollAudioRef.current) {
-        scrollAudioRef.current.pause();
-        scrollAudioRef.current = null;
-      }
-    };
-  }, [hasPlayedScrollAudio, isLoading]);
 
   if (isLoading) {
     return <Top10RowSkeleton />;

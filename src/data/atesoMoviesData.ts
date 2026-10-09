@@ -1,6 +1,7 @@
 export interface AtesoMovie {
   id: string;
   title: string;
+  seriesTitle?: string;
   vj: string;
   year: number;
   duration: string;
@@ -9,6 +10,7 @@ export interface AtesoMovie {
   thumbnail: string;
   videoUrl: string;
   videoUrl320?: string;
+  pcloudCode?: string;
   telegramUrl: string;
   youtubeUrl: string;
   youtubeId?: string;
@@ -18,6 +20,45 @@ export interface AtesoMovie {
   viewsCount?: string;
   episodeNumber?: number;
   partNumber?: number;
+}
+
+/**
+ * Extracts pCloud public share code if present
+ */
+export function extractPcloudCode(url: string): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  const match = trimmed.match(/code=([a-zA-Z0-9_-]+)/i);
+  if (match) return match[1];
+  const streamMatch = trimmed.match(/\/api\/movies\/stream\/([a-zA-Z0-9_-]+)/i);
+  if (streamMatch) return streamMatch[1];
+  const shortMatch = trimmed.match(/pcloud\.link\/(?:publink\/show\?code=|)([a-zA-Z0-9_-]+)/i);
+  if (shortMatch) return shortMatch[1];
+  // If user pasted bare 30-45 character pCloud code
+  if (/^[a-zA-Z0-9_-]{20,50}$/.test(trimmed)) {
+    return trimmed;
+  }
+  return null;
+}
+
+/**
+ * Sanitizes an uploaded movie: hides raw storage/pCloud links from viewers,
+ * sets internal proxy stream route /api/movies/stream/:code, and fetches poster thumbnail.
+ */
+export function sanitizeMovieForStorage(movie: AtesoMovie): AtesoMovie {
+  const pcloudCode = movie.pcloudCode || extractPcloudCode(movie.videoUrl) || extractPcloudCode(movie.videoUrl320 || '');
+  if (pcloudCode) {
+    return {
+      ...movie,
+      pcloudCode,
+      videoUrl: `/api/movies/stream/${pcloudCode}`,
+      videoUrl320: `/api/movies/stream/${pcloudCode}`,
+      thumbnail: (!movie.thumbnail || movie.thumbnail.includes('InShot_20260512') || movie.thumbnail.trim() === '')
+        ? `https://api.pcloud.com/getpubthumb?code=${pcloudCode}&size=640x360&crop=1`
+        : movie.thumbnail
+    };
+  }
+  return movie;
 }
 
 /**
@@ -39,7 +80,290 @@ export function get320pVideoUrl(url: string): string {
   return url;
 }
 
+/**
+ * Universal safe streaming URL resolver that conceals raw cloud storage links
+ * and returns direct streaming endpoints.
+ */
+export function getMovieStreamUrl(movie: AtesoMovie | string): string {
+  const url = typeof movie === 'string' ? movie : (movie.videoUrl320 || movie.videoUrl || '');
+  if (!url) return '';
+  const pcloudCode = typeof movie === 'object' && movie.pcloudCode ? movie.pcloudCode : extractPcloudCode(url);
+  if (pcloudCode) {
+    return `/api/movies/stream/${pcloudCode}`;
+  }
+  return get320pVideoUrl(url);
+}
+
 export const ATESO_MOVIES_DATA: AtesoMovie[] = [
+  // ==================== iSMART SHANKAR SERIES (VJ OPOLOT) ====================
+  {
+    id: 'ismart-shankar-ep-1',
+    title: 'iSMART SHANKAR • Part 1 (Episode 1)',
+    seriesTitle: 'iSmart Shankar',
+    episodeNumber: 1,
+    partNumber: 1,
+    vj: 'VJ OPOLOT',
+    year: 2025,
+    duration: '48:15',
+    genre: 'Sci-Fi Action / Telugu / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZnfTQJZ9oJNQIBsmJzjaoL0owD7Kkyu7fkX&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZnfTQJZ9oJNQIBsmJzjaoL0owD7Kkyu7fkX',
+    videoUrl320: '/api/movies/stream/XZnfTQJZ9oJNQIBsmJzjaoL0owD7Kkyu7fkX',
+    pcloudCode: 'XZnfTQJZ9oJNQIBsmJzjaoL0owD7Kkyu7fkX',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'iSmart Shankar Part 1 in dynamic Ateso translation by VJ Opolot. An assassin has a dead cop’s memory transferred into his brain, sparking vengeance, intense gunfire, and action.',
+    matchScore: 99,
+    isTrending: true,
+    viewsCount: '78.2K Views'
+  },
+  {
+    id: 'ismart-shankar-ep-2',
+    title: 'iSMART SHANKAR • Part 2 (Episode 2)',
+    seriesTitle: 'iSmart Shankar',
+    episodeNumber: 2,
+    partNumber: 2,
+    vj: 'VJ OPOLOT',
+    year: 2025,
+    duration: '45:20',
+    genre: 'Sci-Fi Action / Telugu / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZJjTQJZLfvQ9J37euumEC5pf9q3E05cdnIk&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZJjTQJZLfvQ9J37euumEC5pf9q3E05cdnIk',
+    videoUrl320: '/api/movies/stream/XZJjTQJZLfvQ9J37euumEC5pf9q3E05cdnIk',
+    pcloudCode: 'XZJjTQJZLfvQ9J37euumEC5pf9q3E05cdnIk',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'iSmart Shankar Part 2 translated by VJ Opolot. Shankar battles dual personalities and hunting syndicates as the memories of the slain officer unravel the criminal mastermind.',
+    matchScore: 98,
+    isTrending: true,
+    viewsCount: '71.5K Views'
+  },
+  {
+    id: 'ismart-shankar-ep-3',
+    title: 'iSMART SHANKAR • Part 3 (Episode 3)',
+    seriesTitle: 'iSmart Shankar',
+    episodeNumber: 3,
+    partNumber: 3,
+    vj: 'VJ OPOLOT',
+    year: 2025,
+    duration: '54:40',
+    genre: 'Sci-Fi Action / Telugu / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZNHgQJZjL1dcHNW7xX4XHcnq41mXX7m4Wfy&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZNHgQJZjL1dcHNW7xX4XHcnq41mXX7m4Wfy',
+    videoUrl320: '/api/movies/stream/XZNHgQJZjL1dcHNW7xX4XHcnq41mXX7m4Wfy',
+    pcloudCode: 'XZNHgQJZjL1dcHNW7xX4XHcnq41mXX7m4Wfy',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'iSmart Shankar Part 3 in gripping Ateso commentary. High-voltage chase scenes, underworld conspiracies, and emotional revelations as Shankar fights to protect the innocent.',
+    matchScore: 97,
+    isTrending: true,
+    viewsCount: '69.0K Views'
+  },
+  {
+    id: 'ismart-shankar-ep-4',
+    title: 'iSMART SHANKAR • Part 4 (Episode 4 - Grand Finale)',
+    seriesTitle: 'iSmart Shankar',
+    episodeNumber: 4,
+    partNumber: 4,
+    vj: 'VJ OPOLOT',
+    year: 2025,
+    duration: '49:10',
+    genre: 'Sci-Fi Action / Telugu / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZ6cTQJZcwblnmTq5aQJYaLhDmhGibYGMhIX&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZ6cTQJZcwblnmTq5aQJYaLhDmhGibYGMhIX',
+    videoUrl320: '/api/movies/stream/XZ6cTQJZcwblnmTq5aQJYaLhDmhGibYGMhIX',
+    pcloudCode: 'XZ6cTQJZcwblnmTq5aQJYaLhDmhGibYGMhIX',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'iSmart Shankar Part 4 Grand Finale with full Ateso voice-over by VJ Opolot. The ultimate showdown between Shankar and the ruthless cartel with mind-bending climactic combat.',
+    matchScore: 99,
+    isTrending: true,
+    viewsCount: '84.3K Views'
+  },
+
+  // ==================== TIGER AND CRANE SERIES (VJ OPOLOT) ====================
+  {
+    id: 'tiger-and-crane-ep-5',
+    title: 'TIGER AND CRANE • Part 5 (Episode 5)',
+    seriesTitle: 'Tiger and Crane',
+    episodeNumber: 5,
+    partNumber: 5,
+    vj: 'VJ OPOLOT',
+    year: 2025,
+    duration: '38:15',
+    genre: 'Martial Arts / Fantasy / Demon Hunter / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZOYTQJZUopeIJOFF4YTRQEvz2NUTkSKFSLV&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZOYTQJZUopeIJOFF4YTRQEvz2NUTkSKFSLV',
+    videoUrl320: '/api/movies/stream/XZOYTQJZUopeIJOFF4YTRQEvz2NUTkSKFSLV',
+    pcloudCode: 'XZOYTQJZUopeIJOFF4YTRQEvz2NUTkSKFSLV',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'Tiger and Crane Part 5 in rich Ateso translation by VJ Opolot. Huzi and Qi Xiaoxuan enter the perilous imperial demon territories to safeguard the red pearl against dark sorcerers.',
+    matchScore: 96,
+    isTrending: true,
+    viewsCount: '58.4K Views'
+  },
+  {
+    id: 'tiger-and-crane-ep-7',
+    title: 'TIGER AND CRANE • Part 7 (Episode 7)',
+    seriesTitle: 'Tiger and Crane',
+    episodeNumber: 7,
+    partNumber: 7,
+    vj: 'VJ OPOLOT',
+    year: 2025,
+    duration: '41:10',
+    genre: 'Martial Arts / Fantasy / Demon Hunter / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZ2zTQJZyVC8Gil1kFJcBK0C2ljYDJF2PSRk&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZ2zTQJZyVC8Gil1kFJcBK0C2ljYDJF2PSRk',
+    videoUrl320: '/api/movies/stream/XZ2zTQJZyVC8Gil1kFJcBK0C2ljYDJF2PSRk',
+    pcloudCode: 'XZ2zTQJZyVC8Gil1kFJcBK0C2ljYDJF2PSRk',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'Tiger and Crane Part 7 translated into Ateso by VJ Opolot. Ferocious elemental magic clashes and ancient martial arts tournament battles as the demon clan reveals its hidden master.',
+    matchScore: 97,
+    isTrending: true,
+    viewsCount: '62.1K Views'
+  },
+  {
+    id: 'tiger-and-crane-ep-7b',
+    title: 'TIGER AND CRANE • Part 7 (Extended Cut)',
+    seriesTitle: 'Tiger and Crane',
+    episodeNumber: 7,
+    partNumber: 7,
+    vj: 'VJ OPOLOT',
+    year: 2025,
+    duration: '41:10',
+    genre: 'Martial Arts / Fantasy / Demon Hunter / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZB8TQJZ7zjVtKNANRjOsN659aYWGy6VH10y&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZB8TQJZ7zjVtKNANRjOsN659aYWGy6VH10y',
+    videoUrl320: '/api/movies/stream/XZB8TQJZ7zjVtKNANRjOsN659aYWGy6VH10y',
+    pcloudCode: 'XZB8TQJZ7zjVtKNANRjOsN659aYWGy6VH10y',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'Tiger and Crane Part 7 Extended Edition with bonus Ateso battle commentary and full audio mastering by VJ Opolot.',
+    matchScore: 97,
+    isTrending: false,
+    viewsCount: '55.3K Views'
+  },
+  {
+    id: 'tiger-and-crane-ep-8',
+    title: 'TIGER AND CRANE • Part 8 (Episode 8)',
+    seriesTitle: 'Tiger and Crane',
+    episodeNumber: 8,
+    partNumber: 8,
+    vj: 'VJ OPOLOT',
+    year: 2025,
+    duration: '40:25',
+    genre: 'Martial Arts / Fantasy / Demon Hunter / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZaFTQJZ8GgBy6Kwog4U8J0gIngKxSyz5Ug7&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZaFTQJZ8GgBy6Kwog4U8J0gIngKxSyz5Ug7',
+    videoUrl320: '/api/movies/stream/XZaFTQJZ8GgBy6Kwog4U8J0gIngKxSyz5Ug7',
+    pcloudCode: 'XZaFTQJZ8GgBy6Kwog4U8J0gIngKxSyz5Ug7',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'Tiger and Crane Part 8 in authentic Ateso dialect by VJ Opolot. The demon seal is breached, unleashing catastrophic supernatural powers that push the young demon hunters to the brink.',
+    matchScore: 98,
+    isTrending: true,
+    viewsCount: '64.9K Views'
+  },
+  {
+    id: 'tiger-and-crane-ep-9',
+    title: 'TIGER AND CRANE • Part 9 (Episode 9)',
+    seriesTitle: 'Tiger and Crane',
+    episodeNumber: 9,
+    partNumber: 9,
+    vj: 'VJ OPOLOT',
+    year: 2026,
+    duration: '42:50',
+    genre: 'Martial Arts / Fantasy / Demon Hunter / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZ60TQJZ3dMw34s0SYjTUcMqXMGCiQvTtCBy&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZ60TQJZ3dMw34s0SYjTUcMqXMGCiQvTtCBy',
+    videoUrl320: '/api/movies/stream/XZ60TQJZ3dMw34s0SYjTUcMqXMGCiQvTtCBy',
+    pcloudCode: 'XZ60TQJZ3dMw34s0SYjTUcMqXMGCiQvTtCBy',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'Tiger and Crane Part 9 translated with explosive sound effects and Ateso commentary by VJ Opolot. Legendary beast summonings, secret martial arts techniques, and high-stakes survival.',
+    matchScore: 98,
+    isTrending: true,
+    viewsCount: '70.2K Views'
+  },
+  {
+    id: 'tiger-and-crane-ep-10',
+    title: 'TIGER AND CRANE • Part 10 (Episode 10)',
+    seriesTitle: 'Tiger and Crane',
+    episodeNumber: 10,
+    partNumber: 10,
+    vj: 'VJ OPOLOT',
+    year: 2026,
+    duration: '43:15',
+    genre: 'Martial Arts / Fantasy / Demon Hunter / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZPkTQJZowjrVttL3Mko4lcar5UHdp3LQSdV&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZPkTQJZowjrVttL3Mko4lcar5UHdp3LQSdV',
+    videoUrl320: '/api/movies/stream/XZPkTQJZowjrVttL3Mko4lcar5UHdp3LQSdV',
+    pcloudCode: 'XZPkTQJZowjrVttL3Mko4lcar5UHdp3LQSdV',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'Tiger and Crane Part 10 in lively Ateso commentary by VJ Opolot. Betrayals among imperial advisors and desperate siege battles against unstoppable demon commanders.',
+    matchScore: 99,
+    isTrending: true,
+    viewsCount: '74.5K Views'
+  },
+  {
+    id: 'tiger-and-crane-ep-11',
+    title: 'TIGER AND CRANE • Part 11 (Episode 11)',
+    seriesTitle: 'Tiger and Crane',
+    episodeNumber: 11,
+    partNumber: 11,
+    vj: 'VJ OPOLOT',
+    year: 2026,
+    duration: '43:40',
+    genre: 'Martial Arts / Fantasy / Demon Hunter / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZUwMQJZ3VUoiNQCx0hXNrxjnT0F2722Uk9y&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZUwMQJZ3VUoiNQCx0hXNrxjnT0F2722Uk9y',
+    videoUrl320: '/api/movies/stream/XZUwMQJZ3VUoiNQCx0hXNrxjnT0F2722Uk9y',
+    pcloudCode: 'XZUwMQJZ3VUoiNQCx0hXNrxjnT0F2722Uk9y',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'Tiger and Crane Part 11 with punchy Ateso translation by VJ Opolot. Unveiling the sacred crane formation and the ancient forbidden arts to defend the border kingdom.',
+    matchScore: 99,
+    isTrending: true,
+    viewsCount: '79.1K Views'
+  },
+  {
+    id: 'tiger-and-crane-ep-12',
+    title: 'TIGER AND CRANE • Part 12 (Episode 12 - Season Climax)',
+    seriesTitle: 'Tiger and Crane',
+    episodeNumber: 12,
+    partNumber: 12,
+    vj: 'VJ OPOLOT',
+    year: 2026,
+    duration: '45:00',
+    genre: 'Martial Arts / Fantasy / Demon Hunter / Ateso Translation',
+    quality: 'HD 720p • Protected Cinema Stream',
+    thumbnail: 'https://api.pcloud.com/getpubthumb?code=XZsoMQJZ50lN5CyN5ySHPJJjyrRWAV5pC5xk&size=640x360&crop=1',
+    videoUrl: '/api/movies/stream/XZsoMQJZ50lN5CyN5ySHPJJjyrRWAV5pC5xk',
+    videoUrl320: '/api/movies/stream/XZsoMQJZ50lN5CyN5ySHPJJjyrRWAV5pC5xk',
+    pcloudCode: 'XZsoMQJZ50lN5CyN5ySHPJJjyrRWAV5pC5xk',
+    telegramUrl: 'https://t.me/atesomoviesbox',
+    youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
+    description: 'Tiger and Crane Part 12 Season Climax translated in high spirits by VJ Opolot. The earth-shattering final confrontation between the Tiger disciples and the dark demon emperor.',
+    matchScore: 99,
+    isTrending: true,
+    viewsCount: '86.4K Views'
+  },
+
+  // ==================== POISON BREAK SERIES (VJ EMMA PRO FX) ====================
   {
     id: 'poison-break-ep-1',
     title: 'POISON BREAK • Part 1 (Episode 1)',

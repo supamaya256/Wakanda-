@@ -3,6 +3,7 @@ process.env.DISABLE_HMR = 'true';
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { Readable } from 'stream';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
@@ -112,6 +113,108 @@ app.post('/api/ai/image', async (req, res) => {
   } catch (error: any) {
     console.error('Image Generation API Error:', error);
     res.status(500).json({ error: error.message || 'Failed to generate image' });
+  }
+});
+
+// Movie Stream Resolver & Range Proxy for pCloud (Conceals raw cloud links from viewers)
+const movieStreamCache = new Map<string, { url: string; expires: number }>();
+
+async function getPcloudDirectUrl(code: string): Promise<string | null> {
+  const now = Date.now();
+  const cached = movieStreamCache.get(code);
+  if (cached && cached.expires > now) {
+    return cached.url;
+  }
+  try {
+    const pcloudRes = await fetch(`https://api.pcloud.com/getpublinkdownload?code=${encodeURIComponent(code)}`);
+    const data = (await pcloudRes.json()) as any;
+    if (data.result === 0 && data.hosts && data.hosts.length > 0 && data.path) {
+      const directUrl = `https://${data.hosts[0]}${data.path}`;
+      movieStreamCache.set(code, { url: directUrl, expires: now + 3 * 60 * 60 * 1000 });
+      return directUrl;
+    }
+  } catch (e) {
+    console.error('Error fetching pCloud direct link for code:', code, e);
+  }
+  return null;
+}
+
+// Handle HEAD requests from HTML5 video element
+app.head('/api/movies/stream/:code', async (req, res) => {
+  try {
+    const directUrl = await getPcloudDirectUrl(req.params.code);
+    if (!directUrl) return res.status(404).end();
+
+    const headRes = await fetch(directUrl, { method: 'HEAD' });
+    res.status(headRes.status);
+    res.setHeader('Content-Type', headRes.headers.get('content-type') || 'video/mp4');
+    res.setHeader('Accept-Ranges', 'bytes');
+    const length = headRes.headers.get('content-length');
+    if (length) res.setHeader('Content-Length', length);
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    return res.end();
+  } catch (err: any) {
+    console.error('Movie stream HEAD error:', err);
+    return res.status(500).end();
+  }
+});
+
+// Proxy stream with full byte-range support (seamless seeking without exposing external links)
+app.get('/api/movies/stream/:code', async (req, res) => {
+  try {
+    const directUrl = await getPcloudDirectUrl(req.params.code);
+    if (!directUrl) {
+      return res.status(404).send('Movie stream not available');
+    }
+
+    const headers: Record<string, string> = {};
+    if (req.headers.range) {
+      headers['Range'] = req.headers.range;
+    }
+
+    const videoRes = await fetch(directUrl, { headers });
+    res.status(videoRes.status);
+
+    const contentType = videoRes.headers.get('content-type') || 'video/mp4';
+    const contentLength = videoRes.headers.get('content-length');
+    const contentRange = videoRes.headers.get('content-range');
+    const acceptRanges = videoRes.headers.get('accept-ranges') || 'bytes';
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Accept-Ranges', acceptRanges);
+    if (contentLength) res.setHeader('Content-Length', contentLength);
+    if (contentRange) res.setHeader('Content-Range', contentRange);
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+
+    if (!videoRes.body) {
+      return res.end();
+    }
+
+    const nodeStream = Readable.fromWeb(videoRes.body as any);
+    req.on('close', () => {
+      try {
+        nodeStream.destroy();
+      } catch {}
+    });
+    return nodeStream.pipe(res);
+  } catch (err: any) {
+    console.error('Movie stream proxy error:', err);
+    if (!res.headersSent) {
+      res.status(500).send('Stream resolution error');
+    }
+  }
+});
+
+app.get('/api/movies/resolve-stream/:code', async (req, res) => {
+  try {
+    const directUrl = await getPcloudDirectUrl(req.params.code);
+    if (directUrl) {
+      return res.json({ streamUrl: `/api/movies/stream/${req.params.code}` });
+    }
+    return res.status(404).json({ error: 'Movie stream not available' });
+  } catch (err: any) {
+    console.error('Movie stream resolve error:', err);
+    return res.status(500).json({ error: 'Stream error' });
   }
 });
 

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { VoiceDropItem, VOICE_DROPS_DATA } from '../data/voiceDropsData';
 import { LogoItem, LOGO_ITEMS_DATA } from '../data/logosData';
-import { AtesoMovie, ATESO_MOVIES_DATA } from '../data/atesoMoviesData';
+import { AtesoMovie, ATESO_MOVIES_DATA, sanitizeMovieForStorage } from '../data/atesoMoviesData';
 
 export interface CustomMediaFile {
   id: string;
@@ -82,7 +82,7 @@ const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
 const DROPS_STORAGE_KEY = 'dj_emma_voice_drops_v1';
 const LOGOS_STORAGE_KEY = 'dj_emma_logos_v2_electric_first';
-const ATESO_MOVIES_STORAGE_KEY = 'dj_emma_ateso_movies_v4_youtube';
+const ATESO_MOVIES_STORAGE_KEY = 'dj_emma_ateso_movies_v5_pcloud_direct';
 const FILES_STORAGE_KEY = 'dj_emma_custom_files_v1';
 const YT_SUBSCRIBED_KEY = 'dj_emma_yt_subscribed_v2';
 
@@ -157,17 +157,20 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     return LOGO_ITEMS_DATA;
   });
 
-  // Initialize Ateso Movies (Ensure Poison Break Series is loaded)
+  // Initialize Ateso Movies (Ensure newly added iSmart Shankar and Tiger & Crane are loaded)
   const [atesoMovies, setAtesoMovies] = useState<AtesoMovie[]>(() => {
     try {
       const saved = localStorage.getItem(ATESO_MOVIES_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const hasNewMovies = parsed.some((m: AtesoMovie) => m.id === 'movie-crazy-safari-vj-sultan');
-          if (hasNewMovies) {
-            return parsed;
-          }
+          // Identify any custom uploaded movies by admin
+          const customAdded = parsed
+            .filter((m: AtesoMovie) => !ATESO_MOVIES_DATA.some(d => d.id === m.id) && (m.id.startsWith('custom-') || m.id.startsWith('ateso-mov-')))
+            .map((m: AtesoMovie) => sanitizeMovieForStorage(m));
+
+          // Always prioritize canonical ATESO_MOVIES_DATA to guarantee valid pCloud stream routes & posters
+          return [...ATESO_MOVIES_DATA, ...customAdded];
         }
       }
     } catch (e) {
@@ -289,7 +292,8 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   // Ateso Movies handlers
   const addAtesoMovie = (movie: AtesoMovie) => {
-    setAtesoMovies(prev => [movie, ...prev]);
+    const sanitized = sanitizeMovieForStorage(movie);
+    setAtesoMovies(prev => [sanitized, ...prev]);
   };
 
   const deleteAtesoMovie = (id: string) => {

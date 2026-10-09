@@ -63,18 +63,18 @@ export default function NetflixAtesoMoviesRow({
               CINEMA
             </motion.span>
             <h2 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-red-200 to-white tracking-tight flex items-center gap-2">
-              <span>POISON BREAK</span>
+              <span>ATESO MOVIES</span>
               <motion.span 
                 animate={{ opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 2, repeat: Infinity }}
                 className="text-xs text-red-500 font-bold uppercase tracking-wider hidden sm:inline drop-shadow-[0_0_5px_rgba(239,68,68,0.5)]"
               >
-                • Episodes 1 to 9 (Play on Site • 320p)
+                • iSmart Shankar • Tiger & Crane • Poison Break
               </motion.span>
             </h2>
           </div>
           <p className="text-xs text-zinc-400 mt-0.5 opacity-80">
-            Full Ateso translation by VJ Emma Pro • Subscribe on YouTube to unlock and stream directly!
+            Translated by VJ Opolot & VJ Emma Pro • Tap any movie poster to stream directly in Half Screen or Full Screen!
           </p>
         </div>
 
@@ -84,7 +84,7 @@ export default function NetflixAtesoMoviesRow({
             onClick={onViewAllMovies}
             className="text-xs text-[#E50914] hover:text-red-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
           >
-            <span>All 9 Episodes</span>
+            <span>All {atesoMovies.length} Movies</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -124,7 +124,7 @@ export default function NetflixAtesoMoviesRow({
                 {/* VJ and Part Tag */}
                 <div className="absolute top-2 left-2 flex items-center gap-1.5 z-20">
                   <span className="bg-[#E50914] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">
-                    {movie.partNumber ? `PART ${epNum < 10 ? `0${epNum}` : epNum}` : (movie.vj || 'ATESO')}
+                    {movie.seriesTitle ? `${movie.seriesTitle.toUpperCase()} • P${epNum}` : (movie.partNumber ? `PART ${epNum < 10 ? `0${epNum}` : epNum}` : (movie.vj || 'ATESO'))}
                   </span>
                   {!isYoutubeSubscribed ? (
                     <span className="bg-red-950/90 border border-red-500/50 text-red-300 text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1">

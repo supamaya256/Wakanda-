@@ -39,14 +39,16 @@ import {
   LayoutDashboard,
   MessageCircle,
   Send,
-  MessageSquare
+  MessageSquare,
+  Columns,
+  Maximize2
 } from 'lucide-react';
 import { useAudio, AudioTrack } from '../context/AudioContext';
 import { useContent, CustomMediaFile } from '../context/ContentContext';
 import { useAdminAuth, MASTER_ADMIN_EMAIL } from '../context/AdminAuthContext';
 import { VoiceDropItem } from '../data/voiceDropsData';
 import { LogoItem } from '../data/logosData';
-import { AtesoMovie } from '../data/atesoMoviesData';
+import { AtesoMovie, extractPcloudCode, sanitizeMovieForStorage, getMovieStreamUrl } from '../data/atesoMoviesData';
 import CustomVoiceDropRequestForm from './CustomVoiceDropRequestForm';
 import StudioContactForm from './StudioContactForm';
 import WordPressAdminDashboard from './WordPressAdminDashboard';
@@ -325,6 +327,8 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
   const [movieQuality, setMovieQuality] = useState('Ultra HD 4K');
   const [movieDescription, setMovieDescription] = useState('');
   const [movieTelegramUrl, setMovieTelegramUrl] = useState('https://t.me/atesomoviesbox');
+  const [previewMovie, setPreviewMovie] = useState<AtesoMovie | null>(null);
+  const [previewMovieScreenMode, setPreviewMovieScreenMode] = useState<'standard' | 'half'>('standard');
 
   // Audio preview for tracks & drops in manager
   const [previewAudioUrl, setPreviewAudioUrl] = useState<string | null>(null);
@@ -774,26 +778,42 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
       return;
     }
 
-    const newMovie: AtesoMovie = {
+    const pcloudCode = extractPcloudCode(movieVideoUrl.trim());
+    const streamUrl = pcloudCode ? `/api/movies/stream/${pcloudCode}` : movieVideoUrl.trim();
+    const posterUrl = (!movieThumbnail.trim() || movieThumbnail.includes('InShot_20260512')) && pcloudCode
+      ? `https://api.pcloud.com/getpubthumb?code=${pcloudCode}&size=640x360&crop=1`
+      : (movieThumbnail.trim() || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg');
+
+    // Auto-detect series title if mentioned
+    let seriesTitle: string | undefined = undefined;
+    const lowerTitle = movieTitle.toLowerCase();
+    if (lowerTitle.includes('ismart')) seriesTitle = 'iSmart Shankar';
+    else if (lowerTitle.includes('tiger')) seriesTitle = 'Tiger and Crane';
+    else if (lowerTitle.includes('poison')) seriesTitle = 'Poison Break';
+
+    const newMovie: AtesoMovie = sanitizeMovieForStorage({
       id: `ateso-mov-${Date.now()}`,
       title: movieTitle.trim(),
+      seriesTitle,
       vj: movieVj.trim() || 'VJ EMMA PRO FX',
       year: 2026,
       duration: movieDuration.trim() || '1h 45m',
       genre: movieGenre.trim() || 'Action Blockbuster',
-      quality: movieQuality.trim() || 'Ultra HD 4K',
-      thumbnail: movieThumbnail.trim() || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
-      videoUrl: movieVideoUrl.trim(),
+      quality: movieQuality.trim() || (pcloudCode ? 'HD 720p • Protected Cinema Stream' : 'Ultra HD 4K'),
+      thumbnail: posterUrl,
+      videoUrl: streamUrl,
+      videoUrl320: streamUrl,
+      pcloudCode: pcloudCode || undefined,
       telegramUrl: movieTelegramUrl.trim() || 'https://t.me/atesomoviesbox',
       youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
       description: movieDescription.trim() || 'Ateso translated cinema release by DJ Emma Pro FX.',
       matchScore: 99,
       isTrending: true,
       viewsCount: '1.5K Views'
-    };
+    });
 
     addAtesoMovie(newMovie);
-    showToast(`Movie "${newMovie.title}" added to Watch Ateso Movies!`, 'success');
+    showToast(`Movie "${newMovie.title}" added to site! Direct stream link secured.`, 'success');
 
     // Reset Form
     setMovieTitle('');
@@ -2550,14 +2570,14 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
                       <StorageUploadIndicator progress={uploadProgressMap['movieVideo']} />
                       <input
                         type="text"
-                        placeholder="e.g. https://res.cloudinary.com/.../movie.mp4"
+                        placeholder="e.g. pCloud link (https://u.pcloud.link/...) or direct video link"
                         value={movieVideoUrl}
                         onChange={(e) => setMovieVideoUrl(e.target.value)}
                         required
                         className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
                       />
                       <span className="text-[10px] text-zinc-500 mt-1 block">
-                        Direct MP4 or video stream URL that will play on site when users tap it.
+                        Direct stream link is automatically secured & concealed from viewers. Enables Half Screen & Full Screen playback with no download buttons.
                       </span>
                     </div>
                   </div>
@@ -2574,7 +2594,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
                       <StorageUploadIndicator progress={uploadProgressMap['moviePoster']} />
                       <input
                         type="text"
-                        placeholder="e.g. https://res.cloudinary.com/.../poster.jpg"
+                        placeholder="e.g. Auto-fetched from pCloud or custom poster image"
                         value={movieThumbnail}
                         onChange={(e) => setMovieThumbnail(e.target.value)}
                         className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
@@ -2606,7 +2626,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-zinc-400 mb-1">Telegram Download Link</label>
+                      <label className="block text-xs font-medium text-zinc-400 mb-1">Telegram Movie Link (Optional)</label>
                       <input
                         type="text"
                         placeholder="https://t.me/atesomoviesbox"
@@ -2690,15 +2710,18 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between gap-2">
-                    <a
-                      href={movie.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPreviewMovie(movie);
+                        setPreviewMovieScreenMode('standard');
+                      }}
+                      className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+                      title="Test stream securely on site"
                     >
                       <Play className="w-3 h-3 fill-white" />
                       <span>Test Stream</span>
-                    </a>
+                    </button>
 
                     {/* Watch on Telegram for Visitors */}
                     {!isAdmin && (
@@ -3325,6 +3348,128 @@ service firebase.storage {
                 className="px-5 py-2 rounded-lg bg-[#E50914] hover:bg-red-700 text-white font-bold text-xs cursor-pointer shadow-lg transition-colors"
               >
                 Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SECURE MOVIE STREAM PREVIEW MODAL (Zero URL Leakage, No Download Button) */}
+      {previewMovie && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className={`w-full bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ${
+            previewMovieScreenMode === 'half' ? 'max-w-6xl' : 'max-w-4xl'
+          }`}>
+            {/* Modal Header & Screen Mode Switcher */}
+            <div className="p-4 bg-zinc-900/90 border-b border-zinc-800 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="bg-[#E50914] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">
+                  {previewMovie.vj}
+                </span>
+                <h3 className="font-bold text-sm text-white line-clamp-1">
+                  {previewMovie.title}
+                </h3>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPreviewMovieScreenMode(prev => prev === 'half' ? 'standard' : 'half')}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                    previewMovieScreenMode === 'half'
+                      ? 'bg-[#E50914] text-white shadow'
+                      : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
+                  }`}
+                  title="Toggle Half Screen (50% Split) Mode"
+                >
+                  <Columns className="w-3.5 h-3.5" />
+                  <span>{previewMovieScreenMode === 'half' ? 'Standard Width' : 'Half Screen (50%)'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const videoEl = document.getElementById('preview-movie-player') as HTMLVideoElement | null;
+                    if (videoEl) {
+                      if (document.fullscreenElement) {
+                        document.exitFullscreen().catch(console.error);
+                      } else {
+                        videoEl.requestFullscreen().catch(console.error);
+                      }
+                    }
+                  }}
+                  className="px-3 py-1 rounded-lg text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Full Screen View"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Full Screen</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPreviewMovie(null)}
+                  className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Video Player Body (No download button, no link shown) */}
+            <div className={`p-4 ${previewMovieScreenMode === 'half' ? 'grid grid-cols-1 md:grid-cols-2 gap-6 items-center' : 'w-full'}`}>
+              <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-zinc-800 shadow-xl flex items-center justify-center">
+                <video
+                  id="preview-movie-player"
+                  src={getMovieStreamUrl(previewMovie)}
+                  poster={previewMovie.thumbnail}
+                  controls
+                  controlsList="nodownload noplaybackrate"
+                  disablePictureInPicture={false}
+                  onContextMenu={(e) => e.preventDefault()}
+                  className="w-full h-full object-contain"
+                  playsInline
+                />
+              </div>
+
+              {previewMovieScreenMode === 'half' && (
+                <div className="space-y-3 bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/80">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                      Half Screen Playback Active
+                    </span>
+                  </div>
+                  <h4 className="font-extrabold text-white text-base">
+                    {previewMovie.title}
+                  </h4>
+                  <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
+                    <span>{previewMovie.duration}</span>
+                    <span>•</span>
+                    <span className="text-emerald-400">{previewMovie.quality}</span>
+                    <span>•</span>
+                    <span>{previewMovie.genre}</span>
+                  </div>
+                  <p className="text-xs text-zinc-300 leading-relaxed line-clamp-4">
+                    {previewMovie.description}
+                  </p>
+                  <div className="pt-2">
+                    <span className="text-[11px] text-zinc-500 font-mono">
+                      Security Status: Protected Stream • Link concealed from viewers • No downloads allowed
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 bg-zinc-900/40 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-400 px-4">
+              <span>Streaming protected by DJ Emma Pro Media Hub</span>
+              <button
+                type="button"
+                onClick={() => setPreviewMovie(null)}
+                className="px-4 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-semibold cursor-pointer"
+              >
+                Close Preview
               </button>
             </div>
           </div>

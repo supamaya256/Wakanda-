@@ -61,45 +61,54 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
   const { pauseTrack } = useAudio();
   const { voiceDrops } = useContent();
 
-  // Initialize audio player
+  const handleTimeUpdate = () => {
+    const audio = dropAudioRef.current;
+    if (audio && audio.duration && !isNaN(audio.duration)) {
+      setDropCurrentTime(audio.currentTime);
+      setDropDuration(audio.duration);
+      setDropProgress((audio.currentTime / audio.duration) * 100);
+    }
+  };
+
+  const handleEnded = () => {
+    setIsPlayingDrop(false);
+    setDropProgress(0);
+    setDropCurrentTime(0);
+    setActiveDropId(null);
+  };
+
+  const handleError = (e: Event) => {
+    e.stopPropagation();
+    setIsPlayingDrop(false);
+    setActiveDropId(null);
+  };
+
+  const getDropAudio = () => {
+    if (!dropAudioRef.current) {
+      const audio = new Audio();
+      audio.preload = 'none';
+      audio.addEventListener('timeupdate', handleTimeUpdate);
+      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('error', handleError);
+      dropAudioRef.current = audio;
+    }
+    return dropAudioRef.current;
+  };
+
+  // Cleanup on unmount
   useEffect(() => {
-    const audio = new Audio();
-    audio.preload = 'none';
-    dropAudioRef.current = audio;
-
-    const handleTimeUpdate = () => {
-      if (audio.duration && !isNaN(audio.duration)) {
-        setDropCurrentTime(audio.currentTime);
-        setDropDuration(audio.duration);
-        setDropProgress((audio.currentTime / audio.duration) * 100);
-      }
-    };
-
-    const handleEnded = () => {
-      setIsPlayingDrop(false);
-      setDropProgress(0);
-      setDropCurrentTime(0);
-      setActiveDropId(null);
-    };
-
-    const handleError = (e: Event) => {
-      e.stopPropagation();
-      setIsPlayingDrop(false);
-      setActiveDropId(null);
-    };
-
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('error', handleError);
-
     return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('error', handleError);
-      audio.pause();
-      try {
-        audio.removeAttribute('src');
-      } catch {}
+      const audio = dropAudioRef.current;
+      if (audio) {
+        audio.removeEventListener('timeupdate', handleTimeUpdate);
+        audio.removeEventListener('ended', handleEnded);
+        audio.removeEventListener('error', handleError);
+        audio.pause();
+        try {
+          audio.removeAttribute('src');
+        } catch {}
+        dropAudioRef.current = null;
+      }
     };
   }, []);
 
@@ -194,7 +203,7 @@ export default function NetflixDropsRow({ isLoading = false }: NetflixDropsRowPr
 
   // Handle Play/Pause toggle on a drop
   const handleTogglePlay = (drop: VoiceDropItem) => {
-    const audio = dropAudioRef.current;
+    const audio = getDropAudio();
 
     if (activeDropId === drop.id && isPlayingDrop) {
       if (audio) audio.pause();

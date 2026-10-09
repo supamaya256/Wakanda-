@@ -45,9 +45,28 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
   const [isPlaying, setIsPlaying] = useState<boolean>(!isDataSaver);
   const [isMuted, setIsMuted] = useState<boolean>(true);
   const [showToast, setShowToast] = useState<string | null>(null);
+  const [videoHasError, setVideoHasError] = useState<boolean>(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const ribbonRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef<boolean>(true);
+
+  // Reset video error state on logo change
+  useEffect(() => {
+    setVideoHasError(false);
+  }, [activeIndex]);
+
+  const getPoster = (url: string) => {
+    if (!url || typeof url !== 'string') return '';
+    try {
+      if (url.includes('cloudinary.com') && url.includes('/video/upload/')) {
+        return url
+          .replace(/\/video\/upload\/([^/]+)?\/?/, '/video/upload/so_0,w_640,h_360,c_fill,f_auto,q_auto:eco/')
+          .replace(/\.mp4(\?.*)?$/i, '.jpg');
+      }
+    } catch {}
+    return '';
+  };
 
   // Scroll ribbon so active edition button is visible
   useEffect(() => {
@@ -68,13 +87,20 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
     setActiveIndex((prev) => (prev - 1 + THREE_D_LOGOS_REVEAL_DATA.length) % THREE_D_LOGOS_REVEAL_DATA.length);
   };
 
-  // Synchronize video when activeLogo changes
+  // Synchronize video when activeLogo changes (avoid currentTime seek on mount)
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      if (!isDataSaver || isPlaying) {
+      try {
+        if (videoRef.current.readyState >= 1) {
+          videoRef.current.currentTime = 0;
+        }
+      } catch {}
+      if (!isDataSaver && isPlaying) {
         videoRef.current.play().catch(() => {});
-        setIsPlaying(true);
       }
     }
   }, [activeIndex, isDataSaver]);
@@ -259,25 +285,50 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                 onContextMenu={handleContextMenu}
               >
                 {/* 3D Logo Reveal Video (Delivered in fast 360p Data Saver quality) */}
-                <video
-                  ref={videoRef}
-                  key={activeLogo.videoUrl}
-                  src={getOptimizedMediaUrl(activeLogo.videoUrl, 'video')}
-                  autoPlay={shouldAutoplay}
-                  preload={preloadStrategy}
-                  loop
-                  playsInline
-                  muted={isMuted}
-                  controls={false}
-                  controlsList="nodownload nofullscreen noremoteplayback"
-                  disablePictureInPicture
-                  onContextMenu={handleContextMenu}
-                  onError={(e) => {
-                    console.warn('Welcome hero video playback handled:', e);
-                  }}
-                  className="w-full h-full object-contain max-h-[420px]"
-                  onClick={togglePlay}
-                />
+                {videoHasError ? (
+                  <div 
+                    className="relative w-full h-full flex items-center justify-center cursor-pointer group/poster"
+                    onClick={togglePlay}
+                  >
+                    <img
+                      src={getPoster(activeLogo.videoUrl)}
+                      alt={activeLogo.title}
+                      className="w-full h-full object-contain max-h-[420px] select-none"
+                    />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px]">
+                      <div className="w-16 h-16 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-[0_0_35px_rgba(229,9,20,0.85)] hover:scale-110 active:scale-95 transition-transform mb-3">
+                        <Play className="w-7 h-7 fill-white translate-x-0.5" />
+                      </div>
+                      <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/85 border border-amber-500/50 text-xs font-mono font-bold text-amber-400 shadow-xl">
+                        <span>Tap to Play 3D Logo Reveal</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <video
+                    ref={videoRef}
+                    key={activeLogo.videoUrl}
+                    poster={getPoster(activeLogo.videoUrl)}
+                    autoPlay={shouldAutoplay}
+                    preload={preloadStrategy}
+                    loop
+                    playsInline
+                    muted={isMuted}
+                    controls={false}
+                    controlsList="nodownload nofullscreen noremoteplayback"
+                    disablePictureInPicture
+                    onContextMenu={handleContextMenu}
+                    onError={(e) => {
+                      e.stopPropagation();
+                      setVideoHasError(true);
+                      console.warn('Welcome hero video playback handled:', e);
+                    }}
+                    className="w-full h-full object-contain max-h-[420px]"
+                    onClick={togglePlay}
+                  >
+                    <source src={getOptimizedMediaUrl(activeLogo.videoUrl, 'video')} type="video/mp4" />
+                  </video>
+                )}
 
                 {/* Data Saver Tap-To-Play Overlay when paused */}
                 {!isPlaying && (

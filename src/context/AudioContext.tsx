@@ -1062,8 +1062,15 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Track initial mount to prevent premature audio.load() call on idle page load
+  const isInitialAudioMount = useRef<boolean>(true);
+
   // Sync track URL change
   useEffect(() => {
+    if (isInitialAudioMount.current) {
+      isInitialAudioMount.current = false;
+      return;
+    }
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -1255,7 +1262,11 @@ export function AudioProvider({ children }: { children: ReactNode }) {
           // Gracefully suppress unhandled error event
           e.stopPropagation();
         }}
-      />
+      >
+        {currentTrack?.url && (
+          <source src={currentTrack.url} type="audio/mpeg" />
+        )}
+      </audio>
 
       {/* Phone Download Notification Toast */}
       {downloadStatus && (
