@@ -55,7 +55,7 @@ import GoogleSearchVisibilityModal from './GoogleSearchVisibilityModal';
 
 export interface WordPressAdminDashboardProps {
   onBackToStore: () => void;
-  onOpenUploadCatalog?: (section: 'tracks' | 'drops' | 'logos' | 'movies' | 'files' | 'inquiries') => void;
+  onOpenUploadCatalog?: (section: 'tracks' | 'drops' | 'logos' | 'files' | 'inquiries') => void;
 }
 
 export interface AdminOrder {
@@ -147,16 +147,16 @@ const RECENT_VIDEOS: RecentMediaItem[] = [
     title: 'STREET ANTHEM 90 • DJ EMMA PRO & WAKANDA DJs',
     date: 'Today',
     duration: '58:40',
-    views: '128.5K',
-    thumbnail: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png'
+    views: '215.8K',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/WhatsApp%20Image%202026-06-17%20at%2012.23.24%20PM.jpeg'
   },
   {
     id: 'vid-1',
     title: '2024 ATESO VIDEO MIX VOL 1 VS AFROBEATS',
     date: '28 Sep, 2025',
     duration: '50:15',
-    views: '42.5K',
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550689/file_000000007a30824389bfed070b58d613.png'
+    views: '124.5K',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000bda08211910e147fbb531635.png'
   },
   {
     id: 'vid-2',
@@ -164,23 +164,23 @@ const RECENT_VIDEOS: RecentMediaItem[] = [
     date: '27 Sep, 2025',
     duration: '00:45',
     views: '28.2K',
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550683/file_00000000981482069a72d0e793ac5391.png'
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_0000000082e48206b44f044859a03025.png'
   },
   {
     id: 'vid-3',
-    title: 'Ateso Movies • Crazy Safari VJ Sultan',
+    title: 'BEST OF ATESO GOSPEL VIDEO NONSTOP',
     date: '26 Sep, 2025',
-    duration: '1h 36m',
-    views: '48.2K',
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1790550669/IMG-20260713-WA0056.jpg'
+    duration: '46:30',
+    views: '89.2K',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000981482069a72d0e793ac5391.png'
   },
   {
     id: 'vid-4',
-    title: 'BEST OF VYROOTA NONSTOP 2026',
+    title: '2025 CLUB BANGERS MIXXX VOL 1',
     date: '24 Sep, 2025',
-    duration: '52:18',
-    views: '96.4K',
-    thumbnail: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg'
+    duration: '54:20',
+    views: '110.4K',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000bda08211910e147fbb531635.png'
   }
 ];
 
@@ -191,7 +191,7 @@ const RECENT_PHOTOS: RecentMediaItem[] = [
     date: 'Today',
     duration: '4K HD',
     views: '34.8K',
-    thumbnail: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png'
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/WhatsApp%20Image%202026-06-17%20at%2012.23.24%20PM.jpeg'
   },
   {
     id: 'pho-1',
@@ -231,7 +231,7 @@ export default function WordPressAdminDashboard({
   onBackToStore,
   onOpenUploadCatalog
 }: WordPressAdminDashboardProps) {
-  const { voiceDrops, logos, atesoMovies } = useContent();
+  const { voiceDrops, logos } = useContent();
   const { tracks } = useAudio();
 
   // WordPress UI states
@@ -408,10 +408,6 @@ export default function WordPressAdminDashboard({
                 <Box className="w-3.5 h-3.5 text-emerald-400" />
                 <span>3D Logo Order</span>
               </div>
-              <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
-                <Film className="w-3.5 h-3.5 text-blue-400" />
-                <span>Ateso Movie</span>
-              </div>
               <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('files')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
                 <Folder className="w-3.5 h-3.5 text-purple-400" />
                 <span>Media File</span>
@@ -578,32 +574,6 @@ export default function WordPressAdminDashboard({
                   <div onClick={() => setOrderFilter('3D Logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Logo Orders (6)</div>
                   <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Logo Catalog ({logos.length || 16})</div>
                   <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Add New Logo</div>
-                </div>
-              )}
-            </div>
-
-            {/* 6. Ateso Movies */}
-            <div>
-              <div 
-                onClick={() => toggleSubmenu('movies')}
-                className="flex items-center justify-between px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
-                title="Ateso Movies"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Film className="w-4 h-4 text-[#f0b849] shrink-0" />
-                  {!isSidebarCollapsed && <span className="font-medium">Ateso Movies</span>}
-                </div>
-                {!isSidebarCollapsed && (
-                  <span className="text-[10px] bg-[#2c3338] border border-[#3c434a] text-white px-1.5 py-0.2 rounded-full font-bold">
-                    {atesoMovies.length || 18}
-                  </span>
-                )}
-              </div>
-              {!isSidebarCollapsed && openSubmenus.movies && (
-                <div className="bg-[#101517] py-1 text-xs pl-9 pr-2 space-y-1">
-                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">All 18 Movies</div>
-                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Add Ateso Movie</div>
-                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">VJs: Sultan, Bashir, Junior</div>
                 </div>
               )}
             </div>
@@ -931,9 +901,9 @@ export default function WordPressAdminDashboard({
                       <Mic className="w-3.5 h-3.5 text-[#D4AF37]" />
                       <span>Manage DJ Drop Client Orders (12)</span>
                     </li>
-                    <li className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer" onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')}>
+                    <li className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer" onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')}>
                       <Film className="w-3.5 h-3.5 text-[#f0b849]" />
-                      <span>Configure Ateso Translated Movies (18)</span>
+                      <span>Manage HD Video Mixes & Shows</span>
                     </li>
                     <li className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer" onClick={onBackToStore}>
                       <ExternalLink className="w-3.5 h-3.5 text-[#34D399]" />
@@ -992,11 +962,11 @@ export default function WordPressAdminDashboard({
                   </div>
 
                   <div 
-                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('movies')}
+                    onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('tracks')}
                     className="flex items-center gap-2 hover:text-[#72aee6] cursor-pointer"
                   >
                     <Film className="w-3.5 h-3.5 text-[#f0b849]" />
-                    <span><strong className="text-white font-bold">{atesoMovies.length || 18}</strong> Ateso Movies</span>
+                    <span><strong className="text-white font-bold">6</strong> Video Mixes & Shows</span>
                   </div>
 
                   <div 

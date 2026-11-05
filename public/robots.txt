@@ -1,18 +1,13 @@
+# robots.txt for DJ EMMA PRO Official Website
 User-agent: *
 Allow: /
-Allow: /#logos
-Allow: /#drops
-Allow: /#ateso-movies-section
-Allow: /#mixes
-Allow: /sitemap.xml
 
+# Google AdSense Crawler
+User-agent: Mediapartners-Google
+Allow: /
+
+# Google Search Crawler
 User-agent: Googlebot
 Allow: /
 
-User-agent: Googlebot-Image
-Allow: /
-
-User-agent: Googlebot-Video
-Allow: /
-
-Sitemap: https://djemmapro.com/sitemap.xml
+Sitemap: https://ais-pre-aefj6ijbgf372oubjpxf4v-422039268137.europe-west2.run.app/sitemap.xml

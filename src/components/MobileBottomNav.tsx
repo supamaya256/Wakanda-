@@ -1,39 +1,87 @@
-import React from 'react';
-import { Home, Headphones, Mic2, Film, User, ShieldCheck, Sparkles, Zap } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useAdminAuth } from '../context/AdminAuthContext';
-import { useDataSaver } from '../context/DataSaverContext';
+import React, { useState, useEffect } from 'react';
+import { Headphones, Film, User, Calendar, Music } from 'lucide-react';
+
+export type NavSection = 'audio' | 'videos' | 'about' | 'book';
 
 interface MobileBottomNavProps {
-  onOpenAtesoMovies: () => void;
-  onOpenLogin: (mode?: 'signin' | 'signup') => void;
+  currentView?: 'store' | 'manager' | 'movies' | 'logos-reveal';
+  activeSection?: NavSection;
+  onNavigateSection?: (section: NavSection) => void;
+  // Kept for backward compatibility if called elsewhere
+  onOpenAtesoMovies?: () => void;
+  onOpenLogin?: (mode?: 'signin' | 'signup') => void;
   onOpenStudioManager?: () => void;
   onOpenLogosReveal?: () => void;
-  currentView?: 'store' | 'manager' | 'movies' | 'logos-reveal';
 }
 
 export default function MobileBottomNav({
-  onOpenAtesoMovies,
-  onOpenLogin,
-  onOpenStudioManager,
-  onOpenLogosReveal,
   currentView = 'store',
+  activeSection: controlledActiveSection,
+  onNavigateSection
 }: MobileBottomNavProps) {
-  const { user } = useAuth();
-  const { isAdmin } = useAdminAuth();
-  const { isDataSaver, toggleDataSaver } = useDataSaver();
+  const [internalActive, setInternalActive] = useState<NavSection>('audio');
+  const currentActive = controlledActiveSection || internalActive;
 
-  const scrollTo = (id: string) => {
+  // Scroll spy to automatically highlight currently visible section in red while scrolling
+  useEffect(() => {
+    if (currentView !== 'store') return;
+
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 250;
+
+      const bookEl = document.getElementById('book-me');
+      const aboutEl = document.getElementById('about-me');
+      const videosEl = document.getElementById('videos');
+      const audioEl = document.getElementById('mixes');
+
+      if (bookEl && scrollPos >= bookEl.offsetTop) {
+        setInternalActive('book');
+      } else if (aboutEl && scrollPos >= aboutEl.offsetTop) {
+        setInternalActive('about');
+      } else if (videosEl && scrollPos >= videosEl.offsetTop) {
+        setInternalActive('videos');
+      } else if (audioEl && scrollPos >= audioEl.offsetTop) {
+        setInternalActive('audio');
+      } else {
+        setInternalActive('audio');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [currentView]);
+
+  const handleNavClick = (section: NavSection) => {
+    setInternalActive(section);
+    if (onNavigateSection) {
+      onNavigateSection(section);
+    }
+
+    // Target element IDs for each of the 4 items
+    const targetMap: Record<NavSection, string> = {
+      audio: 'mixes',
+      videos: 'videos',
+      about: 'about-me',
+      book: 'book-me'
+    };
+
+    const targetId = targetMap[section];
+
     if (currentView !== 'store') {
       window.dispatchEvent(new CustomEvent('app:switch-view', { detail: 'store' }));
       setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-        else window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 100);
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 120);
       return;
     }
-    const el = document.getElementById(id);
+
+    const el = document.getElementById(targetId);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     } else {
@@ -41,109 +89,79 @@ export default function MobileBottomNav({
     }
   };
 
+  const navItems: { id: NavSection; label: string; icon: typeof Headphones }[] = [
+    {
+      id: 'audio',
+      label: 'AUDIO',
+      icon: Headphones
+    },
+    {
+      id: 'videos',
+      label: 'VIDEOS',
+      icon: Film
+    },
+    {
+      id: 'about',
+      label: 'ABOUT ME',
+      icon: User
+    },
+    {
+      id: 'book',
+      label: 'BOOK ME',
+      icon: Calendar
+    }
+  ];
+
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#121212]/95 backdrop-blur-lg border-t border-zinc-800/90 px-3 py-1.5 flex items-center justify-around select-none shadow-[0_-4px_20px_rgba(0,0,0,0.6)]"
-      aria-label="Mobile Navigation"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0c]/95 backdrop-blur-xl border-t border-zinc-800/90 shadow-[0_-4px_25px_rgba(0,0,0,0.85)] select-none"
+      aria-label="Main Navigation"
     >
-      <button
-        type="button"
-        onClick={() => {
-          if (currentView !== 'store') {
-            window.dispatchEvent(new CustomEvent('app:switch-view', { detail: 'store' }));
-          }
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        className="flex flex-col items-center justify-center py-1 px-2 text-zinc-400 hover:text-white transition-colors cursor-pointer group"
-      >
-        <Home className={`w-5 h-5 ${currentView === 'store' ? 'text-[#E50914]' : 'text-zinc-400 group-hover:text-white'}`} />
-        <span className={`text-[10px] mt-0.5 font-medium ${currentView === 'store' ? 'text-white font-bold' : 'text-zinc-400'}`}>
-          Home
-        </span>
-      </button>
+      <div className="max-w-xl mx-auto px-2 sm:px-4 py-1.5 sm:py-2 flex items-center justify-around">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isSelected = currentActive === item.id;
 
-      <button
-        type="button"
-        onClick={() => scrollTo('mixes')}
-        className="flex flex-col items-center justify-center py-1 px-2 text-zinc-400 hover:text-white transition-colors cursor-pointer group"
-      >
-        <Headphones className="w-5 h-5 text-zinc-400 group-hover:text-white" />
-        <span className="text-[10px] mt-0.5 font-medium text-zinc-400 group-hover:text-white">
-          Mixes
-        </span>
-      </button>
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => handleNavClick(item.id)}
+              className={`flex-1 flex flex-col items-center justify-center py-1 sm:py-1.5 px-1 sm:px-3 rounded-xl transition-all duration-200 cursor-pointer group active:scale-95 ${
+                isSelected
+                  ? 'bg-red-600/15 border border-red-500/30 shadow-md shadow-red-950/40'
+                  : 'hover:bg-white/5 border border-transparent'
+              }`}
+            >
+              {/* Modern Icon */}
+              <div className="relative">
+                <Icon
+                  className={`w-5 h-5 sm:w-5.5 sm:h-5.5 transition-transform duration-200 group-hover:scale-110 ${
+                    isSelected
+                      ? 'text-[#E50914] drop-shadow-[0_0_8px_rgba(229,9,20,0.7)]'
+                      : 'text-zinc-400 group-hover:text-white'
+                  }`}
+                />
+                {/* Active Glow Dot */}
+                {isSelected && (
+                  <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
+                )}
+              </div>
 
-      <button
-        type="button"
-        onClick={() => scrollTo('drops')}
-        className="flex flex-col items-center justify-center py-1 px-2 text-zinc-400 hover:text-white transition-colors cursor-pointer group"
-      >
-        <Mic2 className="w-5 h-5 text-zinc-400 group-hover:text-white" />
-        <span className="text-[10px] mt-0.5 font-medium text-zinc-400 group-hover:text-white">
-          DJ Drops
-        </span>
-      </button>
-
-      <button
-        type="button"
-        onClick={() => {
-          if (onOpenLogosReveal) {
-            onOpenLogosReveal();
-          } else {
-            scrollTo('logos');
-          }
-        }}
-        className="flex flex-col items-center justify-center py-1 px-2 text-zinc-400 hover:text-white transition-colors cursor-pointer group"
-      >
-        <Sparkles className={`w-5 h-5 ${currentView === 'logos-reveal' ? 'text-red-500' : 'text-zinc-400 group-hover:text-red-400'}`} />
-        <span className={`text-[10px] mt-0.5 font-medium ${currentView === 'logos-reveal' ? 'text-red-400 font-bold' : 'text-zinc-400'}`}>
-          3D Logos
-        </span>
-      </button>
-
-      <button
-        type="button"
-        onClick={onOpenAtesoMovies}
-        className="flex flex-col items-center justify-center py-1 px-2 text-zinc-400 hover:text-white transition-colors cursor-pointer group"
-      >
-        <Film className={`w-5 h-5 ${currentView === 'movies' ? 'text-amber-400' : 'text-zinc-400 group-hover:text-amber-400'}`} />
-        <span className={`text-[10px] mt-0.5 font-medium ${currentView === 'movies' ? 'text-amber-300 font-bold' : 'text-zinc-400'}`}>
-          Movies
-        </span>
-      </button>
-
-      {/* 1-Tap Mobile Data Saver Button */}
-      <button
-        type="button"
-        onClick={toggleDataSaver}
-        className="flex flex-col items-center justify-center py-1 px-1.5 transition-colors cursor-pointer group"
-        title="Toggle Data Saver (Save up to 85% mobile data)"
-      >
-        <Zap className={`w-5 h-5 transition-transform group-active:scale-125 ${isDataSaver ? 'text-emerald-400 fill-current animate-pulse' : 'text-zinc-500'}`} />
-        <span className={`text-[9px] mt-0.5 font-bold ${isDataSaver ? 'text-emerald-400' : 'text-zinc-400'}`}>
-          {isDataSaver ? 'Saver ON' : 'Saver OFF'}
-        </span>
-      </button>
-
-      <button
-        type="button"
-        onClick={() => onOpenLogin('signin')}
-        className="flex flex-col items-center justify-center py-1 px-2 text-zinc-400 hover:text-white transition-colors cursor-pointer group"
-      >
-        {user?.photoURL ? (
-          <img
-            src={user.photoURL}
-            alt="User profile"
-            className="w-5 h-5 rounded-full object-cover border border-red-500/60"
-            referrerPolicy="no-referrer"
-          />
-        ) : (
-          <User className="w-5 h-5 text-zinc-400 group-hover:text-white" />
-        )}
-        <span className="text-[10px] mt-0.5 font-medium text-zinc-400 group-hover:text-white">
-          {user ? (isAdmin ? 'Admin' : 'Profile') : 'Sign In'}
-        </span>
-      </button>
+              {/* Label */}
+              <span
+                className={`text-[10px] sm:text-[11px] mt-1 tracking-wider uppercase transition-colors duration-200 whitespace-nowrap ${
+                  isSelected
+                    ? 'text-white font-black drop-shadow-[0_0_6px_rgba(229,9,20,0.5)]'
+                    : 'text-zinc-400 font-semibold group-hover:text-zinc-200'
+                }`}
+              >
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </nav>
   );
 }

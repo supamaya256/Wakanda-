@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, Play, Film, MessageSquare, Download, Sparkles, Trash2, ChevronRight } from 'lucide-react';
+import { Heart, Play, MessageSquare, Download, Trash2, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useFavorites, FavoriteItem } from '../context/FavoritesContext';
 import { useAudio } from '../context/AudioContext';
@@ -7,13 +7,12 @@ import AutoScrollCarousel from './AutoScrollCarousel';
 
 interface MyFavoritesSectionProps {
   onOpenModal?: (track: any) => void;
-  onWatchMovie?: (movie: any) => void;
 }
 
-export default function MyFavoritesSection({ onOpenModal, onWatchMovie }: MyFavoritesSectionProps) {
-  const { favorites, favoriteMixtapes, favoriteMovies, favoriteDrops, removeFavorite, clearFavorites } = useFavorites();
+export default function MyFavoritesSection({ onOpenModal }: MyFavoritesSectionProps) {
+  const { favorites, favoriteMixtapes, favoriteDrops, removeFavorite, clearFavorites } = useFavorites();
   const { playTrackById, isPlaying, currentTrack, downloadTrack } = useAudio();
-  const [activeTab, setActiveTab] = useState<'all' | 'mixtapes' | 'movies' | 'drops'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'mixtapes' | 'drops'>('all');
 
   if (!favorites || favorites.length === 0) {
     return null;
@@ -21,7 +20,6 @@ export default function MyFavoritesSection({ onOpenModal, onWatchMovie }: MyFavo
 
   const displayedItems = 
     activeTab === 'mixtapes' ? favoriteMixtapes :
-    activeTab === 'movies' ? favoriteMovies :
     activeTab === 'drops' ? favoriteDrops :
     favorites;
 
@@ -30,8 +28,6 @@ export default function MyFavoritesSection({ onOpenModal, onWatchMovie }: MyFavo
       if (typeof item.id === 'number') {
         playTrackById(item.id);
       }
-    } else if (item.type === 'movie' && onWatchMovie) {
-      onWatchMovie(item);
     } else if (item.type === 'drop') {
       const msg = encodeURIComponent(`Hello DJ Emma Pro FX, I want to order this saved voice drop: ${item.title}`);
       window.open(`https://wa.me/256780527361?text=${msg}`, '_blank');
@@ -48,7 +44,7 @@ export default function MyFavoritesSection({ onOpenModal, onWatchMovie }: MyFavo
               <Heart className="w-3 h-3 fill-current text-white" />
             </span>
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-red-400">
-              SAVED TO YOUR ACCOUNT & DEVICE
+              SAVED TO YOUR DEVICE
             </span>
           </div>
 
@@ -90,20 +86,6 @@ export default function MyFavoritesSection({ onOpenModal, onWatchMovie }: MyFavo
             </button>
           )}
 
-          {favoriteMovies.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setActiveTab('movies')}
-              className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer border ${
-                activeTab === 'movies'
-                  ? 'bg-[#E50914] text-white border-[#E50914] shadow-md'
-                  : 'bg-zinc-900/80 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
-              }`}
-            >
-              Movies ({favoriteMovies.length})
-            </button>
-          )}
-
           {favoriteDrops.length > 0 && (
             <button
               type="button"
@@ -140,9 +122,9 @@ export default function MyFavoritesSection({ onOpenModal, onWatchMovie }: MyFavo
                     : 'border-white/10 hover:border-zinc-500 hover:shadow-xl'
                 }`}
               >
-                {/* Thumbnail Header */}
+                {/* Poster Artwork */}
                 <div 
-                  className="relative aspect-video w-full bg-zinc-900 overflow-hidden cursor-pointer shrink-0"
+                  className="relative aspect-video w-full overflow-hidden bg-black shrink-0 cursor-pointer"
                   onClick={() => handleItemClick(item)}
                 >
                   <img
@@ -152,71 +134,61 @@ export default function MyFavoritesSection({ onOpenModal, onWatchMovie }: MyFavo
                     referrerPolicy="no-referrer"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-black/40 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent pointer-events-none" />
 
-                  {/* Type Badge */}
                   <div className="absolute top-2 left-2 flex items-center gap-1.5 z-20">
-                    <span className="bg-[#E50914] text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow">
-                      {item.type === 'movie' ? 'MOVIE' : item.type === 'drop' ? 'VOICE DROP' : 'MIXTAPE'}
+                    <span className="bg-[#E50914] text-white text-[10px] font-black uppercase px-1.5 py-0.5 rounded shadow">
+                      {item.type === 'drop' ? 'VOICE DROP' : 'MIXTAPE'}
                     </span>
-                    {item.duration && (
-                      <span className="bg-black/75 backdrop-blur-sm text-zinc-300 text-[9px] font-mono px-1.5 py-0.5 rounded border border-white/10">
-                        {item.duration}
-                      </span>
-                    )}
                   </div>
 
-                  {/* Remove from favorites button */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeFavorite(item.id);
-                    }}
-                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/75 hover:bg-red-600 text-white flex items-center justify-center transition-all cursor-pointer z-20 shadow"
-                    title="Remove from favorites"
-                    aria-label="Remove from favorites"
-                  >
-                    <Heart className="w-3.5 h-3.5 fill-current text-[#E50914] hover:text-white" />
-                  </button>
+                  {item.duration && (
+                    <div className="absolute top-2 right-2 z-20">
+                      <span className="bg-black/75 backdrop-blur-xs text-[10px] font-mono text-zinc-300 px-1.5 py-0.5 rounded">
+                        {item.duration}
+                      </span>
+                    </div>
+                  )}
 
-                  {/* Center Play / Action Icon */}
-                  <div className="absolute inset-0 flex items-center justify-center z-15">
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-lg group-hover/card:scale-110 transition-transform">
-                      {item.type === 'movie' ? (
-                        <Film className="w-4 h-4" />
-                      ) : item.type === 'drop' ? (
-                        <MessageSquare className="w-4 h-4 fill-current" />
-                      ) : (
-                        <Play className="w-4 h-4 fill-current ml-0.5" />
-                      )}
+                  {/* Play Icon Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity z-20 bg-black/40">
+                    <div className="w-12 h-12 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-lg transform scale-90 group-hover/card:scale-100 transition-transform">
+                      <Play className="w-6 h-6 fill-white translate-x-0.5" />
                     </div>
                   </div>
                 </div>
 
-                {/* Body Meta */}
-                <div className="p-3 flex-1 flex flex-col justify-between">
+                {/* Meta details */}
+                <div className="p-3.5 flex flex-col justify-between flex-1">
                   <div>
-                    <h4 
+                    <h3 
                       onClick={() => handleItemClick(item)}
-                      className="font-bold text-white text-xs sm:text-sm truncate hover:text-[#E50914] transition-colors cursor-pointer"
-                      title={item.title}
+                      className="text-xs sm:text-sm font-bold text-white line-clamp-1 cursor-pointer hover:text-[#E50914] transition-colors"
                     >
                       {item.title}
-                    </h4>
-                    <p className="text-zinc-400 text-[11px] truncate mt-0.5">
-                      {item.artistOrVj || 'DJ Emma Pro'}
+                    </h3>
+                    <p className="text-[11px] text-zinc-400 mt-1 line-clamp-1 font-mono">
+                      {item.artistOrVj} • {item.category}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-white/5 flex items-center justify-between gap-2 mt-2">
+                  <div className="mt-3 pt-2.5 border-t border-zinc-800 flex items-center justify-between gap-2">
                     <button
                       type="button"
                       onClick={() => handleItemClick(item)}
-                      className="flex-1 py-1.5 px-2 rounded bg-zinc-800 hover:bg-[#E50914] text-white text-[11px] font-bold transition-all flex items-center justify-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1 rounded bg-[#E50914] hover:bg-[#b80710] text-white text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors shadow"
                     >
-                      <span>{item.type === 'movie' ? 'Watch Movie' : item.type === 'drop' ? 'Order on WhatsApp' : 'Play Mix'}</span>
-                      <ChevronRight className="w-3 h-3" />
+                      <Play className="w-3 h-3 fill-white" />
+                      <span>{item.type === 'drop' ? 'Order' : 'Play'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => removeFavorite(item.id)}
+                      className="p-1 rounded text-zinc-500 hover:text-red-400 transition-colors cursor-pointer"
+                      title="Remove from favorites"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -224,11 +196,7 @@ export default function MyFavoritesSection({ onOpenModal, onWatchMovie }: MyFavo
             );
           }}
         />
-      ) : (
-        <div className="text-center py-8 text-zinc-500 text-xs">
-          No items in this category yet. Tap the heart on any mix, movie, or drop to save it!
-        </div>
-      )}
+      ) : null}
     </section>
   );
 }

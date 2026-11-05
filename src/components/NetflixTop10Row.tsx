@@ -35,70 +35,17 @@ export default function NetflixTop10Row({ onOpenModal, isLoading = false }: Netf
     return <Top10RowSkeleton />;
   }
 
-  const top10Items: Top10Item[] = [
-    {
-      rank: 1,
-      id: 1,
-      title: 'ONE DROP REGGEA MIX VOL 1',
-      artist: 'DJ EMMA PRO',
-      category: 'YouTube Premiere • Reggae Nonstop',
-      thumbnail: 'https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg',
-      audioTrackIndex: 0,
-      audioTrack: tracks[0],
-      matchScore: 99
-    },
-    {
-      rank: 2,
-      id: 2,
-      title: 'FULL ATESO MIXTAPE 2026',
-      artist: 'DJ EMMA PRO',
-      category: 'Cultural Nonstop',
-      thumbnail: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop',
-      audioTrackIndex: 1,
-      audioTrack: tracks[1],
-      matchScore: 98
-    },
-    {
-      rank: 3,
-      id: 3,
-      title: 'SOROTI CITY DJS 3D LOGO',
-      artist: '3D ANIMATION STUDIO',
-      category: 'Cinema 4K Visualizer',
-      thumbnail: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop',
-      matchScore: 99
-    },
-    {
-      rank: 4,
-      id: 4,
-      title: 'ONE DROP REGGAE VOL. 1',
-      artist: 'DJ EMMA PRO',
-      category: 'Roots & Dub Nonstop',
-      thumbnail: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1200&auto=format&fit=crop',
-      audioTrackIndex: 3,
-      audioTrack: tracks[3],
-      matchScore: 99
-    },
-    {
-      rank: 5,
-      id: 5,
-      title: 'EPISODE 1 FT. DJ EMMA PRO',
-      artist: 'MC RICKY',
-      category: 'Hype Dancehall',
-      thumbnail: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=1200&auto=format&fit=crop',
-      audioTrackIndex: 2,
-      audioTrack: tracks[2],
-      matchScore: 97
-    },
-    {
-      rank: 6,
-      id: 6,
-      title: 'CLUB HYPE VOICE DROPS',
-      artist: 'STUDIO FX PACK',
-      category: 'Custom Audio Branding',
-      thumbnail: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1200&auto=format&fit=crop',
-      matchScore: 98
-    }
-  ];
+  const top10Items: Top10Item[] = tracks.slice(0, 10).map((track, idx) => ({
+    rank: idx + 1,
+    id: track.id,
+    title: track.title,
+    artist: track.artist,
+    category: track.genres?.[0] ? `${track.genres[0]} • Nonstop` : 'DJ Emma Nonstop Mix',
+    thumbnail: track.thumbnail,
+    audioTrackIndex: idx,
+    audioTrack: track,
+    matchScore: track.matchScore || Math.max(90, 99 - idx)
+  }));
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (rowRef.current) {

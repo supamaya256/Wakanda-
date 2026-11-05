@@ -3,35 +3,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { RefreshCw, Search } from 'lucide-react';
+import { RefreshCw, Search, ShieldCheck } from 'lucide-react';
 import { AudioProvider, useAudio, AudioTrack } from './context/AudioContext';
 import { ContentProvider, useContent } from './context/ContentContext';
-import { AdminAuthProvider } from './context/AdminAuthContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { useAdminAuth } from './context/AdminAuthContext';
+import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
-import { DataSaverProvider, useDataSaver } from './context/DataSaverContext';
-import DataSaverQuickBar from './components/DataSaverQuickBar';
+import { DataSaverProvider } from './context/DataSaverContext';
 import AdminAuthModal from './components/AdminAuthModal';
-import { AtesoMovie } from './data/atesoMoviesData';
-import NetflixNavbar from './components/NetflixNavbar';
+import NetflixNavbar, { MainNavView } from './components/NetflixNavbar';
 import NetflixBillboard from './components/NetflixBillboard';
 import NetflixRow from './components/NetflixRow';
 import NetflixTop10Row from './components/NetflixTop10Row';
 import NetflixDropsRow from './components/NetflixDropsRow';
 import NetflixLogosRow from './components/NetflixLogosRow';
-import NetflixAtesoMoviesRow from './components/NetflixAtesoMoviesRow';
-import TelegramAtesoBanner from './components/TelegramAtesoBanner';
-import WatchAtesoMoviesPage from './components/WatchAtesoMoviesPage';
-import NetflixClientPortal from './components/NetflixClientPortal';
 import FeedbackWidget from './components/FeedbackWidget';
 import NetflixModal from './components/NetflixModal';
 import NewsletterSignup from './components/NewsletterSignup';
 import NetflixFooter from './components/NetflixFooter';
 import StudioManagerPage from './components/StudioManagerPage';
-import LoginScreen from './components/LoginScreen';
 import TrustProofModal from './components/TrustProofModal';
 import TrustProofBanner from './components/TrustProofBanner';
 import GlobalKeyboardController from './components/GlobalKeyboardController';
@@ -39,48 +31,79 @@ import SoftwareDownloadSection from './components/SoftwareDownloadSection';
 import CommunityCommentsSection from './components/CommunityCommentsSection';
 import AiStudioHubModal from './components/AiStudioHubModal';
 import QuickAccessBar from './components/QuickAccessBar';
-import MobileBottomNav from './components/MobileBottomNav';
+import MobileBottomNav, { NavSection } from './components/MobileBottomNav';
+import VideoMixesSection from './components/VideoMixesSection';
+import AboutMeSection from './components/AboutMeSection';
+import BookMeSection from './components/BookMeSection';
 import ThreeDLogosRevealPage from './components/ThreeDLogosRevealPage';
 import ThreeDLogosWelcomeHero from './components/ThreeDLogosWelcomeHero';
 import TopStreetAnthemBanner from './components/TopStreetAnthemBanner';
 import ContinueListeningBanner from './components/ContinueListeningBanner';
 import MyFavoritesSection from './components/MyFavoritesSection';
-import { FavoritesProvider, useFavorites } from './context/FavoritesContext';
+import { FavoritesProvider } from './context/FavoritesContext';
 import { WatchHistoryProvider } from './context/WatchHistoryContext';
 import FloatingBackToTop from './components/FloatingBackToTop';
 
-function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'signup') => void }) {
+// AdSense & Dedicated Pages
+import { AdSlot } from './components/AdSlot';
+import { CookieConsentBanner } from './components/CookieConsentBanner';
+import { AudiosPage } from './components/AudiosPage';
+import { VideosPage } from './components/VideosPage';
+import { PrivacyPolicyPage } from './components/PrivacyPolicyPage';
+import { TermsPage } from './components/TermsPage';
+import { ContactPage } from './components/ContactPage';
+
+export type AppView = 
+  | 'home' 
+  | 'audios' 
+  | 'videos' 
+  | 'about' 
+  | 'book' 
+  | 'privacy' 
+  | 'terms' 
+  | 'contact' 
+  | 'manager' 
+  | 'logos-reveal';
+
+function NetflixDashboard() {
   const { t } = useLanguage();
-  const { tracks, recentTracks, favoriteTracks, currentTrack, isPlaying } = useAudio();
-  const { atesoMovies, voiceDrops } = useContent();
+  const { tracks, recentTracks, favoriteTracks } = useAudio();
+  const { voiceDrops } = useContent();
   const { isAdmin } = useAdminAuth();
 
   const [selectedTrack, setSelectedTrack] = useState<AudioTrack | null>(null);
-  const [selectedMovie, setSelectedMovie] = useState<AtesoMovie | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentView, setCurrentView] = useState<'store' | 'manager' | 'movies' | 'logos-reveal'>('store');
-  const [studioInitialTab, setStudioInitialTab] = useState<'dashboard' | 'tracks' | 'drops' | 'custom-drops' | 'logos' | 'movies' | 'files'>('dashboard');
+  const [currentView, setCurrentView] = useState<AppView>('home');
   const [isTrustModalOpen, setIsTrustModalOpen] = useState(false);
   const [isAiHubOpen, setIsAiHubOpen] = useState(false);
+  const [activeNavSection, setActiveNavSection] = useState<NavSection>('audio');
 
-  // Perceived performance: realistic smooth skeleton loading while initial feeds hydrate
   const [isFeedLoading, setIsFeedLoading] = useState(true);
-  const [isFilterLoading, setIsFilterLoading] = useState(false);
 
+  // Sync hash routing if user opens with hash
   useEffect(() => {
-    const handleOpenCustomDrop = () => {
-      setStudioInitialTab('custom-drops');
-      setCurrentView('manager');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    const handleHash = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#audios') setCurrentView('audios');
+      else if (hash === '#videos') setCurrentView('videos');
+      else if (hash === '#about') setCurrentView('about');
+      else if (hash === '#book') setCurrentView('book');
+      else if (hash === '#privacy') setCurrentView('privacy');
+      else if (hash === '#terms') setCurrentView('terms');
+      else if (hash === '#contact') setCurrentView('contact');
+      else if (hash === '#logos-reveal') setCurrentView('logos-reveal');
     };
-    window.addEventListener('app:open-custom-drop-form', handleOpenCustomDrop);
-    return () => window.removeEventListener('app:open-custom-drop-form', handleOpenCustomDrop);
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
   useEffect(() => {
     const handleSwitchView = (e: any) => {
       if (e.detail) {
         setCurrentView(e.detail);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     };
     window.addEventListener('app:switch-view', handleSwitchView);
@@ -90,164 +113,226 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
   useEffect(() => {
     const handleEscape = () => {
       setSelectedTrack(null);
-      setSelectedMovie(null);
       setIsTrustModalOpen(false);
       setIsAiHubOpen(false);
     };
-    window.addEventListener('app:escape', handleEscape);
-    return () => window.removeEventListener('app:escape', handleEscape);
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') handleEscape();
+    });
   }, []);
 
   useEffect(() => {
-    // Initial feed fetch / cache hydration simulation
     const timer = setTimeout(() => {
       setIsFeedLoading(false);
-    }, 750);
+    }, 400);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleRefreshFeed = () => {
-    setIsFeedLoading(true);
-    setTimeout(() => {
-      setIsFeedLoading(false);
-    }, 800);
-  };
-
-  // Automatically open shared track if specified in URL query params (e.g., ?track=2)
-  useEffect(() => {
-    try {
-      const searchParams = new URLSearchParams(window.location.search);
-      const trackParam = searchParams.get('track');
-      if (trackParam && tracks.length > 0) {
-        const matched = tracks.find(t => String(t.id) === String(trackParam));
-        if (matched) {
-          setSelectedTrack(matched);
-        }
-      }
-    } catch {
-      // URLSearchParams not supported or invalid
-    }
-  }, [tracks]);
-
-  // Keep URL query in sync when modal opens or closes
-  useEffect(() => {
-    try {
-      const url = new URL(window.location.href);
-      if (selectedTrack) {
-        if (url.searchParams.get('track') !== String(selectedTrack.id)) {
-          url.searchParams.set('track', String(selectedTrack.id));
-          window.history.replaceState({}, '', url.toString());
-        }
-      } else {
-        if (url.searchParams.has('track')) {
-          url.searchParams.delete('track');
-          window.history.replaceState({}, '', url.pathname + (url.search ? url.search : '') + url.hash);
-        }
-      }
-    } catch {
-      // history or URL unavailable
-    }
-  }, [selectedTrack]);
-
+  // Filtered tracks for search
   let filteredTracks = Array.isArray(tracks) ? tracks : [];
-  let filteredMovies: AtesoMovie[] = [];
   let filteredDrops: any[] = [];
 
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase().trim();
-    filteredTracks = filteredTracks.filter(t => {
+    filteredTracks = filteredTracks.filter((t) => {
       if (!t) return false;
       const titleMatch = t.title && t.title.toLowerCase().includes(q);
       const artistMatch = t.artist && t.artist.toLowerCase().includes(q);
-      const djMatch = (t.artist && (t.artist.toLowerCase().includes('dj') || t.title.toLowerCase().includes('dj'))) && (q.includes('dj') || q.includes('emma') || q.includes('wakanda'));
-      const genreMatch = Array.isArray(t.genres) && t.genres.some(g => g && g.toLowerCase().includes(q));
+      const djMatch =
+        t.artist &&
+        (t.artist.toLowerCase().includes('dj') || t.title.toLowerCase().includes('dj')) &&
+        (q.includes('dj') || q.includes('emma') || q.includes('wakanda'));
+      const genreMatch = Array.isArray(t.genres) && t.genres.some((g) => g && g.toLowerCase().includes(q));
       const yearMatch = t.year && String(t.year).includes(q);
       const descMatch = t.description && t.description.toLowerCase().includes(q);
       const qualityMatch = t.quality && t.quality.toLowerCase().includes(q);
-      const movieMatch = (q.includes('movie') || q.includes('film') || q.includes('cinema') || q.includes('ateso')) && 
-        (Boolean(t.isVideo) || (t.genres && t.genres.some(g => g.toLowerCase().includes('movie') || g.toLowerCase().includes('ateso'))));
-      const tagMatch = Array.isArray((t as any).tags) && (t as any).tags.some((tag: string) => tag && tag.toLowerCase().includes(q));
-      return Boolean(titleMatch || artistMatch || djMatch || genreMatch || yearMatch || descMatch || qualityMatch || movieMatch || tagMatch);
+      return Boolean(titleMatch || artistMatch || djMatch || genreMatch || yearMatch || descMatch || qualityMatch);
     });
 
-    if (Array.isArray(atesoMovies)) {
-      filteredMovies = atesoMovies.filter(m => {
-        if (!m) return false;
-        const titleMatch = m.title && m.title.toLowerCase().includes(q);
-        const vjMatch = m.vj && m.vj.toLowerCase().includes(q);
-        const genreMatch = m.genre && m.genre.toLowerCase().includes(q);
-        const descMatch = m.description && m.description.toLowerCase().includes(q);
-        const partMatch = (m.episodeNumber && String(m.episodeNumber).includes(q)) || (m.partNumber && String(m.partNumber).includes(q));
-        const generalMovieMatch = q.includes('movie') || q.includes('poison') || q.includes('break') || q.includes('ateso');
-        return Boolean(titleMatch || vjMatch || genreMatch || descMatch || partMatch || generalMovieMatch);
-      });
-    }
-
     if (Array.isArray(voiceDrops)) {
-      filteredDrops = voiceDrops.filter(d => {
+      filteredDrops = voiceDrops.filter((d) => {
         if (!d) return false;
         const titleMatch = d.title && d.title.toLowerCase().includes(q);
         const styleMatch = d.style && d.style.toLowerCase().includes(q);
         const catMatch = d.category && d.category.toLowerCase().includes(q);
         const scriptMatch = d.sampleScript && d.sampleScript.toLowerCase().includes(q);
         const tagMatch = Array.isArray(d.tags) && d.tags.some((t: string) => t && t.toLowerCase().includes(q));
-        const generalDropMatch = q.includes('drop') || q.includes('voice') || q.includes('intro') || q.includes('scratch') || q.includes('fx');
-        return Boolean(titleMatch || styleMatch || catMatch || scriptMatch || tagMatch || generalDropMatch);
+        return Boolean(titleMatch || styleMatch || catMatch || scriptMatch || tagMatch);
       });
     }
   }
 
-  if (currentView === 'manager') {
+  const navigateTo = (view: AppView) => {
+    setCurrentView(view);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (view === 'home') {
+      window.history.pushState(null, '', '/');
+    } else {
+      window.history.pushState(null, '', `#${view}`);
+    }
+  };
+
+  // Render Sub-Views
+  if (currentView === 'audios') {
     return (
-      <div className="min-h-screen bg-[#080808] text-white">
-        <StudioManagerPage 
-          onBackToStore={() => setCurrentView('store')} 
-          initialTab={studioInitialTab}
+      <div className="min-h-screen bg-black text-white pb-20 md:pb-8">
+        <NetflixNavbar
+          currentView="audios"
+          onNavigate={(v) => navigateTo(v as AppView)}
+          onSearch={(q) => setSearchQuery(q)}
+          onOpenStudioManager={() => setCurrentView('manager')}
+        />
+        <AudiosPage onOpenTrackDetails={(track) => setSelectedTrack(track)} />
+        <NetflixFooter onNavigate={(v) => navigateTo(v as AppView)} onOpenStudioManager={() => setCurrentView('manager')} />
+        <MobileBottomNav
+          currentView="store"
+          activeSection="audio"
+          onNavigateSection={(sec) => {
+            setActiveNavSection(sec);
+            if (sec === 'audio') navigateTo('audios');
+            else if (sec === 'videos') navigateTo('videos');
+            else if (sec === 'about') navigateTo('about');
+            else if (sec === 'book') navigateTo('book');
+          }}
         />
       </div>
     );
   }
 
-  if (currentView === 'movies') {
+  if (currentView === 'videos') {
     return (
-      <div className="min-h-screen bg-[#0e0e0e] text-white pb-20 md:pb-8">
-        <DataSaverQuickBar 
-          onOpenLogosReveal={() => {
-            setCurrentView('logos-reveal');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenAtesoMovies={() => {
-            setSelectedMovie(null);
-            setCurrentView('movies');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+      <div className="min-h-screen bg-black text-white pb-20 md:pb-8">
+        <NetflixNavbar
+          currentView="videos"
+          onNavigate={(v) => navigateTo(v as AppView)}
+          onSearch={(q) => setSearchQuery(q)}
+          onOpenStudioManager={() => setCurrentView('manager')}
         />
-        <WatchAtesoMoviesPage
-          onBackToStore={() => {
-            setSelectedMovie(null);
-            setCurrentView('store');
-          }}
-          onOpenStudioManager={() => {
-            setStudioInitialTab('dashboard');
-            setCurrentView('manager');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          initialSelectedMovie={selectedMovie}
-        />
+        <VideosPage />
+        <NetflixFooter onNavigate={(v) => navigateTo(v as AppView)} onOpenStudioManager={() => setCurrentView('manager')} />
         <MobileBottomNav
-          onOpenAtesoMovies={() => {}}
-          onOpenStudioManager={() => {
-            setStudioInitialTab('dashboard');
-            setCurrentView('manager');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+          currentView="store"
+          activeSection="videos"
+          onNavigateSection={(sec) => {
+            setActiveNavSection(sec);
+            if (sec === 'audio') navigateTo('audios');
+            else if (sec === 'videos') navigateTo('videos');
+            else if (sec === 'about') navigateTo('about');
+            else if (sec === 'book') navigateTo('book');
           }}
-          onOpenLogosReveal={() => {
-            setCurrentView('logos-reveal');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenLogin={onOpenLogin}
-          currentView={currentView}
         />
+      </div>
+    );
+  }
+
+  if (currentView === 'privacy') {
+    return (
+      <div className="min-h-screen bg-black text-white pb-20 md:pb-8">
+        <NetflixNavbar
+          currentView="home"
+          onNavigate={(v) => navigateTo(v as AppView)}
+          onSearch={(q) => setSearchQuery(q)}
+          onOpenStudioManager={() => setCurrentView('manager')}
+        />
+        <PrivacyPolicyPage onBackToHome={() => navigateTo('home')} />
+        <NetflixFooter onNavigate={(v) => navigateTo(v as AppView)} onOpenStudioManager={() => setCurrentView('manager')} />
+      </div>
+    );
+  }
+
+  if (currentView === 'terms') {
+    return (
+      <div className="min-h-screen bg-black text-white pb-20 md:pb-8">
+        <NetflixNavbar
+          currentView="home"
+          onNavigate={(v) => navigateTo(v as AppView)}
+          onSearch={(q) => setSearchQuery(q)}
+          onOpenStudioManager={() => setCurrentView('manager')}
+        />
+        <TermsPage onBackToHome={() => navigateTo('home')} />
+        <NetflixFooter onNavigate={(v) => navigateTo(v as AppView)} onOpenStudioManager={() => setCurrentView('manager')} />
+      </div>
+    );
+  }
+
+  if (currentView === 'contact') {
+    return (
+      <div className="min-h-screen bg-black text-white pb-20 md:pb-8">
+        <NetflixNavbar
+          currentView="home"
+          onNavigate={(v) => navigateTo(v as AppView)}
+          onSearch={(q) => setSearchQuery(q)}
+          onOpenStudioManager={() => setCurrentView('manager')}
+        />
+        <ContactPage onBackToHome={() => navigateTo('home')} />
+        <NetflixFooter onNavigate={(v) => navigateTo(v as AppView)} onOpenStudioManager={() => setCurrentView('manager')} />
+      </div>
+    );
+  }
+
+  if (currentView === 'about') {
+    return (
+      <div className="min-h-screen bg-black text-white pb-20 md:pb-8">
+        <NetflixNavbar
+          currentView="about"
+          onNavigate={(v) => navigateTo(v as AppView)}
+          onSearch={(q) => setSearchQuery(q)}
+          onOpenStudioManager={() => setCurrentView('manager')}
+        />
+        <div className="pt-24 max-w-7xl mx-auto px-4 sm:px-8">
+          <AboutMeSection />
+          <AdSlot slotId="about-mid" format="horizontal" className="my-10" />
+          <BookMeSection />
+        </div>
+        <NetflixFooter onNavigate={(v) => navigateTo(v as AppView)} onOpenStudioManager={() => setCurrentView('manager')} />
+        <MobileBottomNav
+          currentView="store"
+          activeSection="about"
+          onNavigateSection={(sec) => {
+            setActiveNavSection(sec);
+            if (sec === 'audio') navigateTo('audios');
+            else if (sec === 'videos') navigateTo('videos');
+            else if (sec === 'about') navigateTo('about');
+            else if (sec === 'book') navigateTo('book');
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (currentView === 'book') {
+    return (
+      <div className="min-h-screen bg-black text-white pb-20 md:pb-8">
+        <NetflixNavbar
+          currentView="home"
+          onNavigate={(v) => navigateTo(v as AppView)}
+          onSearch={(q) => setSearchQuery(q)}
+          onOpenStudioManager={() => setCurrentView('manager')}
+        />
+        <div className="pt-24 max-w-7xl mx-auto px-4 sm:px-8">
+          <BookMeSection />
+          <AdSlot slotId="book-mid" format="horizontal" className="my-10" />
+        </div>
+        <NetflixFooter onNavigate={(v) => navigateTo(v as AppView)} onOpenStudioManager={() => setCurrentView('manager')} />
+        <MobileBottomNav
+          currentView="store"
+          activeSection="book"
+          onNavigateSection={(sec) => {
+            setActiveNavSection(sec);
+            if (sec === 'audio') navigateTo('audios');
+            else if (sec === 'videos') navigateTo('videos');
+            else if (sec === 'about') navigateTo('about');
+            else if (sec === 'book') navigateTo('book');
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (currentView === 'manager') {
+    return (
+      <div className="min-h-screen bg-[#080808] text-white">
+        <StudioManagerPage onBackToStore={() => setCurrentView('home')} />
       </div>
     );
   }
@@ -255,624 +340,250 @@ function NetflixDashboard({ onOpenLogin }: { onOpenLogin: (mode?: 'signin' | 'si
   if (currentView === 'logos-reveal') {
     return (
       <div className="min-h-screen bg-[#07070a] text-white pb-20 md:pb-8">
-        <DataSaverQuickBar 
-          onOpenLogosReveal={() => {
-            setCurrentView('logos-reveal');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenAtesoMovies={() => {
-            setSelectedMovie(null);
-            setCurrentView('movies');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
         <ThreeDLogosRevealPage
           onBackToStore={() => {
-            setCurrentView('store');
+            setCurrentView('home');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           onOpenStudioManager={() => {
-            setStudioInitialTab('dashboard');
             setCurrentView('manager');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenAtesoMovies={() => {
-            setSelectedMovie(null);
-            setCurrentView('movies');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />
         <MobileBottomNav
-          onOpenAtesoMovies={() => {
-            setSelectedMovie(null);
-            setCurrentView('movies');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+          currentView="logos-reveal"
+          activeSection="audio"
+          onNavigateSection={(sec) => {
+            setCurrentView('home');
+            setActiveNavSection(sec);
           }}
-          onOpenStudioManager={() => {
-            setStudioInitialTab('dashboard');
-            setCurrentView('manager');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenLogosReveal={() => {
-            setCurrentView('logos-reveal');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenLogin={onOpenLogin}
-          currentView={currentView}
         />
       </div>
     );
   }
 
-  const { isDataSaver } = useDataSaver();
-  const bgImageUrl = isDataSaver 
-    ? 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:low,w_640/v1790550689/file_00000000bda08211910e147fbb531635.png'
-    : 'https://res.cloudinary.com/hbyqk5y0/image/upload/f_auto,q_auto:eco,w_1440/v1790550689/file_00000000bda08211910e147fbb531635.png';
-
+  // DEFAULT HOMEPAGE VIEW ('home')
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="min-h-screen bg-[#0a0a0f]/40 text-white selection:bg-[#E50914] selection:text-white font-sans overflow-x-hidden pt-[36px] pb-16 md:pb-6 relative"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-[#141414] text-white selection:bg-[#E50914] selection:text-white"
     >
-      {/* Background Image Layer (Transparent Glass Theme - DJ Emma Background Picture Clearly Visible) */}
-      <div 
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-80 filter brightness-95 contrast-110 transition-opacity duration-700"
-        style={{ backgroundImage: `url('${bgImageUrl}')` }}
-      />
-      {/* Subtle Transparent Glass Vignette */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 backdrop-blur-[0.5px]" />
-
-      <div className="relative z-10">
-        {/* Netflix Top Navigation Bar */}
-        <NetflixNavbar
+      <NetflixNavbar
+        currentView="home"
+        onNavigate={(v) => navigateTo(v as AppView)}
         onSearch={(query) => setSearchQuery(query)}
-        onOpenPortal={() => {
-          const el = document.getElementById('portal');
-          el?.scrollIntoView({ behavior: 'smooth' });
-        }}
-        onOpenStudioManager={() => {
-          setStudioInitialTab('dashboard');
-          setCurrentView('manager');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        isStudioManager={false}
-        onOpenAtesoMovies={() => {
-          setSelectedMovie(null);
-          setCurrentView('movies');
-        }}
-        isAtesoMovies={false}
-        onOpenLogosReveal={() => {
-          setCurrentView('logos-reveal');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        isLogosReveal={false}
-        onOpenLogin={onOpenLogin}
-        onOpenTrustModal={() => setIsTrustModalOpen(true)}
-        onOpenAiHub={() => setIsAiHubOpen(true)}
+        onOpenStudioManager={() => setCurrentView('manager')}
       />
 
-      {/* Easy Access & Data Saver Quick Bar */}
-      <DataSaverQuickBar 
-        onOpenLogosReveal={() => {
-          setCurrentView('logos-reveal');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onOpenAtesoMovies={() => {
-          setSelectedMovie(null);
-          setCurrentView('movies');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-      />
-
-      <main>
-        {/* TOP NONSTOP DISPLAY: STREET ANTHEM 90 FEATURED AT THE TOP */}
-        {!searchQuery.trim() && (
-          <TopStreetAnthemBanner onOpenModal={(track) => setSelectedTrack(track)} />
-        )}
-
-        {/* FIRST TO WELCOME VISITORS: 3D LOGO REVEAL HERO ON TOP OF BILLBOARD */}
-        {!searchQuery.trim() && (
-          <ThreeDLogosWelcomeHero
-            onOpenLogosReveal={() => {
-              setCurrentView('logos-reveal');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-        )}
-
-        {/* Netflix Billboard (Hero Feature Title) */}
-        <div id="billboard-section">
-          <NetflixBillboard 
-            onOpenModal={(track) => setSelectedTrack(track)} 
-            onOpenTrustModal={() => setIsTrustModalOpen(true)}
-            isLoading={isFeedLoading}
-          />
+      <div className="pb-24 pt-16">
+        {/* Hero Section */}
+        <div id="home">
+          <NetflixBillboard onOpenModal={(track) => setSelectedTrack(track)} />
         </div>
 
-        {/* Quick Access Hub (Instant 1-Click Navigation) */}
-        {!searchQuery.trim() && (
-          <QuickAccessBar
-            onOpenAtesoMovies={() => {
-              setSelectedMovie(null);
-              setCurrentView('movies');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onOpenCustomDrops={() => {
-              setStudioInitialTab('custom-drops');
-              setCurrentView('manager');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onOpenLogosReveal={() => {
-              setCurrentView('logos-reveal');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onOpenAiHub={() => setIsAiHubOpen(true)}
-          />
-        )}
+        {/* 3D LOGOS REVEAL Spotlight Banner (Edition #08 Default) */}
+        <ThreeDLogosWelcomeHero
+          onOpenLogosReveal={() => {
+            setCurrentView('logos-reveal');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
 
+        {/* Quick Access Bar */}
+        <QuickAccessBar
+          onOpenLogosReveal={() => {
+            setCurrentView('logos-reveal');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenCustomDrops={() => {
+            setCurrentView('manager');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenAiHub={() => setIsAiHubOpen(true)}
+        />
 
+        {/* TOP Trending Billboard: STREET ANTHEM 90 */}
+        <TopStreetAnthemBanner onOpenModal={(track) => setSelectedTrack(track)} />
 
-        {/* Smart Multi-Category Search Results */}
+        {/* Continue Listening / Resume Bar */}
+        <ContinueListeningBanner />
+
+        {/* SEARCH RESULTS (When user types in Search bar) */}
         {searchQuery.trim() && (
-          <div className="pt-4 space-y-6">
-            {filteredTracks.length > 0 && (
-              <NetflixRow
-                id="search-results"
-                title={`Mixtapes & Tracks matching "${searchQuery}"`}
-                subtitle={`${filteredTracks.length} mixes found`}
-                tracks={filteredTracks}
-                onOpenModal={(track) => setSelectedTrack(track)}
-                isLoading={isFilterLoading}
-              />
-            )}
+          <div className="px-4 sm:px-8 lg:px-12 py-8 bg-zinc-950/80 border-y border-zinc-800">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                <Search className="w-5 h-5 text-red-500" />
+                <span>Search Results for "{searchQuery}"</span>
+              </h2>
+              <button
+                onClick={() => setSearchQuery('')}
+                className="text-xs text-zinc-400 hover:text-white underline cursor-pointer"
+              >
+                Clear Search
+              </button>
+            </div>
 
-            {filteredMovies.length > 0 && (
-              <div className="px-4 sm:px-8 lg:px-12">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-[#E50914] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">
-                    MOVIES
-                  </span>
-                  <h3 className="text-xl font-bold text-white">
-                    Matching Ateso Movies ({filteredMovies.length})
-                  </h3>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                  {filteredMovies.map((movie) => (
+            {filteredTracks.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-3">
+                  Matching Audio & Video Mixes ({filteredTracks.length})
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                  {filteredTracks.map((t) => (
                     <div
-                      key={movie.id}
-                      onClick={() => {
-                        setSelectedMovie(movie);
-                        setCurrentView('movies');
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                      className="group/mcard relative flex flex-col justify-between bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800 hover:border-[#E50914] transition-all cursor-pointer shadow-md hover:scale-[1.02]"
+                      key={t.id}
+                      onClick={() => setSelectedTrack(t)}
+                      className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-red-600 cursor-pointer transition group"
                     >
-                      <div className="relative aspect-video w-full bg-black overflow-hidden">
-                        <img
-                          src={movie.thumbnail}
-                          alt={movie.title}
-                          className="w-full h-full object-cover group-hover/mcard:scale-105 transition-transform"
-                          referrerPolicy="no-referrer"
-                        />
-                        <div className="absolute top-2 left-2 bg-[#E50914] text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded">
-                          {movie.vj || 'ATESO'}
-                        </div>
-                        <div className="absolute top-2 right-2 bg-black/70 text-zinc-300 font-mono text-[9px] px-1.5 py-0.5 rounded">
-                          {movie.duration}
-                        </div>
+                      <div className="aspect-video w-full rounded-lg overflow-hidden bg-black mb-2">
+                        <img src={t.thumbnail} alt={t.title} className="w-full h-full object-cover group-hover:scale-105 transition" />
                       </div>
-                      <div className="p-3">
-                        <h4 className="font-bold text-xs sm:text-sm text-white truncate group-hover/mcard:text-[#E50914] transition-colors">
-                          {movie.title}
-                        </h4>
-                        <p className="text-[11px] text-zinc-400 truncate mt-0.5">{movie.genre}</p>
-                      </div>
+                      <h4 className="text-xs font-bold text-white truncate group-hover:text-red-400">{t.title}</h4>
+                      <p className="text-[10px] text-zinc-400 truncate">{t.artist}</p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {filteredTracks.length === 0 && filteredMovies.length === 0 && (
-              <div className="text-center py-16 px-4">
-                <div className="w-12 h-12 rounded-full bg-zinc-800/80 border border-zinc-700 flex items-center justify-center mx-auto mb-3 text-zinc-400">
-                  <Search className="w-5 h-5 text-red-500" />
-                </div>
-                <h3 className="text-base sm:text-lg font-bold text-white mb-1">
-                  No matching results for "{searchQuery}"
-                </h3>
-                <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-4">
-                  Try searching by DJ name ("DJ Emma Pro", "Wakanda"), movie title ("Poison Break"), genre ("Ateso", "Reggae"), or year ("2026").
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="px-4 py-1.5 rounded-full bg-[#E50914] hover:bg-[#b80710] text-white text-xs font-bold transition-all shadow-md cursor-pointer"
-                >
-                  Clear Search Filter
-                </button>
+            {filteredTracks.length === 0 && (
+              <div className="text-center py-12 text-zinc-500 text-xs">
+                No mixes found matching "{searchQuery}". Try searching "Street Anthem" or "Wakanda".
               </div>
             )}
           </div>
         )}
 
-        {/* Negative-margin container pulls the first row up over the billboard gradient just like Netflix! */}
-        <motion.div 
-          className="relative z-20 space-y-2 sm:space-y-4"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.15, delayChildren: 0.3 }
+        {/* Favorite mixes quick row */}
+        {!searchQuery.trim() && <MyFavoritesSection onOpenModal={(track) => setSelectedTrack(track)} />}
+
+        {/* Main Audio Mixes Row */}
+        <div id="mixes">
+          <NetflixRow
+            title="Nonstop Mixtapes & Master Audio"
+            subtitle="Lossless 320kbps Studio Releases"
+            tracks={tracks}
+            isLoading={isFeedLoading}
+            onOpenModal={(track) => setSelectedTrack(track)}
+          />
+        </div>
+
+        {/* Responsive Google AdSense Banner 1 */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <AdSlot slotId="home-feed-banner-1" format="horizontal" />
+        </div>
+
+        {/* Official Video Mixes Section (#videos) */}
+        <div id="videos">
+          <VideoMixesSection onOpenTrackModal={(track) => setSelectedTrack(track)} />
+        </div>
+
+        {/* Top 10 Video Shows Row */}
+        <div id="top10">
+          <NetflixTop10Row
+            onOpenModal={(track) => setSelectedTrack(track)}
+          />
+        </div>
+
+        {/* Responsive Google AdSense Banner 2 */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <AdSlot slotId="home-feed-banner-2" format="rectangle" />
+        </div>
+
+        {/* Custom Voice Drops Row */}
+        <div id="drops">
+          <NetflixDropsRow />
+        </div>
+
+        {/* 3D Metallic Logos Row */}
+        <div id="logos">
+          <NetflixLogosRow />
+        </div>
+
+        {/* Verified Delivery Proofs */}
+        <TrustProofBanner onOpenProofModal={() => setIsTrustModalOpen(true)} />
+
+        {/* About Me Section (#about-me) */}
+        <div id="about-me">
+          <AboutMeSection />
+        </div>
+
+        {/* Book Me Section (#book-me) */}
+        <div id="book-me">
+          <BookMeSection />
+        </div>
+
+        {/* Software Downloads */}
+        <SoftwareDownloadSection />
+
+        {/* Community Comments */}
+        <CommunityCommentsSection />
+
+        {/* Newsletter */}
+        <NewsletterSignup />
+
+        {/* Footer with Compliance & Navigation Links */}
+        <NetflixFooter
+          onNavigate={(v) => navigateTo(v as AppView)}
+          onOpenStudioManager={() => setCurrentView('manager')}
+        />
+
+        {/* Track Modal */}
+        <AnimatePresence>
+          {selectedTrack && (
+            <NetflixModal
+              track={selectedTrack}
+              onClose={() => setSelectedTrack(null)}
+              onSelectTrack={(t) => setSelectedTrack(t)}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Proof Modal */}
+        {isTrustModalOpen && <TrustProofModal onClose={() => setIsTrustModalOpen(false)} />}
+
+        {/* AI Studio Hub Modal */}
+        {isAiHubOpen && <AiStudioHubModal onClose={() => setIsAiHubOpen(false)} />}
+
+        {/* Fixed Mobile Bottom Navigation (Strictly 4 Items: AUDIO, VIDEOS, ABOUT ME, BOOK ME) */}
+        <MobileBottomNav
+          currentView="store"
+          activeSection={activeNavSection}
+          onNavigateSection={(sec) => {
+            setActiveNavSection(sec);
+            if (sec === 'audio') {
+              const el = document.getElementById('mixes');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            } else if (sec === 'videos') {
+              const el = document.getElementById('videos');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            } else if (sec === 'about') {
+              const el = document.getElementById('about-me');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            } else if (sec === 'book') {
+              const el = document.getElementById('book-me');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
             }
           }}
-        >
-          {/* DJ EMMA PRO NON STOPS Header Banner */}
-          {!searchQuery.trim() && (
-            <motion.div 
-              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } } }}
-              className="px-4 sm:px-8 lg:px-12 flex items-center justify-between gap-3 py-2"
-            >
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#E50914] animate-pulse" />
-                <span className="text-xs sm:text-sm font-black text-white uppercase tracking-wider">
-                  DJ EMMA PRO NON STOPS
-                </span>
-                <span className="text-[11px] font-mono font-bold text-red-300 bg-red-950/70 border border-red-500/40 px-2.5 py-0.5 rounded-full">
-                  {filteredTracks.length} Master Nonstops
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleRefreshFeed}
-                  disabled={isFeedLoading}
-                  className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors bg-zinc-800/70 hover:bg-zinc-800 px-3 py-1.5 rounded-full border border-zinc-700/60 cursor-pointer disabled:opacity-50"
-                  title="Reload feeds & preview skeleton loading"
-                >
-                  <RefreshCw className={`w-3 h-3 ${isFeedLoading ? 'animate-spin text-[#E50914]' : ''}`} />
-                  <span>{isFeedLoading ? 'Loading...' : 'Refresh'}</span>
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Continue Listening Banner */}
-          {!searchQuery.trim() && (
-            <ContinueListeningBanner onOpenModal={(track) => setSelectedTrack(track)} />
-          )}
-
-          {/* Smart Search Instant Results Banner */}
-          {searchQuery.trim() && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="px-4 sm:px-8 lg:px-12 my-3"
-            >
-              <div className="rounded-xl bg-zinc-900/90 border border-zinc-800 p-3.5 sm:p-4 shadow-xl backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                  <span className="text-xs uppercase font-mono tracking-wider text-zinc-400">
-                    Smart Search:
-                  </span>
-                  <span className="text-white font-bold text-sm bg-red-950/70 border border-red-500/40 px-2.5 py-0.5 rounded">
-                    "{searchQuery}"
-                  </span>
-                  <div className="flex items-center gap-1.5 text-xs font-mono">
-                    <span className="bg-zinc-800 text-zinc-200 px-2.5 py-0.5 rounded-full border border-zinc-700">
-                      {filteredTracks.length} Mixes
-                    </span>
-                    <span className="bg-zinc-800 text-zinc-200 px-2.5 py-0.5 rounded-full border border-zinc-700">
-                      {filteredMovies.length} Movies
-                    </span>
-                    <span className="bg-zinc-800 text-zinc-200 px-2.5 py-0.5 rounded-full border border-zinc-700">
-                      {filteredDrops.length} Drops
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 self-end sm:self-auto">
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="text-xs text-red-400 hover:text-white px-3 py-1 rounded bg-zinc-800/90 hover:bg-red-900/50 border border-zinc-700 transition-colors cursor-pointer"
-                  >
-                    Clear Search ✕
-                  </button>
-                </div>
-              </div>
-
-              {/* No results friendly suggestion box */}
-              {filteredTracks.length === 0 && filteredMovies.length === 0 && filteredDrops.length === 0 && (
-                <div className="mt-4 p-8 text-center rounded-xl bg-zinc-900/60 border border-zinc-800">
-                  <p className="text-zinc-300 text-base font-medium mb-3">
-                    No results found for <span className="text-red-400 font-bold">"{searchQuery}"</span>
-                  </p>
-                  <p className="text-xs text-zinc-500 mb-4">
-                    Try searching by DJ name, genre, artist, movie or year:
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {['Street Anthem', 'DJ Emma', 'Wakanda DJs', 'Ateso', 'Afrobeats', '2026', 'Poison Break'].map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() => setSearchQuery(suggestion)}
-                        className="px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 border border-zinc-700 transition-all cursor-pointer"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {/* Universal My Favorites Section (Mixtapes, Movies, DJ Drops) */}
-          {!searchQuery.trim() && (
-            <MyFavoritesSection 
-              onOpenModal={(track) => setSelectedTrack(track)}
-              onWatchMovie={(movie) => {
-                setSelectedMovie(movie);
-                setCurrentView('movies');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-            />
-          )}
-
-          {/* ===================================================================
-              ACT 1: STREAMING THEATRE - ALL DJ EMMA PRO NON STOPS (NO CATEGORIES)
-             =================================================================== */}
-
-          {/* Recently Played */}
-          {recentTracks && recentTracks.length > 0 && !searchQuery.trim() && (
-            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-              <NetflixRow
-                id="recently-played"
-                title="Recently Played Nonstops"
-                subtitle="Jump back into your recent nonstop tracks and mixes"
-                tracks={recentTracks}
-                onOpenModal={(track) => setSelectedTrack(track)}
-                isLoading={isFeedLoading || isFilterLoading}
-              />
-            </motion.div>
-          )}
-
-          {/* ALL NONSTOPS IN ONE UNIFIED SECTION: DJ EMMA PRO NON STOPS */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <NetflixRow
-              id="mixes"
-              title="DJ EMMA PRO NON STOPS"
-              subtitle="All Official Street Anthems, Club Bangers, Cultural & Studio Nonstop Mixtapes • 5 Lines Down Default"
-              tracks={filteredTracks}
-              onOpenModal={(track) => setSelectedTrack(track)}
-              isLoading={isFeedLoading || isFilterLoading}
-            />
-          </motion.div>
-
-          {/* ===================================================================
-              ACT 2: ATESO CINEMA & TRANSLATED MOVIES
-             =================================================================== */}
-          {/* Section Divider & Header */}
-          <div className="pt-8 sm:pt-12 px-4 sm:px-8 lg:px-12">
-            <div className="border-t border-zinc-800/80 pt-6 flex items-center justify-between">
-              <div>
-                <span className="bg-[#E50914] text-white text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded mr-2">
-                  CINEMA
-                </span>
-                <span className="text-zinc-400 text-xs uppercase tracking-wider font-semibold">
-                  Ateso Translated Series & Feature Films
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Row 4: Poison Break Ateso Movies Row */}
-          <motion.div id="ateso-movies-section" variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <NetflixAtesoMoviesRow
-              isLoading={isFeedLoading}
-              onWatchMovie={(movie) => {
-                setSelectedMovie(movie);
-                setCurrentView('movies');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              onViewAllMovies={() => {
-                setSelectedMovie(null);
-                setCurrentView('movies');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-            />
-          </motion.div>
-
-          {/* Telegram Channel VIP Ad Banner */}
-          <motion.div className="px-4 sm:px-8 lg:px-12 my-4" variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <TelegramAtesoBanner />
-          </motion.div>
-
-          {/* ===================================================================
-              ACT 3: DJ EMMA PRO PRODUCTION SUITE (Voice Drops, 3D Logos, Orders)
-             =================================================================== */}
-          <div className="pt-10 sm:pt-14 px-4 sm:px-8 lg:px-12">
-            <div className="border-t border-zinc-800/80 pt-8">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="bg-[#E50914] text-white text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded">
-                  STUDIO SUITE
-                </span>
-                <span className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                  Commercial & DJ Audio Branding
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                DJ Emma Pro Production Studio
-              </h2>
-              <p className="text-zinc-400 text-xs sm:text-base max-w-2xl mt-1">
-                Custom studio voice drops, club sound FX, and 3D animated station logos produced with studio-grade fidelity and direct WhatsApp delivery.
-              </p>
-            </div>
-          </div>
-
-          {/* Row 5: DJ Emma Originals • Voice Drops & FX Packs */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <NetflixDropsRow isLoading={isFeedLoading} />
-          </motion.div>
-
-          {/* Dedicated Gateway to 3D LOGOS REVEAL Room */}
-          {!searchQuery.trim() && (
-            <motion.div 
-              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}
-              className="px-4 sm:px-8 lg:px-12 my-6"
-            >
-              <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-red-950/60 via-[#13111c] to-[#0c0c14] border border-red-500/40 p-6 sm:p-8 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="max-w-2xl">
-                  <div className="flex items-center gap-2 text-xs font-bold text-red-400 uppercase tracking-wider mb-2">
-                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                    <span>New Dedicated Room Available</span>
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
-                    3D LOGOS REVEAL Room
-                  </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                    Step inside the exclusive 3D Logo Reveal Chamber featuring master motion editions, interactive 3D spatial tilts, real-time stage audio playback, and protected client preview mode.
-                  </p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-zinc-400">
-                    <span className="text-amber-400 font-semibold">Master Editions</span>
-                    <span>·</span>
-                    <span className="text-emerald-400 font-semibold">60 FPS Video Streams</span>
-                    <span>·</span>
-                    <span className="text-zinc-400">Direct Download Restricted</span>
-                  </div>
-                </div>
-
-                <div className="shrink-0 flex flex-col sm:flex-row gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCurrentView('logos-reveal');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="px-6 py-3.5 bg-[#E50914] hover:bg-[#b80710] text-white text-xs sm:text-sm font-black rounded-xl shadow-xl shadow-red-950/60 transition-transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
-                  >
-                    <span>Enter 3D Logos Reveal Room</span>
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Row 6: 3D Animated Logo Design Studio */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <NetflixLogosRow isLoading={isFeedLoading} />
-          </motion.div>
-
-          {/* Row 7: Continue Watching / Client Portal Order Tracking */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <NetflixClientPortal />
-          </motion.div>
-
-          {/* ===================================================================
-              ACT 4: VERIFIED CLIENT DELIVERIES & TRUST SHOWCASE
-             =================================================================== */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <TrustProofBanner onOpenProofModal={() => setIsTrustModalOpen(true)} />
-          </motion.div>
-
-          {/* Software Downloads Section */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}>
-            <SoftwareDownloadSection />
-          </motion.div>
-        </motion.div>
-      </main>
-
-      {/* Newsletter Signup */}
-      <NewsletterSignup />
-
-      {/* Community Comments & Discussion Wall */}
-      <CommunityCommentsSection />
-
-      {/* Netflix Footer */}
-      <NetflixFooter
-        onOpenAtesoMovies={() => {
-          setSelectedMovie(null);
-          setCurrentView('movies');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onOpenStudioManager={() => {
-          if (isAdmin) {
-            setCurrentView('manager');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
-        }}
-      />
-
-      {/* Netflix Interactive Modal ("More Info") */}
-      <AnimatePresence>
-        {selectedTrack && (
-          <NetflixModal
-            track={selectedTrack}
-            onClose={() => setSelectedTrack(null)}
-            onSelectTrack={(t) => setSelectedTrack(t)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Trust & Proof Modal */}
-      {isTrustModalOpen && (
-        <TrustProofModal onClose={() => setIsTrustModalOpen(false)} />
-      )}
-
-      {/* AI Studio Pro Hub Modal */}
-      {isAiHubOpen && (
-        <AiStudioHubModal onClose={() => setIsAiHubOpen(false)} />
-      )}
-
-      {/* Mobile Bottom Navigation Bar */}
-      <MobileBottomNav
-        onOpenAtesoMovies={() => {
-          setSelectedMovie(null);
-          setCurrentView('movies');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onOpenLogosReveal={() => {
-          setCurrentView('logos-reveal');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onOpenLogin={onOpenLogin}
-        currentView={currentView}
-      />
+        />
       </div>
     </motion.div>
   );
 }
 
 function RootApp() {
-  const { user } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [loginModalMode, setLoginModalMode] = useState<'signin' | 'signup'>('signin');
-
-  const handleOpenLogin = (mode: 'signin' | 'signup' = 'signin') => {
-    setLoginModalMode(mode);
-    setShowLoginModal(true);
-  };
-
   return (
     <>
       <GlobalKeyboardController
-        isAnyModalOpen={showLoginModal}
-        onCloseAllModals={() => setShowLoginModal(false)}
+        isAnyModalOpen={false}
+        onCloseAllModals={() => {}}
       />
-      <NetflixDashboard onOpenLogin={handleOpenLogin} />
+      <NetflixDashboard />
       <AdminAuthModal />
-      {showLoginModal && (
-        <LoginScreen 
-          onClose={() => setShowLoginModal(false)}
-          isFirstVisit={false}
-          initialMode={loginModalMode}
-        />
-      )}
+      <CookieConsentBanner />
       <FloatingBackToTop />
       <FeedbackWidget />
     </>
@@ -900,4 +611,3 @@ export default function App() {
     </LanguageProvider>
   );
 }
-

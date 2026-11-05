@@ -1,14 +1,13 @@
 import React from 'react';
-import { Headphones, Mic2, Film, Box, Download, MessageCircle, Sparkles, ArrowRight, Cloud } from 'lucide-react';
+import { Headphones, Mic2, Film, Box, Download, MessageCircle, Sparkles, ArrowRight } from 'lucide-react';
 
 interface QuickAccessBarProps {
-  onOpenAtesoMovies: () => void;
   onOpenCustomDrops?: () => void;
   onOpenLogosReveal?: () => void;
   onOpenAiHub?: () => void;
 }
 
-export default function QuickAccessBar({ onOpenAtesoMovies, onOpenCustomDrops, onOpenLogosReveal, onOpenAiHub }: QuickAccessBarProps) {
+export default function QuickAccessBar({ onOpenCustomDrops, onOpenLogosReveal, onOpenAiHub }: QuickAccessBarProps) {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -24,18 +23,28 @@ export default function QuickAccessBar({ onOpenAtesoMovies, onOpenCustomDrops, o
       icon: Sparkles,
       color: 'from-rose-600/30 to-red-950/50 border-red-500/50 hover:border-red-400',
       iconColor: 'text-red-400',
-      badge: 'New Room',
+      badge: 'Edition #08',
       onClick: onOpenLogosReveal || (() => scrollTo('logos')),
     },
     {
       id: 'mixes',
-      title: 'Nonstop Mixes',
+      title: 'Audio Mixes',
       subtitle: 'Stream & Download',
       icon: Headphones,
       color: 'from-red-600/20 to-red-950/40 border-red-500/30 hover:border-red-500',
       iconColor: 'text-[#E50914]',
-      badge: 'Popular',
+      badge: 'Mastered',
       onClick: () => scrollTo('mixes'),
+    },
+    {
+      id: 'videos',
+      title: 'Video Mixes',
+      subtitle: 'HD Video Shows',
+      icon: Film,
+      color: 'from-purple-600/20 to-purple-950/40 border-purple-500/30 hover:border-purple-400',
+      iconColor: 'text-purple-400',
+      badge: 'Ultra HD',
+      onClick: () => scrollTo('videos'),
     },
     {
       id: 'drops',
@@ -53,17 +62,6 @@ export default function QuickAccessBar({ onOpenAtesoMovies, onOpenCustomDrops, o
         }
       },
     },
-
-    {
-      id: 'movies',
-      title: 'Ateso Movies',
-      subtitle: 'Translated Cinema',
-      icon: Film,
-      color: 'from-purple-600/20 to-purple-950/40 border-purple-500/30 hover:border-purple-400',
-      iconColor: 'text-purple-400',
-      badge: 'Poison Break',
-      onClick: onOpenAtesoMovies,
-    },
     {
       id: 'logos',
       title: '3D Logo Animation',
@@ -71,7 +69,7 @@ export default function QuickAccessBar({ onOpenAtesoMovies, onOpenCustomDrops, o
       icon: Box,
       color: 'from-blue-600/20 to-blue-950/40 border-blue-500/30 hover:border-blue-400',
       iconColor: 'text-blue-400',
-      badge: 'Studio HD',
+      badge: 'Studio 4K',
       onClick: () => scrollTo('logos'),
     },
     {
@@ -91,7 +89,7 @@ export default function QuickAccessBar({ onOpenAtesoMovies, onOpenCustomDrops, o
       icon: MessageCircle,
       color: 'from-green-600/20 to-green-950/40 border-green-500/30 hover:border-green-400',
       iconColor: 'text-green-400',
-      badge: '24/7 Live',
+      badge: 'Direct',
       onClick: () => {
         window.open('https://wa.me/256780527361?text=Hello%20DJ%20Emma%20Pro%20FX%20I%20want%20to%20order', '_blank');
       },
@@ -109,7 +107,7 @@ export default function QuickAccessBar({ onOpenAtesoMovies, onOpenCustomDrops, o
             </h2>
             <span className="text-zinc-600 text-xs hidden sm:inline">·</span>
             <span className="text-xs text-zinc-500 hidden sm:inline">
-              Jump directly to any section or studio service
+              Jump directly to any audio, video, or studio service
             </span>
           </div>
           <span className="text-[11px] text-zinc-400 font-mono hidden md:inline">
@@ -117,7 +115,6 @@ export default function QuickAccessBar({ onOpenAtesoMovies, onOpenCustomDrops, o
           </span>
         </div>
 
-        {/* Responsive Grid for Desktop & Smooth Horizontal Scroll on Mobile */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2.5 sm:gap-3">
           {items.map((item) => {
             const Icon = item.icon;

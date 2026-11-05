@@ -26,16 +26,16 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
     return <BillboardSkeleton />;
   }
 
-  const streetAnthemTrack: AudioTrack = tracks.find(t => t.url.includes('STREET_ANTHEM_90')) || tracks[0] || {
+  const streetAnthemTrack: AudioTrack = tracks.find(t => t.url.includes('STREET%20ANTHEM%2090') || t.url.includes('STREET_ANTHEM_90')) || tracks[0] || {
     id: 1,
     title: 'STREET ANTHEM 90 • DJ EMMA PRO & WAKANDA DJs',
     artist: 'DJ EMMA PRO x DIVINE DEEJAY UG (FIRE FLAMES DJs)',
     durationLabel: '58:40 Master Nonstop',
-    url: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790955038/STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs__DIVINE_DEEJAY_UG_FIRE_FLAMES_DJs_-1.mp3',
-    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Street_Anthem_90_DJ_Emma_Pro_Wakanda_DJs/v1790955038/STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs__DIVINE_DEEJAY_UG_FIRE_FLAMES_DJs_-1.mp3',
-    filename: 'Street_Anthem_90_DJ_Emma_Pro_Wakanda_DJs.mp3',
-    thumbnail: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png',
-    backdrop: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png',
+    url: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/STREET%20ANTHEM%2090_DJ%20EMMA%20PRO%5BWAKANDA%20DJs%5D_DIVINE%20DEEJAY%20UG%5BFIRE%20FLAMES%20DJs%5D-1.mp3',
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/STREET%20ANTHEM%2090_DJ%20EMMA%20PRO%5BWAKANDA%20DJs%5D_DIVINE%20DEEJAY%20UG%5BFIRE%20FLAMES%20DJs%5D-1.mp3',
+    filename: 'STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs.mp3',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/WhatsApp%20Image%202026-06-17%20at%2012.23.24%20PM.jpeg',
+    backdrop: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/WhatsApp%20Image%202026-06-17%20at%2012.23.24%20PM.jpeg',
     matchScore: 99,
     year: 2026,
     ageRating: 'All Ages',
@@ -46,47 +46,42 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
     topRank: 1
   };
 
-  const vyrootaTrack: AudioTrack = tracks.find(t => t.youtubeId === '17uskDXOuvY') || {
-    id: 18,
-    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO',
+  const vyrootaTrack: AudioTrack = tracks.find(t => t.id === 2) || tracks[1] || {
+    id: 2,
+    title: '2024 ATESO VIDEO MIX VOL 1 VS AFROBEATS & UGANDAN HITS',
     artist: 'DJ EMMA PRO',
-    durationLabel: '52:18 Nonstop Mix',
-    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786103/best_of_vyroota_full_mixtape.mp3',
-    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Nonstop_2026/v1789786103/best_of_vyroota_full_mixtape.mp3',
-    filename: 'Best_Of_Vyroota_Nonstop_2026.mp3',
-    thumbnail: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
-    backdrop: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
+    durationLabel: '50:15 Nonstop Mix',
+    url: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/2024%20ATESP%20VIDEO%20MIX%20VOLUME%201%20VS%20AFROBEATS%20AND%20UGANDAN%20HITS%20%20BY%20DJ%20EMMA%20PRO.mp3',
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/2024%20ATESP%20VIDEO%20MIX%20VOLUME%201%20VS%20AFROBEATS%20AND%20UGANDAN%20HITS%20%20BY%20DJ%20EMMA%20PRO.mp3',
+    filename: '2024_Ateso_Video_Mix_Vol_1_DJ_Emma_Pro.mp3',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000bda08211910e147fbb531635.png',
+    backdrop: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000bda08211910e147fbb531635.png',
     matchScore: 99,
     year: 2026,
     ageRating: 'All Ages',
-    quality: 'Ultra HD 4K • Spatial Audio',
-    genres: ['Vyroota Nonstop', 'YouTube Premiere', 'Ugandan Hits', 'Afrobeats'],
-    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO. Continuous streaming of Vyroota acoustic gems, club bangers, and chart-topping Ugandan hits. Direct play on site & fast phone download.',
+    quality: 'Ultra HD 4K • Studio Master',
+    genres: ['Ateso Nonstop', 'Afrobeats', 'Ugandan Hits'],
+    description: '2024 Ateso Video Mix Volume 1 featuring the hottest Afrobeats and Ugandan club hits mixed live by DJ Emma Pro.',
     isTrending: true,
-    isVideo: true,
-    youtubeId: '17uskDXOuvY',
-    youtubeUrl: 'https://youtu.be/17uskDXOuvY?si=vsg9XUaI1t83bI0L',
-    videoUrl: 'https://www.youtube.com/embed/17uskDXOuvY',
-    topRank: 1
+    topRank: 2
   };
 
-  const reggaeTrack: AudioTrack = tracks.find(t => t.youtubeId === 'TcVAuZcXB5U') || {
-    id: 16,
-    title: 'ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO',
+  const reggaeTrack: AudioTrack = tracks.find(t => t.url.includes('ONE%20DROP%20REGGEA')) || tracks[10] || {
+    id: 11,
+    title: 'ONE DROP REGGAE MIX VOL. 1 • DJ EMMA PRO',
     artist: 'DJ EMMA PRO',
-    durationLabel: 'YouTube Premiere Nonstop',
-    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786241/ONE_DROP_REGGEA_MIX_VOL_ONE.mp3',
-    thumbnail: 'https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg',
-    backdrop: 'https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg',
+    durationLabel: '55:30 Reggae Nonstop',
+    url: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/ONE%20DROP%20REGGEA%20MIX.%20VOL%201%20BY%20DJ%20EMMA%20PRO.mp3',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000289082119a86e31512f2ba3d.png',
+    backdrop: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000289082119a86e31512f2ba3d.png',
     matchScore: 99,
     year: 2026,
     ageRating: 'All Ages',
     quality: 'Ultra HD 4K • Spatial Audio',
-    description: 'Official YouTube Video Premiere: ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO. Continuous reggae rhythms and heavy basslines. Anyone can play and stream directly from the website without redirects.',
-    genres: ['One Drop Reggae', 'YouTube Premiere', 'Roots & Culture'],
-    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_Emma_Pro_One_Drop_Reggae_Mix_Vol_1/v1789786241/ONE_DROP_REGGEA_MIX_VOL_ONE.mp3',
-    filename: 'DJ_Emma_Pro_One_Drop_Reggae_Mix_Vol_1.mp3',
-    youtubeId: 'TcVAuZcXB5U'
+    description: 'ONE DROP REGGAE MIX VOL 1 BY DJ EMMA PRO. Continuous conscious roots reggae, lovers rock, and dancehall anthems.',
+    genres: ['One Drop Reggae', 'Roots & Culture', 'Lovers Rock'],
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/ONE%20DROP%20REGGEA%20MIX.%20VOL%201%20BY%20DJ%20EMMA%20PRO.mp3',
+    filename: 'One_Drop_Reggae_Mix_Vol_1_DJ_Emma_Pro.mp3'
   };
 
   const featuredTrack: AudioTrack = 

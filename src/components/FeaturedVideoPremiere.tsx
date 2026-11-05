@@ -8,7 +8,7 @@ import { useAudio } from '../context/AudioContext';
 import { useWatchHistory } from '../context/WatchHistoryContext';
 import { useDataSaver } from '../context/DataSaverContext';
 
-export type VideoCategoryTag = 'All' | 'New Release' | 'Viral' | 'Mixtape' | 'Ateso Movies';
+export type VideoCategoryTag = 'All' | 'New Release' | 'Viral' | 'Mixtape';
 
 const AUTOPLAY_STORAGE_KEY = 'dj_emma_premiere_video_autoplay_v1';
 
@@ -91,7 +91,7 @@ Feel the heavy conscious roots & dub bassline vibrations
 Mastered in lossless 320kbps fidelity with live voice tags
 
 00:00:32.500 --> 00:00:39.000
-Ateso Movies All Teso VJs • Exclusive Nonstop Stream
+Wakanda DJs • Nonstop Music & Video Mixes
 
 00:00:39.500 --> 00:00:46.500
 Continuous uninterrupted session directly on website
@@ -101,9 +101,9 @@ Roots, rock, reggae and modern African club drops`
   },
   {
     id: 'sub-at',
-    label: 'Ateso (Commentary & Translation)',
+    label: 'Ateso (Commentary & Lyrics)',
     lang: 'at',
-    vttContent: `WEBVTT - Ateso Translation Commentary
+    vttContent: `WEBVTT - Ateso Music Commentary
 
 00:00:01.000 --> 00:00:05.500
 [DJ Emma Pro FX] Esubit loka akolongit da
@@ -112,7 +112,7 @@ Roots, rock, reggae and modern African club drops`
 Iyalama aitu ekalapatan loka One Drop Reggae Mix
 
 00:00:12.000 --> 00:00:18.000
-Soroti City • VJs loka Teso kere da
+Soroti City • Wakanda DJs kere da
 
 00:00:18.500 --> 00:00:24.500
 "Emma Pro FX ekaulo loka iroto ka aipupunet!"
@@ -121,7 +121,7 @@ Soroti City • VJs loka Teso kere da
 Akipi ka apolou naka etete lo ejaasi anyap kere
 
 00:00:32.500 --> 00:00:39.000
-Ateso Movies All Teso VJs • Esubit lo epol
+Wakanda DJs • Esubit lo epol
 
 00:00:39.500 --> 00:00:46.500
 Epurot lo emamei aidoles ejaasi anyap lo
@@ -138,7 +138,7 @@ export interface PremiereVideoItem {
   title: string;
   artist: string;
   category: string;
-  tags: ('New Release' | 'Viral' | 'Mixtape' | 'Ateso Movies')[];
+  tags: ('New Release' | 'Viral' | 'Mixtape')[];
   thumbnail: string;
   duration: string;
   views: string;
@@ -151,213 +151,123 @@ export interface PremiereVideoItem {
 const PREMIERE_VIDEOS: PremiereVideoItem[] = [
   {
     id: 'street-anthem-90-wakanda',
-    videoUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/v1790955038/STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs__DIVINE_DEEJAY_UG_FIRE_FLAMES_DJs_-1.mp3',
+    videoUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/STREET%20ANTHEM%2090_DJ%20EMMA%20PRO%5BWAKANDA%20DJs%5D_DIVINE%20DEEJAY%20UG%5BFIRE%20FLAMES%20DJs%5D-1.mp3',
     title: 'STREET ANTHEM 90 • DJ EMMA PRO & WAKANDA DJs',
     artist: 'DJ EMMA PRO x DIVINE DEEJAY UG (FIRE FLAMES DJs)',
     category: 'Top Featured Nonstop',
     tags: ['New Release', 'Viral', 'Mixtape'],
-    thumbnail: 'https://res.cloudinary.com/foscgxvd/image/upload/v1790956113/file_00000000956c82439256c2a0ce77b093.png',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/WhatsApp%20Image%202026-06-17%20at%2012.23.24%20PM.jpeg',
     duration: '58:40',
-    views: '128.5K Views',
+    views: '215.8K Views',
     description: 'Top Featured Nonstop: STREET ANTHEM 90 by DJ EMMA PRO from Wakanda DJs & Divine Deejay UG Fire Flames DJs. High-energy street bangers, viral Ugandan hits, and non-stop hype transitions.',
     matchScore: 100,
     audioTrackId: 1,
-    downloadUrl: 'https://res.cloudinary.com/foscgxvd/video/upload/fl_attachment:Street_Anthem_90_DJ_Emma_Pro_Wakanda_DJs/v1790955038/STREET_ANTHEM_90_DJ_EMMA_PRO_WAKANDA_DJs__DIVINE_DEEJAY_UG_FIRE_FLAMES_DJs_-1.mp3'
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/STREET%20ANTHEM%2090_DJ%20EMMA%20PRO%5BWAKANDA%20DJs%5D_DIVINE%20DEEJAY%20UG%5BFIRE%20FLAMES%20DJs%5D-1.mp3'
   },
   {
-    id: 'best-of-vyroota-nonstop-2026',
-    youtubeId: '17uskDXOuvY',
-    title: 'BEST OF VYROOTA NONSTOP 2026 • DJ EMMA PRO',
+    id: 'ateso-video-mix-vol-1',
+    videoUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/2024%20ATESP%20VIDEO%20MIX%20VOLUME%201%20VS%20AFROBEATS%20AND%20UGANDAN%20HITS%20%20BY%20DJ%20EMMA%20PRO.mp3',
+    title: '2024 ATESO VIDEO MIX VOL 1 VS AFROBEATS & UGANDAN HITS',
     artist: 'DJ EMMA PRO',
-    category: 'Nonstop Mixtape',
-    tags: ['New Release', 'Viral', 'Mixtape'],
-    thumbnail: 'https://i.ytimg.com/vi/17uskDXOuvY/hqdefault.jpg',
-    duration: '52:18',
-    views: '96.4K Views',
-    description: 'Official YouTube Nonstop Premiere: BEST OF VYROOTA NONSTOP 2026 (From New Songs to Old Songs Hot Mix) by DJ EMMA PRO. Continuous streaming of Vyroota acoustic hits, club bangers, and chart-topping Ugandan anthems.',
+    category: 'Ateso Video Mix',
+    tags: ['New Release', 'Viral'],
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000bda08211910e147fbb531635.png',
+    duration: '50:15',
+    views: '124.5K Views',
+    description: 'The monumental 2024 Ateso Video Mix Volume 1 featuring viral Ugandan dancehall hits, heavy percussion basslines, and live scratch transitions by DJ Emma Pro.',
     matchScore: 99,
-    audioTrackId: 18,
-    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Nonstop_2026/v1789786103/best_of_vyroota_full_mixtape.mp3'
+    audioTrackId: 2,
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/2024%20ATESP%20VIDEO%20MIX%20VOLUME%201%20VS%20AFROBEATS%20AND%20UGANDAN%20HITS%20%20BY%20DJ%20EMMA%20PRO.mp3'
+  },
+  {
+    id: 'best-of-ateso-gospel-wakanda',
+    videoUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/BEST_OF_ATESO_GOSPEL_VIDEO_NONSTOP_MIX_BY_DJ_EMMA_PRO_%5BWAKANDA%5D_Christmas(480p).mp3',
+    title: 'BEST OF ATESO GOSPEL VIDEO NONSTOP MIX • WAKANDA EDITION',
+    artist: 'DJ EMMA PRO (WAKANDA DJs)',
+    category: 'Gospel Video Mix',
+    tags: ['Mixtape', 'New Release'],
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000981482069a72d0e793ac5391.png',
+    duration: '46:30',
+    views: '89.2K Views',
+    description: 'Soul-stirring praise, worship, and energetic traditional gospel video nonstop mix compiled with studio visual effects by DJ Emma Pro.',
+    matchScore: 99,
+    audioTrackId: 3,
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/BEST_OF_ATESO_GOSPEL_VIDEO_NONSTOP_MIX_BY_DJ_EMMA_PRO_%5BWAKANDA%5D_Christmas(480p).mp3'
+  },
+  {
+    id: 'club-bangers-mix-vol-1',
+    videoUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/2025_mixtape_CLUB_BANGERS_MIXXX_VOL_1_DJ_JOSH_PRO_OFISHOL_X_DJ_EMMA_PRO(256k).mp3',
+    title: '2025 CLUB BANGERS MIXXX VOL 1 • DJ JOSH PRO X DJ EMMA PRO',
+    artist: 'DJ JOSH PRO OFISHOL x DJ EMMA PRO',
+    category: 'Club Bangers Mixtape',
+    tags: ['New Release', 'Viral', 'Mixtape'],
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000bda08211910e147fbb531635.png',
+    duration: '54:20',
+    views: '110.2K Views',
+    description: 'Electrifying 2025 club bangers mixtape featuring back-to-back mixes, hard kicks, and festival bangers.',
+    matchScore: 99,
+    audioTrackId: 5,
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/2025_mixtape_CLUB_BANGERS_MIXXX_VOL_1_DJ_JOSH_PRO_OFISHOL_X_DJ_EMMA_PRO(256k).mp3'
+  },
+  {
+    id: 'the-challenge-scratch-wakanda',
+    videoUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/The_challenge_scratch_two_hit_songs_%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5by_DJ_Emma_pro_from_wakanda_DJZ(480p).mp3',
+    title: 'THE CHALLENGE SCRATCH TWO HIT SONGS • WAKANDA DJZ',
+    artist: 'DJ EMMA PRO FROM WAKANDA DJZ',
+    category: 'Turntable Scratch Battle',
+    tags: ['Viral', 'Mixtape'],
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_0000000082e48206b44f044859a03025.png',
+    duration: '38:45',
+    views: '98.3K Views',
+    description: 'Extreme turntable scratch showcase and speed-mixing battle session blending Uganda chart toppers with live tone play.',
+    matchScore: 98,
+    audioTrackId: 13,
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/The_challenge_scratch_two_hit_songs_%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5%F0%9F%94%A5by_DJ_Emma_pro_from_wakanda_DJZ(480p).mp3'
   },
   {
     id: 'one-drop-reggae-vol-1',
-    youtubeId: 'TcVAuZcXB5U',
-    title: 'ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO',
+    videoUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/ONE%20DROP%20REGGEA%20MIX.%20VOL%201%20BY%20DJ%20EMMA%20PRO.mp3',
+    title: 'ONE DROP REGGAE MIX VOL 1 BY DJ EMMA PRO',
     artist: 'DJ EMMA PRO',
     category: 'Reggae Nonstop Mixtape',
     tags: ['New Release', 'Viral', 'Mixtape'],
-    thumbnail: 'https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg',
-    duration: '54:20',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000289082119a86e31512f2ba3d.png',
+    duration: '55:30',
     views: '84.6K Views',
-    description: 'Official YouTube Premiere: ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO. Smooth conscious reggae vibes, heavy dub basslines, and studio-grade audio. Anyone can play and stream directly from the website.',
+    description: 'ONE DROP REGGAE MIX VOL 1 BY DJ EMMA PRO. Smooth conscious reggae vibes, heavy dub basslines, and studio-grade audio. Anyone can play and stream directly from the website.',
     matchScore: 99,
-    audioTrackId: 16,
-    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_Emma_Pro_One_Drop_Reggae_Mix_Vol_1/v1789786241/ONE_DROP_REGGEA_MIX_VOL_ONE.mp3'
+    audioTrackId: 11,
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/ONE%20DROP%20REGGEA%20MIX.%20VOL%201%20BY%20DJ%20EMMA%20PRO.mp3'
   },
   {
-    id: 'crazy-safari-vj-sultan',
-    youtubeId: 'm1cfa_PY6AY',
-    title: 'CRAZY SAFARI • VJ Sultan 3',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['New Release', 'Viral', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/m1cfa_PY6AY/hqdefault.jpg',
-    duration: '1h 36m',
-    views: '48.2K Views',
-    description: 'Crazy Safari translated into rich Ateso dialect by VJ Sultan 3. Nonstop martial arts comedy, hopping vampires, and classic commentary.',
-    matchScore: 99
-  },
-  {
-    id: '36-deadly-styles-vj-bashir',
-    youtubeId: 'zDIeVLTq9BM',
-    title: '36 DEADLY STYLES • VJ Bashir',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['Viral', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/zDIeVLTq9BM/hqdefault.jpg',
-    duration: '1h 32m',
-    views: '41.5K Views',
-    description: '36 Deadly Styles with authentic Ateso translation by VJ Bashir. Epic Shaolin fighting sequences, rivalry, and intense action commentary.',
-    matchScore: 98
-  },
-  {
-    id: 'karate-kill-vj-sultan',
-    youtubeId: 'WUu0c7_t6mE',
-    title: 'KARATE KILL HD • VJ Sultan',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['New Release', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/WUu0c7_t6mE/hqdefault.jpg',
-    duration: '1h 29m',
-    views: '39.8K Views',
-    description: 'Karate Kill HD in dynamic Ateso translation by VJ Sultan. High-octane martial arts, ruthless revenge thriller, and raw combat.',
-    matchScore: 97
-  },
-  {
-    id: 'missing-in-action-2-vj-sultan',
-    youtubeId: 'KVdFBjxVN4Q',
-    title: 'MISSING IN ACTION 2 • VJ Sultan',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['Viral', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/KVdFBjxVN4Q/hqdefault.jpg',
-    duration: '1h 40m',
-    views: '52.0K Views',
-    description: 'Missing in Action 2: The Beginning translated into rich Ateso by VJ Sultan. POW camp survival, jungle combat, and heroic rescue missions.',
-    matchScore: 98
-  },
-  {
-    id: 'balance-of-power-vj-sultan',
-    youtubeId: '69LOunrlrD4',
-    title: 'BALANCE OF POWER • VJ Sultan',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['New Release', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/69LOunrlrD4/hqdefault.jpg',
-    duration: '1h 38m',
-    views: '35.1K Views',
-    description: 'Balance of Power featuring explosive street combat and martial arts showdowns translated with punchy Ateso dialogue by VJ Sultan.',
-    matchScore: 96
-  },
-  {
-    id: 'bhaag-johnny-vj-sultan',
-    youtubeId: '9GngBH1lxAo',
-    title: 'BHAAG JOHNNY • VJ Sultan 1',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['New Release', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/9GngBH1lxAo/hqdefault.jpg',
-    duration: '2h 05m',
-    views: '37.4K Views',
-    description: 'Bhaag Johnny Part 1 in Ateso translation by VJ Sultan. High-stakes espionage, dual-choice decisions, suspense, and thriller action.',
-    matchScore: 95
-  },
-  {
-    id: 'american-ninja-3-vj-sultan',
-    youtubeId: '3GKvISmI2c0',
-    title: 'AMERICAN NINJA 3 • VJ Sultan',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['Viral', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/3GKvISmI2c0/hqdefault.jpg',
-    duration: '1h 30m',
-    views: '44.3K Views',
-    description: 'American Ninja 3: Blood Hunt translated into lively Ateso by VJ Sultan. Genetic super-soldiers, martial arts tournament, and ninja combat.',
-    matchScore: 97
-  },
-  {
-    id: 'crying-freeman-vj-sultan',
-    youtubeId: 'IwB6rQNBAuk',
-    title: 'CRYING FREEMAN • VJ Sultan',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['Viral', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/IwB6rQNBAuk/hqdefault.jpg',
-    duration: '1h 42m',
-    views: '46.7K Views',
-    description: 'Crying Freeman in gripping Ateso translation by VJ Sultan. The lethal assassin who sheds tears for his victims, Yakuza underworld war.',
-    matchScore: 96
-  },
-  {
-    id: 'mary-vj-genius',
-    youtubeId: 'UrljTcLlZlw',
-    title: 'MARY • VJ Genius',
-    artist: 'ATESO MOVIES ALL TESO VJS',
-    category: 'Ateso Translated Movie',
-    tags: ['New Release', 'Ateso Movies'],
-    thumbnail: 'https://i.ytimg.com/vi/UrljTcLlZlw/hqdefault.jpg',
-    duration: '1h 24m',
-    views: '31.2K Views',
-    description: 'Mary horror movie translated into Ateso by VJ Genius. An eerie isolated ship with a terrifying past terrorizes a struggling family.',
-    matchScore: 94
-  },
-  {
-    id: 'episode-2-mc-ricky',
-    youtubeId: undefined,
-    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789611461/episode_2_dj_emma_pro_ft_mc_ricky.mp4',
-    title: 'EPISODE 2 • DJ EMMA PRO FT MC RICKY',
-    artist: 'DJ EMMA PRO',
-    category: 'Live Club Hype Mixtape',
-    tags: ['Viral', 'Mixtape'],
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg',
+    id: 'live-mixtape-mc-ricky-2025',
+    videoUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/LIVE%20MIXTAPE%20BY%20DJ%20EMMA%20PRO%20FT%20MC%20RICKY%20%202025%20MIX%20KAMPALA%20UGANADA.mp3',
+    title: 'LIVE MIXTAPE • DJ EMMA PRO FT MC RICKY 2025 KAMPALA',
+    artist: 'DJ EMMA PRO FT MC RICKY',
+    category: 'Live Kampala Club Hype',
+    tags: ['New Release', 'Viral', 'Mixtape'],
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000981482069a72d0e793ac5391.png',
     duration: '48:10',
-    views: '76.4K Views',
-    description: 'High energy non-stop club banger mixtape mixed live by DJ Emma Pro featuring MC Ricky.',
+    views: '92.4K Views',
+    description: 'Live Kampala club party session hosted by MC Ricky with live turntable blends by DJ Emma Pro.',
     matchScore: 98,
-    audioTrackId: 19,
-    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:DJ_Emma_Pro_ft_MC_Ricky_Episode_2/v1789786272/episode_2_dj_emma_pro_ft_mc_ricky.mp3'
+    audioTrackId: 8,
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/LIVE%20MIXTAPE%20BY%20DJ%20EMMA%20PRO%20FT%20MC%20RICKY%20%202025%20MIX%20KAMPALA%20UGANADA.mp3'
   },
   {
-    id: 'best-of-acholi-traditional',
-    youtubeId: undefined,
-    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789785554/best_of_acholi_nonstop_traditional.mp3',
-    title: 'BEST OF ACHOLI NONSTOP TRADITIONAL',
-    artist: 'DJ EMMA PRO',
-    category: 'Traditional Culture Mixtape',
-    tags: ['Mixtape', 'New Release'],
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
-    duration: '52:45',
-    views: '63.9K Views',
-    description: 'The finest collection of Acholi traditional nonstop rhythms expertly curated by DJ Emma Pro.',
+    id: 'alien-skin-vs-pallaso-wakanda',
+    videoUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/Latest_2023__ALIEN_SKIN_Vs_PALLASO__DJ_EMMA_PRO_WAKANDA_Mix(256k).mp3',
+    title: 'ALIEN SKIN VS PALLASO • WAKANDA MIX',
+    artist: 'DJ EMMA PRO (WAKANDA DJs)',
+    category: 'Ugandan Hit Battle',
+    tags: ['Viral', 'Mixtape'],
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/WhatsApp%20Image%202026-06-17%20at%2012.23.24%20PM.jpeg',
+    duration: '44:30',
+    views: '145.2K Views',
+    description: 'The explosive hit-for-hit battle mix featuring Fangone Forest champion Alien Skin and Team Good Music boss Pallaso.',
     matchScore: 99,
-    audioTrackId: 17,
-    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Acholi_Nonstop_Traditional/v1789785554/best_of_acholi_nonstop_traditional.mp3'
-  },
-  {
-    id: 'best-of-vyroota-mixtape',
-    youtubeId: undefined,
-    videoUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/v1789786103/best_of_vyroota_full_mixtape.mp3',
-    title: 'BEST OF VYROOTA FULL MIXTAPE',
-    artist: 'DJ EMMA PRO',
-    category: 'Afrobeats Mixtape',
-    tags: ['Mixtape', 'Viral'],
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
-    duration: '45:15',
-    views: '58.3K Views',
-    description: 'The definitive Best of Vyroota full mixtape expertly blended by DJ Emma Pro.',
-    matchScore: 98,
-    audioTrackId: 18,
-    downloadUrl: 'https://res.cloudinary.com/hbyqk5y0/video/upload/fl_attachment:Best_Of_Vyroota_Full_Mixtape/v1789786103/best_of_vyroota_full_mixtape.mp3'
+    audioTrackId: 9,
+    downloadUrl: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/Latest_2023__ALIEN_SKIN_Vs_PALLASO__DJ_EMMA_PRO_WAKANDA_Mix(256k).mp3'
   }
 ];
 
@@ -539,45 +449,25 @@ export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVide
   const isAudioPlaying = isPlaying && matchedAudioTrack && currentTrackIndex === tracks.indexOf(matchedAudioTrack);
 
   const trackVideoInHistory = (video: PremiereVideoItem) => {
-    if (video.tags.includes('Ateso Movies') || video.category.toLowerCase().includes('movie')) {
-      recordMoviePlayed({
-        id: video.id,
-        title: video.title,
-        vj: video.artist.includes('VJ') ? video.artist : (video.title.includes('VJ') ? video.title.split('•')[1]?.trim() : 'ATESO MOVIES'),
-        year: 2026,
-        duration: video.duration,
-        genre: video.category,
-        quality: 'HD 1080p • Direct Video Premiere',
-        thumbnail: video.thumbnail,
-        videoUrl: video.videoUrl || '',
-        videoUrl320: video.videoUrl || '',
-        telegramUrl: 'https://t.me/atesomoviesbox',
-        youtubeUrl: video.youtubeId ? `https://youtu.be/${video.youtubeId}` : '',
-        youtubeId: video.youtubeId,
-        description: video.description,
-        matchScore: video.matchScore
-      });
-    } else {
-      const matched = (video.audioTrackId ? tracks.find(t => t.id === video.audioTrackId) : null) || {
-        id: video.audioTrackId || 1,
-        title: video.title,
-        artist: video.artist,
-        durationLabel: video.duration,
-        url: video.videoUrl || '',
-        downloadUrl: video.downloadUrl || '',
-        filename: `${video.title}.mp3`,
-        thumbnail: video.thumbnail,
-        backdrop: video.thumbnail,
-        matchScore: video.matchScore,
-        year: 2026,
-        ageRating: 'All Ages',
-        quality: 'Ultra HD 4K • Premiere Stream',
-        genres: ['Video Premiere', 'Nonstop Mix'],
-        description: video.description,
-        youtubeId: video.youtubeId
-      };
-      recordMixtapePlayed(matched);
-    }
+    const matched = (video.audioTrackId ? tracks.find(t => t.id === video.audioTrackId) : null) || {
+      id: video.audioTrackId || 1,
+      title: video.title,
+      artist: video.artist,
+      durationLabel: video.duration,
+      url: video.videoUrl || '',
+      downloadUrl: video.downloadUrl || '',
+      filename: `${video.title}.mp3`,
+      thumbnail: video.thumbnail,
+      backdrop: video.thumbnail,
+      matchScore: video.matchScore,
+      year: 2026,
+      ageRating: 'All Ages',
+      quality: 'Ultra HD 4K • Premiere Stream',
+      genres: ['Video Premiere', 'Nonstop Mix'],
+      description: video.description,
+      youtubeId: video.youtubeId
+    };
+    recordMixtapePlayed(matched);
   };
 
   const handleSelectVideo = (video: PremiereVideoItem) => {
@@ -610,7 +500,6 @@ export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVide
       'New Release': PREMIERE_VIDEOS.filter(v => v.tags.includes('New Release')).length,
       Viral: PREMIERE_VIDEOS.filter(v => v.tags.includes('Viral')).length,
       Mixtape: PREMIERE_VIDEOS.filter(v => v.tags.includes('Mixtape')).length,
-      'Ateso Movies': PREMIERE_VIDEOS.filter(v => v.tags.includes('Ateso Movies')).length,
     };
   }, []);
 
@@ -642,7 +531,7 @@ export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVide
           <div className="flex items-center gap-2 text-xs">
             <span className="text-zinc-400 font-mono">By DJ Emma Pro</span>
             <span className="text-zinc-600">•</span>
-            <span className="text-zinc-300 font-bold">Ateso Movies All Teso VJs</span>
+            <span className="text-zinc-300 font-bold">Wakanda DJs • Nonstop Music</span>
           </div>
         </div>
 
@@ -705,7 +594,7 @@ export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVide
           )}
 
           <div className="flex flex-wrap items-center gap-2">
-            {(['All', 'New Release', 'Viral', 'Mixtape', 'Ateso Movies'] as VideoCategoryTag[]).map((tag) => {
+            {(['All', 'New Release', 'Viral', 'Mixtape'] as VideoCategoryTag[]).map((tag) => {
               const isSelected = selectedTag === tag;
               return (
                 <button
@@ -721,7 +610,6 @@ export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVide
                   {tag === 'New Release' && <Sparkle className={`w-3 h-3 ${isSelected ? 'text-yellow-300' : 'text-zinc-400'}`} />}
                   {tag === 'Viral' && <Flame className={`w-3 h-3 ${isSelected ? 'text-yellow-300 fill-current' : 'text-zinc-400'}`} />}
                   {tag === 'Mixtape' && <Music className={`w-3 h-3 ${isSelected ? 'text-white' : 'text-zinc-400'}`} />}
-                  {tag === 'Ateso Movies' && <Film className={`w-3 h-3 ${isSelected ? 'text-white' : 'text-zinc-400'}`} />}
                   <span>{tag}</span>
                   <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-normal ${
                     isSelected ? 'bg-black/30 text-white' : 'bg-zinc-900 text-zinc-400'
@@ -1036,13 +924,13 @@ export default function FeaturedVideoPremiere({ onOpenTrustModal }: FeaturedVide
                   </a>
                 ) : (
                   <a
-                    href="https://t.me/atesomoviesbox"
+                    href="https://youtube.com/@djemmapro7231?si=iKgwrQvCurZhDQob"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 hover:text-white text-xs font-semibold border border-zinc-700 transition-colors cursor-pointer"
                   >
-                    <Film className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Telegram Full</span>
+                    <Youtube className="w-3.5 h-3.5 text-red-500" />
+                    <span>Watch Full Show</span>
                   </a>
                 )}
 

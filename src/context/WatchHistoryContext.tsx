@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { AudioTrack, AUDIO_TRACKS } from './AudioContext';
-import { AtesoMovie, ATESO_MOVIES_DATA } from '../data/atesoMoviesData';
 
-export type WatchHistoryType = 'movie' | 'mixtape';
+export type WatchHistoryType = 'mixtape' | 'video';
 
 export interface WatchHistoryItem {
-  id: string; // Unique key e.g. "mixtape-1" or "movie-poison-break-ep-1"
+  id: string; // Unique key e.g. "mixtape-1"
   itemId: string | number;
   type: WatchHistoryType;
   title: string;
@@ -21,81 +20,40 @@ export interface WatchHistoryItem {
   youtubeId?: string;
   videoUrl?: string;
   audioTrackId?: number;
-  vj?: string;
-  partNumber?: number;
-  episodeNumber?: number;
   trackData?: AudioTrack;
-  movieData?: AtesoMovie;
 }
 
-export const WATCH_HISTORY_STORAGE_KEY = 'dj_emma_watch_history_v1';
+export const WATCH_HISTORY_STORAGE_KEY = 'dj_emma_watch_history_v3_r2';
 
-// Initial demonstration items populated only on first visit if storage is uninitialized
 const INITIAL_DEMO_WATCH_HISTORY: WatchHistoryItem[] = [
   {
     id: 'mixtape-1',
     itemId: 1,
     type: 'mixtape',
-    title: 'ONE DROP REGGEA MIX VOL 1 BY DJ EMMA PRO',
-    artistOrVj: 'DJ EMMA PRO FX',
-    thumbnail: 'https://i.ytimg.com/vi/TcVAuZcXB5U/hqdefault.jpg',
-    duration: '54:20',
-    playedAt: Date.now() - 1000 * 60 * 22, // 22 minutes ago
-    progressPercent: 68,
-    quality: 'Ultra HD 4K • Spatial Audio',
-    genre: 'One Drop Reggae',
+    title: 'STREET ANTHEM 90 • DJ EMMA PRO & WAKANDA DJs',
+    artistOrVj: 'DJ EMMA PRO x DIVINE DEEJAY UG',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/WhatsApp%20Image%202026-06-17%20at%2012.23.24%20PM.jpeg',
+    duration: '58:40',
+    playedAt: Date.now() - 1000 * 60 * 22,
+    progressPercent: 70,
+    quality: 'Ultra HD 4K • Studio Master',
+    genre: 'Street Anthem',
     year: 2026,
     matchScore: 99,
-    youtubeId: 'TcVAuZcXB5U',
     audioTrackId: 1
-  },
-  {
-    id: 'movie-poison-break-ep-1',
-    itemId: 'poison-break-ep-1',
-    type: 'movie',
-    title: 'POISON BREAK • Part 1 (Episode 1)',
-    artistOrVj: 'VJ EMMA PRO FX',
-    thumbnail: 'https://cdn4.telesco.pe/file/j6DYvvRuz7gbA1w3FFQMccU5YyR7AoYDf6odHdVJSr_z8x2jjLNX-TQyHDVrayN4DkBeoeYeQQEezNsbFLJgFa7_oawe3A8rzcJ7XAi2aiM0u7O6GcaOSZ-e66WJDajyrJyJNYhM2nWqtXmPScnBvE58lTKtApkhAwdaH4QWROykWLI-lOentGyUjPo9m39xmOusKfuqjhL8dIN4IVJCeOttxKG1EEN7Z7SappaAATzdQD0s2n4qwZXd3abii6b0J6tRlCnnV__O1Pp6Rqs0tPOpTaOOdkxqfuR-xa-G-aZKiUfp440OTTOL4J1Dx8ChhWdcw-k7WkwOBVK8Wzp-AA',
-    duration: '43:17',
-    playedAt: Date.now() - 1000 * 60 * 95, // ~1.5 hours ago
-    progressPercent: 44,
-    quality: '320p Fast Stream • Smooth Low Data',
-    genre: 'Action / Prison Break / Ateso Translation',
-    year: 2026,
-    matchScore: 99,
-    vj: 'VJ EMMA PRO FX',
-    episodeNumber: 1,
-    partNumber: 1
-  },
-  {
-    id: 'movie-crazy-safari-vj-sultan',
-    itemId: 'crazy-safari-vj-sultan',
-    type: 'movie',
-    title: 'CRAZY SAFARI • VJ Sultan 3',
-    artistOrVj: 'VJ SULTAN',
-    thumbnail: 'https://i.ytimg.com/vi/m1cfa_PY6AY/hqdefault.jpg',
-    duration: '1h 36m',
-    playedAt: Date.now() - 1000 * 60 * 60 * 4, // 4 hours ago
-    progressPercent: 75,
-    quality: 'HD 1080p • Direct YouTube Stream',
-    genre: 'Ateso Translated Movie',
-    year: 2026,
-    matchScore: 99,
-    youtubeId: 'm1cfa_PY6AY',
-    vj: 'VJ SULTAN'
   },
   {
     id: 'mixtape-2',
     itemId: 2,
     type: 'mixtape',
-    title: 'BEST OF ACHOLI NONSTOP TRADITIONAL',
-    artistOrVj: 'DJ EMMA PRO FX',
-    thumbnail: 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
-    duration: '52:45',
-    playedAt: Date.now() - 1000 * 60 * 60 * 26, // Yesterday
-    progressPercent: 88,
-    quality: 'Ultra HD 4K • Studio Master',
-    genre: 'Acholi Traditional',
+    title: '2024 ATESO VIDEO MIX VOL 1 VS AFROBEATS & UGANDAN HITS',
+    artistOrVj: 'DJ EMMA PRO',
+    thumbnail: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_00000000bda08211910e147fbb531635.png',
+    duration: '50:15',
+    playedAt: Date.now() - 1000 * 60 * 60 * 3,
+    progressPercent: 55,
+    quality: 'Ultra HD 4K',
+    genre: 'Ateso Video Mix',
     year: 2026,
     matchScore: 99,
     audioTrackId: 2
@@ -105,7 +63,7 @@ const INITIAL_DEMO_WATCH_HISTORY: WatchHistoryItem[] = [
 interface WatchHistoryContextType {
   watchHistory: WatchHistoryItem[];
   recordMixtapePlayed: (track: AudioTrack, progressPercent?: number) => void;
-  recordMoviePlayed: (movie: AtesoMovie, progressPercent?: number) => void;
+  recordMoviePlayed?: (movie: any, progressPercent?: number) => void;
   removeFromWatchHistory: (id: string) => void;
   clearWatchHistory: () => void;
   restoreSampleHistory: () => void;
@@ -120,131 +78,70 @@ export function WatchHistoryProvider({ children }: { children: ReactNode }) {
       if (stored !== null) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          return parsed;
+          return parsed.filter((item: any) => item.type !== 'movie');
         }
       }
     } catch (e) {
-      console.warn('Failed reading watch history from localStorage:', e);
+      console.warn('Failed to load watch history from localStorage:', e);
     }
-    // Default seed for fresh visits
     return INITIAL_DEMO_WATCH_HISTORY;
   });
 
-  // Sync state changes to localStorage
   useEffect(() => {
     try {
       localStorage.setItem(WATCH_HISTORY_STORAGE_KEY, JSON.stringify(watchHistory));
     } catch (e) {
-      console.warn('Failed writing watch history to localStorage:', e);
+      console.warn('Failed to persist watch history to localStorage:', e);
     }
   }, [watchHistory]);
 
-  const recordMixtapePlayed = useCallback((track: AudioTrack, progressPercent?: number) => {
+  const recordMixtapePlayed = useCallback((track: AudioTrack, progressPercent: number = 0) => {
     if (!track) return;
     const historyId = `mixtape-${track.id}`;
-    
-    setWatchHistory(prev => {
-      const existing = prev.find(item => item.id === historyId);
-      // Calculate realistic progress if not specified
-      const progress = progressPercent !== undefined 
-        ? Math.min(100, Math.max(5, progressPercent))
-        : (existing ? Math.min(95, existing.progressPercent + 15) : 35);
 
+    setWatchHistory((prev) => {
+      const filtered = prev.filter((item) => item.id !== historyId);
       const newItem: WatchHistoryItem = {
         id: historyId,
         itemId: track.id,
         type: 'mixtape',
         title: track.title,
-        artistOrVj: track.artist || 'DJ EMMA PRO FX',
-        thumbnail: track.thumbnail || track.backdrop || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610187/file_00000000958c71f7ac56e90da5b99629.png',
-        duration: track.durationLabel || '50:00',
+        artistOrVj: track.artist,
+        thumbnail: track.thumbnail || 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/WhatsApp%20Image%202026-06-17%20at%2012.23.24%20PM.jpeg',
+        duration: track.durationLabel || 'Master Nonstop',
         playedAt: Date.now(),
-        progressPercent: progress,
-        quality: track.quality || 'Lossless 320k',
-        genre: Array.isArray(track.genres) && track.genres.length > 0 ? track.genres[0] : 'Nonstop Mixtape',
+        progressPercent: Math.min(100, Math.max(0, Math.round(progressPercent))),
+        quality: track.quality || 'Ultra HD 4K • Studio Master 320kbps',
+        genre: track.genres?.[0] || 'Mixtape',
         year: track.year || 2026,
         matchScore: track.matchScore || 99,
-        youtubeId: track.youtubeId,
         audioTrackId: track.id,
         trackData: track
       };
-
-      const filtered = prev.filter(item => item.id !== historyId);
       return [newItem, ...filtered].slice(0, 30);
     });
   }, []);
 
-  const recordMoviePlayed = useCallback((movie: AtesoMovie, progressPercent?: number) => {
-    if (!movie) return;
-    const historyId = `movie-${movie.id}`;
-
-    setWatchHistory(prev => {
-      const existing = prev.find(item => item.id === historyId);
-      const progress = progressPercent !== undefined 
-        ? Math.min(100, Math.max(5, progressPercent))
-        : (existing ? Math.min(95, existing.progressPercent + 20) : 40);
-
-      const newItem: WatchHistoryItem = {
-        id: historyId,
-        itemId: movie.id,
-        type: 'movie',
-        title: movie.title,
-        artistOrVj: movie.vj || 'ATESO MOVIES ALL TESO VJS',
-        thumbnail: movie.thumbnail || 'https://i.ytimg.com/vi/m1cfa_PY6AY/hqdefault.jpg',
-        duration: movie.duration || '1h 30m',
-        playedAt: Date.now(),
-        progressPercent: progress,
-        quality: movie.quality || '320p Fast Stream',
-        genre: movie.genre || 'Ateso Translated Movie',
-        year: movie.year || 2026,
-        matchScore: movie.matchScore || 98,
-        youtubeId: movie.youtubeId,
-        videoUrl: movie.videoUrl320 || movie.videoUrl,
-        vj: movie.vj,
-        partNumber: movie.partNumber,
-        episodeNumber: movie.episodeNumber,
-        movieData: movie
-      };
-
-      const filtered = prev.filter(item => item.id !== historyId);
-      return [newItem, ...filtered].slice(0, 30);
-    });
+  const recordMoviePlayed = useCallback((_movie: any, _progressPercent?: number) => {
+    // No-op for backward compatibility
   }, []);
 
   const removeFromWatchHistory = useCallback((id: string) => {
-    setWatchHistory(prev => prev.filter(item => item.id !== id));
+    setWatchHistory((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
   const clearWatchHistory = useCallback(() => {
     setWatchHistory([]);
+    try {
+      localStorage.removeItem(WATCH_HISTORY_STORAGE_KEY);
+    } catch (e) {
+      console.warn('Failed to clear watch history from storage:', e);
+    }
   }, []);
 
   const restoreSampleHistory = useCallback(() => {
     setWatchHistory(INITIAL_DEMO_WATCH_HISTORY);
   }, []);
-
-  // Listen to cross-component custom events for loose coupling
-  useEffect(() => {
-    const handleTrackPlayedEvent = (e: any) => {
-      if (e.detail) {
-        recordMixtapePlayed(e.detail);
-      }
-    };
-
-    const handleMoviePlayedEvent = (e: any) => {
-      if (e.detail) {
-        recordMoviePlayed(e.detail);
-      }
-    };
-
-    window.addEventListener('app:track-played', handleTrackPlayedEvent);
-    window.addEventListener('app:movie-played', handleMoviePlayedEvent);
-
-    return () => {
-      window.removeEventListener('app:track-played', handleTrackPlayedEvent);
-      window.removeEventListener('app:movie-played', handleMoviePlayedEvent);
-    };
-  }, [recordMixtapePlayed, recordMoviePlayed]);
 
   return (
     <WatchHistoryContext.Provider
@@ -254,7 +151,7 @@ export function WatchHistoryProvider({ children }: { children: ReactNode }) {
         recordMoviePlayed,
         removeFromWatchHistory,
         clearWatchHistory,
-        restoreSampleHistory
+        restoreSampleHistory,
       }}
     >
       {children}
@@ -262,7 +159,7 @@ export function WatchHistoryProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useWatchHistory(): WatchHistoryContextType {
+export function useWatchHistory() {
   const context = useContext(WatchHistoryContext);
   if (!context) {
     throw new Error('useWatchHistory must be used within a WatchHistoryProvider');

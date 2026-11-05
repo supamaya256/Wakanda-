@@ -48,7 +48,6 @@ import { useContent, CustomMediaFile } from '../context/ContentContext';
 import { useAdminAuth, MASTER_ADMIN_EMAIL } from '../context/AdminAuthContext';
 import { VoiceDropItem } from '../data/voiceDropsData';
 import { LogoItem } from '../data/logosData';
-import { AtesoMovie, extractPcloudCode, sanitizeMovieForStorage, getMovieStreamUrl } from '../data/atesoMoviesData';
 import CustomVoiceDropRequestForm from './CustomVoiceDropRequestForm';
 import StudioContactForm from './StudioContactForm';
 import WordPressAdminDashboard from './WordPressAdminDashboard';
@@ -68,7 +67,7 @@ interface StudioManagerPageProps {
   initialTab?: TabType;
 }
 
-export type TabType = 'dashboard' | 'tracks' | 'drops' | 'custom-drops' | 'logos' | 'movies' | 'files' | 'inquiries';
+export type TabType = 'dashboard' | 'tracks' | 'drops' | 'custom-drops' | 'logos' | 'files' | 'inquiries';
 
 function FavoriteTracksD3Chart({ tracks }: { tracks: AudioTrack[] }) {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -273,10 +272,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     addLogo,
     deleteLogo,
     resetLogos,
-    atesoMovies,
-    addAtesoMovie,
-    deleteAtesoMovie,
-    resetAtesoMovies,
     customFiles,
     addCustomFile,
     deleteCustomFile,
@@ -304,7 +299,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
   const [deleteConfirmItem, setDeleteConfirmItem] = useState<{
     id: string | number;
     title: string;
-    type: 'track' | 'drop' | 'logo' | 'movie' | 'file';
+    type: 'track' | 'drop' | 'logo' | 'file';
   } | null>(null);
 
   // Modal confirmation for resetting catalog
@@ -314,21 +309,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
   const [showTrackForm, setShowTrackForm] = useState(false);
   const [showDropForm, setShowDropForm] = useState(false);
   const [showLogoForm, setShowLogoForm] = useState(false);
-  const [showMovieForm, setShowMovieForm] = useState(false);
   const [showFileForm, setShowFileForm] = useState(false);
-
-  // Ateso movie upload form state
-  const [movieTitle, setMovieTitle] = useState('');
-  const [movieVj, setMovieVj] = useState('VJ EMMA PRO FX');
-  const [movieVideoUrl, setMovieVideoUrl] = useState('');
-  const [movieThumbnail, setMovieThumbnail] = useState('https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg');
-  const [movieDuration, setMovieDuration] = useState('1h 45m');
-  const [movieGenre, setMovieGenre] = useState('Action Blockbuster');
-  const [movieQuality, setMovieQuality] = useState('Ultra HD 4K');
-  const [movieDescription, setMovieDescription] = useState('');
-  const [movieTelegramUrl, setMovieTelegramUrl] = useState('https://t.me/atesomoviesbox');
-  const [previewMovie, setPreviewMovie] = useState<AtesoMovie | null>(null);
-  const [previewMovieScreenMode, setPreviewMovieScreenMode] = useState<'standard' | 'half'>('standard');
 
   // Audio preview for tracks & drops in manager
   const [previewAudioUrl, setPreviewAudioUrl] = useState<string | null>(null);
@@ -546,37 +527,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     });
   };
 
-  // Handle local file selection for Ateso Movies
-  const handleMovieVideoSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!movieTitle) {
-      setMovieTitle(file.name.replace(/\.[^/.]+$/, '').toUpperCase());
-    }
-
-    const objectUrl = URL.createObjectURL(file);
-    setMovieVideoUrl(objectUrl);
-    showToast(`Uploading movie video to cloud storage...`, 'info');
-
-    uploadFile(file, 'movies', 'movieVideo', (uploadedUrl) => {
-      setMovieVideoUrl(uploadedUrl);
-    });
-  };
-
-  const handleMovieThumbnailSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const objectUrl = URL.createObjectURL(file);
-    setMovieThumbnail(objectUrl);
-    showToast(`Uploading movie cover poster...`, 'info');
-
-    uploadFile(file, 'movies', 'moviePoster', (uploadedUrl) => {
-      setMovieThumbnail(uploadedUrl);
-    });
-  };
-
   // Submit Track Form
   const handleSubmitTrack = (e: FormEvent) => {
     e.preventDefault();
@@ -761,68 +711,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     setShowFileForm(false);
   };
 
-  // Submit Ateso Movie
-  const handleSubmitMovie = (e: FormEvent) => {
-    e.preventDefault();
-    if (!isAdmin) {
-      showToast('Action Blocked: Only Admin (supamaya256@gmail.com) can upload Ateso movies.', 'error');
-      openAuthModal('Only verified Administrator can upload Ateso movies.');
-      return;
-    }
-    if (!movieTitle.trim()) {
-      showToast('Please enter a movie title', 'error');
-      return;
-    }
-    if (!movieVideoUrl.trim()) {
-      showToast('Please enter or select a streaming video URL', 'error');
-      return;
-    }
-
-    const pcloudCode = extractPcloudCode(movieVideoUrl.trim());
-    const streamUrl = pcloudCode ? `/api/movies/stream/${pcloudCode}` : movieVideoUrl.trim();
-    const posterUrl = (!movieThumbnail.trim() || movieThumbnail.includes('InShot_20260512')) && pcloudCode
-      ? `https://api.pcloud.com/getpubthumb?code=${pcloudCode}&size=640x360&crop=1`
-      : (movieThumbnail.trim() || 'https://res.cloudinary.com/hbyqk5y0/image/upload/v1789610185/InShot_20260512_224355999.jpg');
-
-    // Auto-detect series title if mentioned
-    let seriesTitle: string | undefined = undefined;
-    const lowerTitle = movieTitle.toLowerCase();
-    if (lowerTitle.includes('ismart')) seriesTitle = 'iSmart Shankar';
-    else if (lowerTitle.includes('tiger')) seriesTitle = 'Tiger and Crane';
-    else if (lowerTitle.includes('poison')) seriesTitle = 'Poison Break';
-
-    const newMovie: AtesoMovie = sanitizeMovieForStorage({
-      id: `ateso-mov-${Date.now()}`,
-      title: movieTitle.trim(),
-      seriesTitle,
-      vj: movieVj.trim() || 'VJ EMMA PRO FX',
-      year: 2026,
-      duration: movieDuration.trim() || '1h 45m',
-      genre: movieGenre.trim() || 'Action Blockbuster',
-      quality: movieQuality.trim() || (pcloudCode ? 'HD 720p • Protected Cinema Stream' : 'Ultra HD 4K'),
-      thumbnail: posterUrl,
-      videoUrl: streamUrl,
-      videoUrl320: streamUrl,
-      pcloudCode: pcloudCode || undefined,
-      telegramUrl: movieTelegramUrl.trim() || 'https://t.me/atesomoviesbox',
-      youtubeUrl: 'https://youtube.com/@deejayemmapro?si=KMUHYGKOcAvRAWGd',
-      description: movieDescription.trim() || 'Ateso translated cinema release by DJ Emma Pro FX.',
-      matchScore: 99,
-      isTrending: true,
-      viewsCount: '1.5K Views'
-    });
-
-    addAtesoMovie(newMovie);
-    showToast(`Movie "${newMovie.title}" added to site! Direct stream link secured.`, 'success');
-
-    // Reset Form
-    setMovieTitle('');
-    setMovieVideoUrl('');
-    setMovieDescription('');
-    setShowMovieForm(false);
-  };
-
-  // Confirm and execute delete
+  // Execute Delete
   const executeDelete = () => {
     if (!deleteConfirmItem) return;
 
@@ -844,9 +733,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     } else if (type === 'logo') {
       deleteLogo(String(id));
       showToast(`3D Logo "${title}" deleted from store.`, 'info');
-    } else if (type === 'movie') {
-      deleteAtesoMovie(String(id));
-      showToast(`Ateso movie "${title}" deleted from site.`, 'info');
     } else if (type === 'file') {
       deleteCustomFile(String(id));
       showToast(`File "${title}" deleted.`, 'info');
@@ -911,13 +797,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     (l.title && l.title.toLowerCase().includes(q)) ||
     (l.category && l.category.toLowerCase().includes(q)) ||
     (l.style && l.style.toLowerCase().includes(q))
-  );
-
-  const filteredMovies = atesoMovies.filter(m =>
-    (m.title && m.title.toLowerCase().includes(q)) ||
-    (m.vj && m.vj.toLowerCase().includes(q)) ||
-    (m.genre && m.genre.toLowerCase().includes(q)) ||
-    (m.description && m.description.toLowerCase().includes(q))
   );
 
   const filteredFiles = customFiles.filter(f =>
@@ -1128,8 +1007,8 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
 
             <p className="text-sm text-zinc-400 max-w-2xl">
               {isAdmin
-                ? 'Welcome, DJ Emma Pro FX. You have full administrative authority to upload new continuous nonstops, voice drops, 3D video logos, and Ateso movies, or delete items from the catalog. Changes update the storefront instantly.'
-                : 'Welcome to the official DJ Emma Pro FX media showcase! Audition studio voice drops, stream continuous video nonstops, preview 3D video loops, and discover Ateso translated movies. Request custom audio branding or order directly with the studio.'}
+                ? 'Welcome, DJ Emma Pro FX. You have full administrative authority to upload new continuous nonstops, voice drops, and 3D video logos, or delete items from the catalog. Changes update the storefront instantly.'
+                : 'Welcome to the official DJ Emma Pro FX media showcase! Audition studio voice drops, stream continuous video nonstops, and preview 3D video loops. Request custom audio branding or order directly with the studio.'}
             </p>
 
             {/* Admin Policy Notice / Visitor Welcome Banner */}
@@ -1369,22 +1248,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
               </div>
 
               <div
-                onClick={() => setActiveTab('movies')}
-                className={`p-3 rounded-xl border transition-all cursor-pointer ${
-                  activeTab === 'movies'
-                    ? 'bg-[#E50914]/15 border-[#E50914]'
-                    : 'bg-black/40 border-white/5 hover:border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                  <span>Ateso Movies</span>
-                  <Film className="w-3.5 h-3.5 text-[#E50914]" />
-                </div>
-                <div className="text-2xl font-black text-white">{atesoMovies.length}</div>
-                <div className="text-[10px] text-zinc-500">Ateso Cinema</div>
-              </div>
-
-              <div
                 onClick={() => setActiveTab('files')}
                 className={`p-3 rounded-xl border transition-all cursor-pointer ${
                   activeTab === 'files'
@@ -1529,19 +1392,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
 
             <button
               type="button"
-              onClick={() => setActiveTab('movies')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
-                activeTab === 'movies'
-                  ? 'bg-[#E50914] text-white shadow-md'
-                  : 'text-zinc-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Film className="w-4 h-4" />
-              <span>Ateso Movies ({atesoMovies.length})</span>
-            </button>
-
-            <button
-              type="button"
               onClick={() => setActiveTab('files')}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
                 activeTab === 'files'
@@ -1559,7 +1409,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
             <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder={isAdmin ? "Search content to edit or delete..." : "Search mixtapes, voice drops, 3D logos, or movies..."}
+              placeholder={isAdmin ? "Search content to edit or delete..." : "Search mixtapes, voice drops, or 3D logos..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 rounded-lg bg-zinc-900 border border-white/10 text-white text-xs placeholder:text-zinc-500 focus:outline-none focus:border-[#E50914]"
@@ -2475,298 +2325,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
           </div>
         )}
 
-        {/* ========================================================
-            TAB 4: ATESO TRANSLATED MOVIES (WATCH ATESO MOVIES)
-           ======================================================== */}
-        {activeTab === 'movies' && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span>{isAdmin ? 'Watch Ateso Movies Catalog' : 'Ateso Translated Movies Showcase'}</span>
-                  <span className="text-xs font-mono text-zinc-500">({filteredMovies.length} movies)</span>
-                </h2>
-                <p className="text-xs text-zinc-400">
-                  {isAdmin
-                    ? 'Upload, stream, preview, or delete any Ateso translated movie or continuous video mix on the site.'
-                    : 'Stream trailers and discover Ateso translated movies and series translated by VJ Emma Pro FX.'}
-                </p>
-              </div>
-
-              {/* Upload Ateso Movie button visible strictly to authorized admin */}
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={() => setShowMovieForm(!showMovieForm)}
-                  className="px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-all bg-[#E50914] hover:bg-[#b80710] text-white self-start sm:self-auto"
-                >
-                  {showMovieForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                  <span>{showMovieForm ? 'Close Upload Form' : '+ Upload Ateso Movie'}</span>
-                </button>
-              )}
-            </div>
-
-            {/* Upload Movie Form */}
-            {isAdmin && showMovieForm && (
-              <form
-                onSubmit={handleSubmitMovie}
-                className="p-5 sm:p-6 rounded-xl bg-zinc-900 border-2 border-[#E50914]/60 space-y-4 shadow-2xl animate-in fade-in duration-200"
-              >
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <div className="flex items-center gap-2">
-                    <Film className="w-4 h-4 text-[#E50914]" />
-                    <h3 className="font-bold text-sm text-white">Upload New Ateso Translated Movie</h3>
-                  </div>
-                  <span className="text-xs text-zinc-400 font-mono">Streamable on Site</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-zinc-400 mb-1">Movie Title *</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. THE COMMANDO 2026 • ATESO TRANSLATED ACTION"
-                        value={movieTitle}
-                        onChange={(e) => setMovieTitle(e.target.value)}
-                        required
-                        className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="block text-xs font-medium text-zinc-400 mb-1">Translator / VJ *</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. VJ EMMA PRO FX"
-                          value={movieVj}
-                          onChange={(e) => setMovieVj(e.target.value)}
-                          required
-                          className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-medium text-zinc-400 mb-1">Duration</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. 1h 45m"
-                          value={movieDuration}
-                          onChange={(e) => setMovieDuration(e.target.value)}
-                          className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-zinc-400 mb-1">Video Stream URL or File Upload *</label>
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={handleMovieVideoSelect}
-                        className="block w-full text-xs text-zinc-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-white hover:file:bg-zinc-700 cursor-pointer mb-2"
-                      />
-                      <StorageUploadIndicator progress={uploadProgressMap['movieVideo']} />
-                      <input
-                        type="text"
-                        placeholder="e.g. pCloud link (https://u.pcloud.link/...) or direct video link"
-                        value={movieVideoUrl}
-                        onChange={(e) => setMovieVideoUrl(e.target.value)}
-                        required
-                        className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                      />
-                      <span className="text-[10px] text-zinc-500 mt-1 block">
-                        Direct stream link is automatically secured & concealed from viewers. Enables Half Screen & Full Screen playback with no download buttons.
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-zinc-400 mb-1">Cover Poster Image URL or File Upload</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleMovieThumbnailSelect}
-                        className="block w-full text-xs text-zinc-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-white hover:file:bg-zinc-700 cursor-pointer mb-2"
-                      />
-                      <StorageUploadIndicator progress={uploadProgressMap['moviePoster']} />
-                      <input
-                        type="text"
-                        placeholder="e.g. Auto-fetched from pCloud or custom poster image"
-                        value={movieThumbnail}
-                        onChange={(e) => setMovieThumbnail(e.target.value)}
-                        className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="block text-xs font-medium text-zinc-400 mb-1">Genre</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Action Blockbuster"
-                          value={movieGenre}
-                          onChange={(e) => setMovieGenre(e.target.value)}
-                          className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-medium text-zinc-400 mb-1">Quality Badge</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Ultra HD 4K"
-                          value={movieQuality}
-                          onChange={(e) => setMovieQuality(e.target.value)}
-                          className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-zinc-400 mb-1">Telegram Movie Link (Optional)</label>
-                      <input
-                        type="text"
-                        placeholder="https://t.me/atesomoviesbox"
-                        value={movieTelegramUrl}
-                        onChange={(e) => setMovieTelegramUrl(e.target.value)}
-                        className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-zinc-400 mb-1">Movie Synopsis</label>
-                      <input
-                        type="text"
-                        placeholder="Full Ateso translated movie story details..."
-                        value={movieDescription}
-                        onChange={(e) => setMovieDescription(e.target.value)}
-                        className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowMovieForm(false)}
-                    className="px-4 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="px-5 py-2 rounded bg-[#E50914] hover:bg-[#b80710] text-xs font-bold text-white shadow-lg cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>Upload & Publish Movie</span>
-                  </button>
-                </div>
-              </form>
-            )}
-
-            {/* Movies Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredMovies.map((movie) => (
-                <div
-                  key={movie.id}
-                  className="rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 p-4 flex flex-col justify-between group shadow-lg"
-                >
-                  <div>
-                    <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black mb-3">
-                      <img
-                        src={movie.thumbnail}
-                        alt={movie.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className="absolute top-2 left-2">
-                        <span className="bg-[#E50914] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">
-                          {movie.vj}
-                        </span>
-                      </div>
-                      <div className="absolute top-2 right-2">
-                        <span className="bg-black/70 backdrop-blur-xs text-[10px] font-mono text-zinc-300 px-1.5 py-0.5 rounded">
-                          {movie.duration}
-                        </span>
-                      </div>
-                    </div>
-
-                    <h3 className="font-bold text-sm text-white line-clamp-1">
-                      {movie.title}
-                    </h3>
-                    <p className="text-[11px] text-zinc-400 mt-1 line-clamp-2">
-                      {movie.description}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 text-[10px] text-zinc-500 font-mono">
-                      <span>{movie.genre}</span>
-                      <span>•</span>
-                      <span className="text-emerald-400">{movie.quality}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPreviewMovie(movie);
-                        setPreviewMovieScreenMode('standard');
-                      }}
-                      className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
-                      title="Test stream securely on site"
-                    >
-                      <Play className="w-3 h-3 fill-white" />
-                      <span>Test Stream</span>
-                    </button>
-
-                    {/* Watch on Telegram for Visitors */}
-                    {!isAdmin && (
-                      <a
-                        href={movie.telegramUrl || "https://t.me/atesomoviesbox"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2.5 py-1 rounded bg-[#2AABEE]/20 hover:bg-[#2AABEE] text-[#2AABEE] hover:text-white text-xs font-bold flex items-center gap-1 transition-colors"
-                        title="Watch full movie on Telegram"
-                      >
-                        <Film className="w-3 h-3" />
-                        <span>Watch Full</span>
-                      </a>
-                    )}
-
-                    {/* Delete Ateso Movie Button - ONLY ADMIN CAN SEE */}
-                    {isAdmin && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDeleteConfirmItem({
-                            id: movie.id,
-                            title: movie.title,
-                            type: 'movie'
-                          });
-                        }}
-                        className="px-2.5 py-1 rounded border text-xs font-semibold flex items-center gap-1 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border-red-500/30 cursor-pointer transition-colors"
-                        title="Delete Ateso Movie"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        <span>Delete</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {filteredMovies.length === 0 && (
-                <div className="col-span-full py-12 text-center text-zinc-500">
-                  {isAdmin ? 'No Ateso movies match your search. Click "+ Upload Ateso Movie" above to add one!' : 'No Ateso movies match your search query.'}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* ========================================================
             TAB 5: ANY CUSTOM FILE / GENERAL MEDIA UPLOAD
@@ -3348,128 +2906,6 @@ service firebase.storage {
                 className="px-5 py-2 rounded-lg bg-[#E50914] hover:bg-red-700 text-white font-bold text-xs cursor-pointer shadow-lg transition-colors"
               >
                 Done
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SECURE MOVIE STREAM PREVIEW MODAL (Zero URL Leakage, No Download Button) */}
-      {previewMovie && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className={`w-full bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ${
-            previewMovieScreenMode === 'half' ? 'max-w-6xl' : 'max-w-4xl'
-          }`}>
-            {/* Modal Header & Screen Mode Switcher */}
-            <div className="p-4 bg-zinc-900/90 border-b border-zinc-800 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="bg-[#E50914] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">
-                  {previewMovie.vj}
-                </span>
-                <h3 className="font-bold text-sm text-white line-clamp-1">
-                  {previewMovie.title}
-                </h3>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPreviewMovieScreenMode(prev => prev === 'half' ? 'standard' : 'half')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                    previewMovieScreenMode === 'half'
-                      ? 'bg-[#E50914] text-white shadow'
-                      : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
-                  }`}
-                  title="Toggle Half Screen (50% Split) Mode"
-                >
-                  <Columns className="w-3.5 h-3.5" />
-                  <span>{previewMovieScreenMode === 'half' ? 'Standard Width' : 'Half Screen (50%)'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const videoEl = document.getElementById('preview-movie-player') as HTMLVideoElement | null;
-                    if (videoEl) {
-                      if (document.fullscreenElement) {
-                        document.exitFullscreen().catch(console.error);
-                      } else {
-                        videoEl.requestFullscreen().catch(console.error);
-                      }
-                    }
-                  }}
-                  className="px-3 py-1 rounded-lg text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 flex items-center gap-1.5 transition-colors cursor-pointer"
-                  title="Full Screen View"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  <span>Full Screen</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPreviewMovie(null)}
-                  className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Video Player Body (No download button, no link shown) */}
-            <div className={`p-4 ${previewMovieScreenMode === 'half' ? 'grid grid-cols-1 md:grid-cols-2 gap-6 items-center' : 'w-full'}`}>
-              <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-zinc-800 shadow-xl flex items-center justify-center">
-                <video
-                  id="preview-movie-player"
-                  src={getMovieStreamUrl(previewMovie)}
-                  poster={previewMovie.thumbnail}
-                  controls
-                  controlsList="nodownload noplaybackrate"
-                  disablePictureInPicture={false}
-                  onContextMenu={(e) => e.preventDefault()}
-                  className="w-full h-full object-contain"
-                  playsInline
-                />
-              </div>
-
-              {previewMovieScreenMode === 'half' && (
-                <div className="space-y-3 bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/80">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                      Half Screen Playback Active
-                    </span>
-                  </div>
-                  <h4 className="font-extrabold text-white text-base">
-                    {previewMovie.title}
-                  </h4>
-                  <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
-                    <span>{previewMovie.duration}</span>
-                    <span>•</span>
-                    <span className="text-emerald-400">{previewMovie.quality}</span>
-                    <span>•</span>
-                    <span>{previewMovie.genre}</span>
-                  </div>
-                  <p className="text-xs text-zinc-300 leading-relaxed line-clamp-4">
-                    {previewMovie.description}
-                  </p>
-                  <div className="pt-2">
-                    <span className="text-[11px] text-zinc-500 font-mono">
-                      Security Status: Protected Stream • Link concealed from viewers • No downloads allowed
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="p-3 bg-zinc-900/40 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-400 px-4">
-              <span>Streaming protected by DJ Emma Pro Media Hub</span>
-              <button
-                type="button"
-                onClick={() => setPreviewMovie(null)}
-                className="px-4 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-semibold cursor-pointer"
-              >
-                Close Preview
               </button>
             </div>
           </div>

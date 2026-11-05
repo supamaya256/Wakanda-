@@ -19,7 +19,7 @@ import { useContent } from '../context/ContentContext';
 import { MASTER_ADMIN_EMAIL } from '../context/AdminAuthContext';
 
 interface AdminCommandDeckProps {
-  onOpenUploadTab: (tab: 'tracks' | 'drops' | 'logos' | 'movies' | 'files') => void;
+  onOpenUploadTab: (tab: 'tracks' | 'drops' | 'logos' | 'files') => void;
   onOpenStudioManager: () => void;
   previewAsVisitor: boolean;
   onToggleVisitorPreview: () => void;
@@ -32,7 +32,7 @@ export default function AdminCommandDeck({
   onToggleVisitorPreview,
 }: AdminCommandDeckProps) {
   const { tracks } = useAudio();
-  const { voiceDrops, logos, atesoMovies, customFiles } = useContent();
+  const { voiceDrops, logos, customFiles } = useContent();
 
   return (
     <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-4">
@@ -136,21 +136,6 @@ export default function AdminCommandDeck({
                 <div className="text-lg font-black text-white mt-0.5">{voiceDrops.length}</div>
               </div>
 
-              {/* Stat 3: Movies */}
-              <div 
-                onClick={() => onOpenUploadTab('movies')}
-                className="bg-zinc-900/80 hover:bg-zinc-850 p-2.5 rounded-xl border border-zinc-800 hover:border-purple-500/50 cursor-pointer transition-all group"
-              >
-                <div className="flex items-center justify-between text-zinc-400 text-[10px] font-mono">
-                  <span className="flex items-center gap-1">
-                    <Film className="w-3 h-3 text-purple-400" />
-                    Ateso Movies
-                  </span>
-                  <span className="text-[10px] text-zinc-500 group-hover:text-purple-400 font-bold">+ Upload</span>
-                </div>
-                <div className="text-lg font-black text-white mt-0.5">{atesoMovies.length}</div>
-              </div>
-
               {/* Stat 4: Logos */}
               <div 
                 onClick={() => onOpenUploadTab('logos')}
@@ -169,7 +154,7 @@ export default function AdminCommandDeck({
               {/* Stat 5: Files */}
               <div 
                 onClick={() => onOpenUploadTab('files')}
-                className="col-span-2 sm:col-span-1 bg-zinc-900/80 hover:bg-zinc-850 p-2.5 rounded-xl border border-zinc-800 hover:border-emerald-500/50 cursor-pointer transition-all group"
+                className="bg-zinc-900/80 hover:bg-zinc-850 p-2.5 rounded-xl border border-zinc-800 hover:border-emerald-500/50 cursor-pointer transition-all group"
               >
                 <div className="flex items-center justify-between text-zinc-400 text-[10px] font-mono">
                   <span className="flex items-center gap-1">
@@ -211,14 +196,6 @@ export default function AdminCommandDeck({
               >
                 <Box className="w-3 h-3 text-blue-400" />
                 <span>+ Upload 3D Logo</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => onOpenUploadTab('movies')}
-                className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white text-[11px] font-semibold flex items-center gap-1 border border-zinc-700 transition-colors cursor-pointer"
-              >
-                <Film className="w-3 h-3 text-purple-400" />
-                <span>+ Upload Movie</span>
               </button>
               <button
                 type="button"

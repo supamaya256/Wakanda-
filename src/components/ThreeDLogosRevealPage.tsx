@@ -40,7 +40,6 @@ import { useDataSaver } from '../context/DataSaverContext';
 interface ThreeDLogosRevealPageProps {
   onBackToStore: () => void;
   onOpenStudioManager?: () => void;
-  onOpenAtesoMovies?: () => void;
 }
 
 type StagePerspective = 'spatial-tilt' | 'center-stage' | 'cinematic-wide';
@@ -48,8 +47,7 @@ type GalleryViewMode = 'carousel' | 'grid';
 
 export default function ThreeDLogosRevealPage({
   onBackToStore,
-  onOpenStudioManager,
-  onOpenAtesoMovies
+  onOpenStudioManager
 }: ThreeDLogosRevealPageProps) {
   const { isDataSaver, toggleDataSaver, shouldAutoplay, preloadStrategy } = useDataSaver();
 
@@ -332,16 +330,6 @@ export default function ThreeDLogosRevealPage({
           >
             All {THREE_D_LOGOS_REVEAL_DATA.length} Editions
           </button>
-          {onOpenAtesoMovies && (
-            <button
-              type="button"
-              onClick={onOpenAtesoMovies}
-              className="hover:text-amber-400 transition-colors flex items-center gap-1 cursor-pointer"
-            >
-              <Film className="w-3.5 h-3.5 text-amber-400" />
-              <span>Ateso Cinema</span>
-            </button>
-          )}
         </nav>
 
         {/* Zone 3: Primary Actions */}
