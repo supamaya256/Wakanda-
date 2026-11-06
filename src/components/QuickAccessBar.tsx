@@ -1,13 +1,12 @@
 import React from 'react';
-import { Headphones, Mic2, Film, Box, Download, MessageCircle, Sparkles, ArrowRight } from 'lucide-react';
+import { Headphones, Mic2, Film, Download, MessageCircle, ArrowRight } from 'lucide-react';
 
 interface QuickAccessBarProps {
   onOpenCustomDrops?: () => void;
-  onOpenLogosReveal?: () => void;
   onOpenAiHub?: () => void;
 }
 
-export default function QuickAccessBar({ onOpenCustomDrops, onOpenLogosReveal, onOpenAiHub }: QuickAccessBarProps) {
+export default function QuickAccessBar({ onOpenCustomDrops, onOpenAiHub }: QuickAccessBarProps) {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -16,16 +15,6 @@ export default function QuickAccessBar({ onOpenCustomDrops, onOpenLogosReveal, o
   };
 
   const items = [
-    {
-      id: 'logos-reveal-room',
-      title: '3D LOGOS REVEAL',
-      subtitle: 'Master Motion Visuals',
-      icon: Sparkles,
-      color: 'from-rose-600/30 to-red-950/50 border-red-500/50 hover:border-red-400',
-      iconColor: 'text-red-400',
-      badge: 'Edition #08',
-      onClick: onOpenLogosReveal || (() => scrollTo('logos')),
-    },
     {
       id: 'mixes',
       title: 'Audio Mixes',
@@ -61,16 +50,6 @@ export default function QuickAccessBar({ onOpenCustomDrops, onOpenLogosReveal, o
           scrollTo('drops');
         }
       },
-    },
-    {
-      id: 'logos',
-      title: '3D Logo Animation',
-      subtitle: 'Visual Brand Intros',
-      icon: Box,
-      color: 'from-blue-600/20 to-blue-950/40 border-blue-500/30 hover:border-blue-400',
-      iconColor: 'text-blue-400',
-      badge: 'Studio 4K',
-      onClick: () => scrollTo('logos'),
     },
     {
       id: 'software',

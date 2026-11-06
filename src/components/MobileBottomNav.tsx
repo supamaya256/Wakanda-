@@ -4,14 +4,11 @@ import { Headphones, Film, User, Calendar, Music } from 'lucide-react';
 export type NavSection = 'audio' | 'videos' | 'about' | 'book';
 
 interface MobileBottomNavProps {
-  currentView?: 'store' | 'manager' | 'movies' | 'logos-reveal';
+  currentView?: 'store' | 'manager';
   activeSection?: NavSection;
   onNavigateSection?: (section: NavSection) => void;
   // Kept for backward compatibility if called elsewhere
-  onOpenAtesoMovies?: () => void;
-  onOpenLogin?: (mode?: 'signin' | 'signup') => void;
   onOpenStudioManager?: () => void;
-  onOpenLogosReveal?: () => void;
 }
 
 export default function MobileBottomNav({

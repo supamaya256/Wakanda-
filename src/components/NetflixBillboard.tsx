@@ -423,23 +423,6 @@ export default function NetflixBillboard({ onOpenModal, onOpenTrustModal, isLoad
               <span>{t('hero.info')}</span>
             </button>
 
-            {/* 3D Logos Reveal Button */}
-            <a
-              href="#welcome-3d-logos-hero"
-              onClick={(e) => {
-                const el = document.getElementById('welcome-3d-logos-hero');
-                if (el) {
-                  e.preventDefault();
-                  el.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded bg-red-600/30 hover:bg-red-600/50 text-red-200 border border-red-500/50 hover:border-red-400 active:scale-95 font-bold text-sm sm:text-base tracking-wide transition-all backdrop-blur-md cursor-pointer shadow-lg shadow-red-950/40 hover:scale-105"
-              title="Watch 3D LOGO REVEAL Welcome Video Animations"
-            >
-              <Sparkles className="w-4 h-4 text-red-400" />
-              <span>3D Logos</span>
-            </a>
-
             {/* How it Works / Proof Button */}
             <button
               type="button"

@@ -115,7 +115,7 @@ export default function AboutMeSection({ onBookMeClick }: AboutMeSectionProps) {
             </p>
 
             <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-              As the creative architect of <strong className="text-white">Wakanda Deejays Academy</strong> and <strong className="text-white">DJ Emma Pro FX Studio Suite</strong>, he delivers industry-grade 320kbps master sound, custom hypeman vocal drops, 4K metallic 3D logo animations, and electrifying live festival performances.
+              As the creative architect of <strong className="text-white">Wakanda Deejays Academy</strong> and <strong className="text-white">DJ Emma Pro FX Studio Suite</strong>, he delivers industry-grade 320kbps master sound, custom hypeman vocal drops, live video mixes, and electrifying festival performances.
             </p>
 
             {/* Quick Stats Grid */}

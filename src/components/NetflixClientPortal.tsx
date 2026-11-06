@@ -72,7 +72,7 @@ export default function NetflixClientPortal() {
               ● Live Studio Feed
             </span>
           </h2>
-          <p className="text-xs text-zinc-400">Track your pending voice drops and 3D logo delivery status</p>
+          <p className="text-xs text-zinc-400">Track your pending custom voice drops and studio order delivery status</p>
         </div>
       </div>
 

@@ -289,9 +289,9 @@ export default function GoogleSearchVisibilityModal({
                     <div className="text-xs text-zinc-300 font-mono">
                       <span>djemmapro.com</span>
                       <span className="text-zinc-500 mx-1">›</span>
-                      <span className="text-zinc-400">3d-logos</span>
+                      <span className="text-zinc-400">audio-mixes</span>
                       <span className="text-zinc-500 mx-1">›</span>
-                      <span className="text-blue-400">electric-shockwave</span>
+                      <span className="text-blue-400">street-anthem-90</span>
                     </div>
                   </div>
 
@@ -300,7 +300,7 @@ export default function GoogleSearchVisibilityModal({
                     onClick={() => handleOpenGoogle()}
                     className="text-base sm:text-lg font-medium text-[#8ab4f8] hover:underline cursor-pointer leading-snug"
                   >
-                    DJ EMMA PRO | Professional DJ Drops, 3D Logo Reveal & Ateso Movies
+                    DJ EMMA PRO | Official Nonstop DJ Audio & Video Mixes, Custom DJ Drops
                   </h4>
 
                   {/* Rating / Rich Snippet Details */}
@@ -322,21 +322,21 @@ export default function GoogleSearchVisibilityModal({
 
                   {/* Meta Description */}
                   <p className="text-xs sm:text-sm text-zinc-300 mt-2 leading-relaxed">
-                    Official DJ EMMA PRO studio. Order custom DJ voice drops, download 3D logo reveal animations including Electric Shockwave, and watch exclusive Ateso translated action movies.
+                    Official DJ EMMA PRO studio. Stream nonstop audio mixtapes, watch HD video shows, and order custom studio voice drops in Soroti & Kampala, Uganda.
                   </p>
 
                   {/* Google Sitelinks Grid (High Visibility) */}
                   <div className="mt-4 pt-3 border-t border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <div 
-                      onClick={() => handleOpenGoogle('Electric Shockwave 3D Logo Reveal DJ Emma')}
+                      onClick={() => handleOpenGoogle('Street Anthem 90 DJ Emma Pro')}
                       className="p-2.5 rounded-lg bg-black/40 border border-white/5 hover:border-blue-500/40 cursor-pointer transition-colors"
                     >
                       <p className="text-xs font-bold text-[#8ab4f8] hover:underline flex items-center gap-1.5">
-                        <Zap className="w-3 h-3 text-cyan-400" />
-                        <span>Electric Shockwave 3D Logo</span>
+                        <Zap className="w-3 h-3 text-red-500" />
+                        <span>Street Anthem 90 Mixtape</span>
                       </p>
                       <p className="text-[11px] text-zinc-400 mt-0.5">
-                        High-voltage 360p 3D logo reveal animations
+                        Trending Ugandan nonstop audio & video mix
                       </p>
                     </div>
 
@@ -518,7 +518,7 @@ export default function GoogleSearchVisibilityModal({
                         Inspect URL & Indexing Status
                       </h4>
                       <p className="text-xs text-zinc-400 mt-1">
-                        Submit sitemap (`/sitemap.xml`), request re-indexing for new 3D logo reveals, and monitor search impressions and clicks.
+                        Submit sitemap (`/sitemap.xml`), request re-indexing for new mixtapes and video releases, and monitor search impressions and clicks.
                       </p>
                     </div>
 

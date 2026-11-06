@@ -1,6 +1,6 @@
 {
   "name": "DJ EMMA PRO FX",
-  "description": "Official DJ EMMA PRO platform: stream audio mixes, nonstop DJ videos, custom voice drops, and 3D animated logos.",
+  "description": "Official DJ EMMA PRO platform: stream audio mixes, nonstop DJ video shows, custom voice drops, and booking.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -53,14 +53,6 @@ export interface StudioInquiry {
 
 export const PROJECT_TYPES = [
   {
-    id: '3d-logo-reveal',
-    label: '3D Animated Video Logo Reveal',
-    description: '3D text motion, metallic & laser extrusion, bass drop sound FX sync',
-    icon: Sparkles,
-    estimatedTurnaround: '24-48 Hours',
-    popular: true
-  },
-  {
     id: 'custom-voice-drop',
     label: 'Custom Voice Drop & DJ Jingles',
     description: 'Bassy hypeman shouts, Jamaican Patois, robotic vocoder, radio IDs',
@@ -82,14 +74,6 @@ export const PROJECT_TYPES = [
     description: 'Headline DJ performance, festival stage, club night, wedding sound',
     icon: Calendar,
     estimatedTurnaround: 'Book in advance',
-    popular: false
-  },
-  {
-    id: 'ateso-movies',
-    label: 'Ateso Movies Translation & Voicing',
-    description: 'Action movie VJ translation, cultural dubbing, subtitle mastering',
-    icon: Film,
-    estimatedTurnaround: '3-5 Days',
     popular: false
   },
   {
@@ -870,7 +854,7 @@ export default function StudioContactForm({
                 setMessage(e.target.value);
                 if (errors.message) setErrors(prev => ({ ...prev, message: '' }));
               }}
-              placeholder="Describe your vision: e.g. text for 3D logo, script for vocal drop, preferred music genres, event location and date, or special instructions..."
+              placeholder="Describe your vision: e.g. script for vocal drop, preferred music genres, event location and date, or special instructions..."
               className={`w-full bg-zinc-900/90 border rounded-xl p-3.5 text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none transition-colors resize-y min-h-[110px] ${
                 errors.message ? 'border-red-500 focus:border-red-500' : 'border-zinc-700 focus:border-[#E50914]'
               }`}

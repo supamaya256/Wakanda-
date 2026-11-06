@@ -47,7 +47,6 @@ import { useAudio, AudioTrack } from '../context/AudioContext';
 import { useContent, CustomMediaFile } from '../context/ContentContext';
 import { useAdminAuth, MASTER_ADMIN_EMAIL } from '../context/AdminAuthContext';
 import { VoiceDropItem } from '../data/voiceDropsData';
-import { LogoItem } from '../data/logosData';
 import CustomVoiceDropRequestForm from './CustomVoiceDropRequestForm';
 import StudioContactForm from './StudioContactForm';
 import WordPressAdminDashboard from './WordPressAdminDashboard';
@@ -67,7 +66,7 @@ interface StudioManagerPageProps {
   initialTab?: TabType;
 }
 
-export type TabType = 'dashboard' | 'tracks' | 'drops' | 'custom-drops' | 'logos' | 'files' | 'inquiries';
+export type TabType = 'dashboard' | 'tracks' | 'drops' | 'custom-drops' | 'files' | 'inquiries';
 
 function FavoriteTracksD3Chart({ tracks }: { tracks: AudioTrack[] }) {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -308,7 +307,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
   // Form toggles
   const [showTrackForm, setShowTrackForm] = useState(false);
   const [showDropForm, setShowDropForm] = useState(false);
-  const [showLogoForm, setShowLogoForm] = useState(false);
   const [showFileForm, setShowFileForm] = useState(false);
 
   // Audio preview for tracks & drops in manager
@@ -339,16 +337,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
   const [dropSampleScript, setDropSampleScript] = useState('');
   const [dropTags, setDropTags] = useState('Club ID, Laser FX, Hype');
 
-  // Logo upload form state
-  const [logoTitle, setLogoTitle] = useState('');
-  const [logoCategory, setLogoCategory] = useState('Gold & Metallic');
-  const [logoVideoUrl, setLogoVideoUrl] = useState('');
-  const [logoVideoFileName, setLogoVideoFileName] = useState('');
-  const [logoPriceUgx, setLogoPriceUgx] = useState('18,000 UGX');
-  const [logoPriceUsd, setLogoPriceUsd] = useState('$5 USD');
-  const [logoResolution, setLogoResolution] = useState('480p HD • 60 FPS');
-  const [logoStyle, setLogoStyle] = useState('3D Metallic Extrusion & Laser Sweep');
-  const [logoTags, setLogoTags] = useState('3D Gold, Club Stage, Alpha Video');
 
   // Custom File upload form state
   const [customFileName, setCustomFileName] = useState('');
@@ -483,24 +471,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     });
   };
 
-  // Handle local file selection for 3D Logo Video
-  const handleLogoFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setLogoVideoFileName(file.name);
-    if (!logoTitle) {
-      setLogoTitle(file.name.replace(/\.[^/.]+$/, '').toUpperCase());
-    }
-
-    const objectUrl = URL.createObjectURL(file);
-    setLogoVideoUrl(objectUrl);
-    showToast(`Uploading 3D video file to cloud storage...`, 'info');
-
-    uploadFile(file, 'logos', 'logoVideo', (uploadedUrl) => {
-      setLogoVideoUrl(uploadedUrl);
-    });
-  };
 
   // Handle local file selection for Custom General File
   const handleGeneralFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
@@ -628,51 +598,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     setShowDropForm(false);
   };
 
-  // Submit 3D Logo Form
-  const handleSubmitLogo = (e: FormEvent) => {
-    e.preventDefault();
-    if (!isAdmin) {
-      showToast('Action Blocked: Only Admin (supamaya256@gmail.com) can upload 3D logos.', 'error');
-      openAuthModal('Only verified Administrator can upload 3D logos.');
-      return;
-    }
-    if (!logoTitle.trim()) {
-      showToast('Please provide a 3D Logo Title', 'error');
-      return;
-    }
-    if (!logoVideoUrl.trim()) {
-      showToast('Please select a video file or enter a video URL', 'error');
-      return;
-    }
-
-    const newId = `logo-${Date.now()}`;
-    const tagArray = logoTags
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
-
-    const newLogo: LogoItem = {
-      id: newId,
-      title: logoTitle.trim(),
-      category: logoCategory,
-      videoUrl: logoVideoUrl.trim(),
-      priceUgx: logoPriceUgx.trim() || '18,000 UGX',
-      priceUsd: logoPriceUsd.trim() || '$5 USD',
-      resolution: logoResolution.trim() || '480p HD • 60 FPS',
-      style: logoStyle.trim() || '3D Extrusion & Laser Flare',
-      tags: tagArray.length > 0 ? tagArray : ['3D Metallic', 'Stage Ready'],
-      matchScore: 99
-    };
-
-    addLogo(newLogo);
-    showToast(`"${newLogo.title}" 3D Logo uploaded & added to live showcase!`, 'success');
-
-    // Reset Form
-    setLogoTitle('');
-    setLogoVideoUrl('');
-    setLogoVideoFileName('');
-    setShowLogoForm(false);
-  };
 
   // Submit Custom General File
   const handleSubmitCustomFile = (e: FormEvent) => {
@@ -793,11 +718,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
     (d.style && d.style.toLowerCase().includes(q))
   );
 
-  const filteredLogos = logos.filter(l =>
-    (l.title && l.title.toLowerCase().includes(q)) ||
-    (l.category && l.category.toLowerCase().includes(q)) ||
-    (l.style && l.style.toLowerCase().includes(q))
-  );
 
   const filteredFiles = customFiles.filter(f =>
     (f.name && f.name.toLowerCase().includes(q)) ||
@@ -1231,21 +1151,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
                 <div className="text-[10px] text-zinc-500">Interactive Form</div>
               </div>
 
-              <div
-                onClick={() => setActiveTab('logos')}
-                className={`p-3 rounded-xl border transition-all cursor-pointer ${
-                  activeTab === 'logos'
-                    ? 'bg-[#E50914]/15 border-[#E50914]'
-                    : 'bg-black/40 border-white/5 hover:border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                  <span>3D Logos</span>
-                  <Video className="w-3.5 h-3.5 text-[#E50914]" />
-                </div>
-                <div className="text-2xl font-black text-white">{logos.length}</div>
-                <div className="text-[10px] text-zinc-500">480p Video Loops</div>
-              </div>
 
               <div
                 onClick={() => setActiveTab('files')}
@@ -1284,30 +1189,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
 
 
 
-        {/* 3D LOGOS REVEAL Room Gateway */}
-        <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-red-950/40 via-[#18121f] to-black border border-red-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center shrink-0">
-              <Sparkles className="w-6 h-6 text-red-500" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-white font-extrabold text-sm sm:text-base uppercase tracking-wide">3D LOGOS REVEAL Room</span>
-                <span className="text-[10px] bg-red-600/30 text-red-300 font-bold px-2 py-0.5 rounded border border-red-500/40">Master Visuals</span>
-              </div>
-              <p className="text-xs text-zinc-400 mt-0.5 max-w-xl">
-                Explore the dedicated 3D video logo reveal vault featuring cinematic editions, interactive 3D spatial tilts, real-time audio playback, and strict anti-download protection.
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent('app:switch-view', { detail: 'logos-reveal' }))}
-            className="px-5 py-2.5 bg-[#E50914] hover:bg-[#b80710] text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-red-950/50 transition-all hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap self-start sm:self-center"
-          >
-            Enter 3D Logos Reveal Room
-          </button>
-        </div>
 
         {/* D3.js Most Frequently Favorited Tracks Bar Chart */}
         <FavoriteTracksD3Chart tracks={tracks} />
@@ -1377,18 +1258,6 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
               <span>Contact & Inquiries</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab('logos')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
-                activeTab === 'logos'
-                  ? 'bg-[#E50914] text-white shadow-md'
-                  : 'text-zinc-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Video className="w-4 h-4" />
-              <span>3D Logos ({logos.length})</span>
-            </button>
 
             <button
               type="button"
@@ -1409,7 +1278,7 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
             <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder={isAdmin ? "Search content to edit or delete..." : "Search mixtapes, voice drops, or 3D logos..."}
+              placeholder={isAdmin ? "Search content to edit or delete..." : "Search mixtapes or voice drops..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 rounded-lg bg-zinc-900 border border-white/10 text-white text-xs placeholder:text-zinc-500 focus:outline-none focus:border-[#E50914]"
@@ -2087,243 +1956,9 @@ export default function StudioManagerPage({ onBackToStore, initialTab = 'tracks'
           </div>
         )}
 
-        {/* ========================================================
-            TAB 3: 3D ANIMATED LOGOS
-           ======================================================== */}
-        {activeTab === 'logos' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span>{isAdmin ? '3D Animated Video Logos Catalog' : '3D Animated Video Logos Showcase'}</span>
-                  <span className="text-xs font-mono text-zinc-500">({filteredLogos.length} items)</span>
-                </h2>
-                <p className="text-xs text-zinc-400">
-                  {isAdmin
-                    ? '3D metallic and chrome video logo loops. Upload new clips or delete existing loops.'
-                    : 'Preview 3D metallic video loops for DJ screen visuals, YouTube intros, and stage performances.'}
-                </p>
-              </div>
 
-              {/* Upload 3D Logo button visible strictly to authorized admin */}
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={() => setShowLogoForm(!showLogoForm)}
-                  className="px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-all bg-[#E50914] hover:bg-[#b80710] text-white"
-                >
-                  {showLogoForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                  <span>{showLogoForm ? 'Close Upload Form' : '+ Upload New 3D Logo'}</span>
-                </button>
-              )}
-            </div>
 
-            {/* Upload Logo Form */}
-            {isAdmin && showLogoForm && (
-              <form
-                onSubmit={handleSubmitLogo}
-                className="p-5 sm:p-6 rounded-xl bg-zinc-900 border-2 border-[#E50914]/60 space-y-4 shadow-2xl animate-in fade-in duration-200"
-              >
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <div className="flex items-center gap-2">
-                    <Video className="w-4 h-4 text-[#E50914]" />
-                    <h3 className="font-bold text-sm text-white">Upload New 3D Animated Logo Loop</h3>
-                  </div>
-                  <span className="text-xs text-zinc-400 font-mono">18,000 UGX / $5 USD</span>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                      3D Video Animation File (.MP4 / .MOV)
-                    </label>
-                    <div className="border border-dashed border-zinc-700 hover:border-[#E50914] rounded-lg p-4 bg-black/40 text-center cursor-pointer transition-colors relative mb-2">
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={handleLogoFileSelect}
-                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                      />
-                      <Film className="w-6 h-6 text-zinc-400 mx-auto mb-1.5" />
-                      <div className="text-xs text-zinc-200 font-medium">
-                        {logoVideoFileName ? logoVideoFileName : 'Click to select 3D animation video clip'}
-                      </div>
-                      <div className="text-[10px] text-zinc-500 mt-1">MP4, MOV (Transparent Alpha or Black)</div>
-                    </div>
-                    <StorageUploadIndicator progress={uploadProgressMap['logoVideo']} />
-
-                    <input
-                      type="text"
-                      placeholder="Or paste video clip stream URL"
-                      value={logoVideoUrl}
-                      onChange={(e) => setLogoVideoUrl(e.target.value)}
-                      className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-zinc-400 mb-1">3D Logo Title *</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. CYBER GLOW 3D EMBLEM"
-                        value={logoTitle}
-                        onChange={(e) => setLogoTitle(e.target.value)}
-                        required
-                        className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="block text-xs font-medium text-zinc-400 mb-1">Category</label>
-                        <select
-                          value={logoCategory}
-                          onChange={(e) => setLogoCategory(e.target.value)}
-                          className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                        >
-                          <option value="Gold & Metallic">Gold & Metallic</option>
-                          <option value="Neon & Electric">Neon & Electric</option>
-                          <option value="3D Extrusion">3D Extrusion</option>
-                          <option value="Fire & Pyro">Fire & Pyro</option>
-                          <option value="Chrome & Glass">Chrome & Glass</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-medium text-zinc-400 mb-1">Resolution</label>
-                        <input
-                          type="text"
-                          value={logoResolution}
-                          onChange={(e) => setLogoResolution(e.target.value)}
-                          className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-zinc-400 mb-1">Visual Style & VFX</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Neon pulse, laser sweeps, transparent alpha background"
-                    value={logoStyle}
-                    onChange={(e) => setLogoStyle(e.target.value)}
-                    className="w-full px-3 py-2 rounded bg-black/60 border border-zinc-700 text-xs text-white focus:outline-none focus:border-[#E50914]"
-                  />
-                </div>
-
-                <div className="flex items-center justify-end gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowLogoForm(false)}
-                    className="px-4 py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="px-5 py-2 rounded bg-[#E50914] hover:bg-[#b80710] text-xs font-bold text-white shadow-lg cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>Publish 3D Logo to Showcase</span>
-                  </button>
-                </div>
-              </form>
-            )}
-
-            {/* Logos Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredLogos.map((logo) => (
-                <div
-                  key={logo.id}
-                  className="rounded-xl overflow-hidden bg-zinc-900 border border-white/10 hover:border-[#E50914] transition-all flex flex-col justify-between group"
-                >
-                  <div className="relative aspect-video w-full bg-black">
-                    <video
-                      src={logo.videoUrl}
-                      muted
-                      loop
-                      playsInline
-                      preload="none"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLElement).style.display = 'none';
-                      }}
-                      className="w-full h-full object-cover pointer-events-none"
-                    />
-                    <div className="absolute top-2 left-2 bg-black/80 px-2 py-0.5 rounded text-[10px] font-mono text-emerald-400 font-bold border border-white/10">
-                      {logo.resolution}
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 flex flex-col justify-between flex-1">
-                    <div>
-                      <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-1">
-                        <span>{logo.category}</span>
-                        <span className="text-[#46d369] font-bold">{logo.priceUgx}</span>
-                      </div>
-                      <h4 className="text-sm font-bold text-white truncate">{logo.title}</h4>
-                      <p className="text-xs text-zinc-400 line-clamp-1 mt-0.5">{logo.style}</p>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-2 pt-3 mt-2 border-t border-white/5">
-                      <a
-                        href={logo.videoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-zinc-400 hover:text-white flex items-center gap-1"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        <span>Source</span>
-                      </a>
-
-                      {/* Order 3D Logo on WhatsApp for Visitors */}
-                      {!isAdmin && (
-                        <a
-                          href={`https://wa.me/256780527361?text=Hello%20DJ%20Emma%20Pro%20FX,%20I%20am%20browsing%20the%20Visitor%20Dashboard%20and%20would%20like%20a%20custom%203D%20video%20logo%20in%20the%20style%20of:%20"${encodeURIComponent(logo.title)}"%20(${encodeURIComponent(logo.priceUgx || '18,000 UGX')})`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-2.5 py-1 rounded bg-[#E50914] hover:bg-[#b80710] text-white text-xs font-bold flex items-center gap-1 transition-colors"
-                          title="Order custom 3D logo"
-                        >
-                          <Sparkles className="w-3 h-3" />
-                          <span>Order Logo</span>
-                        </a>
-                      )}
-
-                      {/* Delete 3D Logo Button - ONLY ADMIN CAN SEE */}
-                      {isAdmin && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setDeleteConfirmItem({
-                              id: logo.id,
-                              title: logo.title,
-                              type: 'logo'
-                            });
-                          }}
-                          className="px-2 py-1 rounded border text-xs font-semibold flex items-center gap-1 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border-red-500/30 cursor-pointer transition-colors"
-                          title="Delete 3D Logo"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                          <span>Delete</span>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {filteredLogos.length === 0 && (
-                <div className="col-span-full py-12 text-center text-zinc-500">
-                  {isAdmin ? 'No 3D logos match your search. Click "+ Upload New 3D Logo" to add one!' : 'No 3D logos match your search query.'}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
 
         {/* ========================================================

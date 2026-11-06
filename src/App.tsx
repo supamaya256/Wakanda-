@@ -18,7 +18,6 @@ import NetflixBillboard from './components/NetflixBillboard';
 import NetflixRow from './components/NetflixRow';
 import NetflixTop10Row from './components/NetflixTop10Row';
 import NetflixDropsRow from './components/NetflixDropsRow';
-import NetflixLogosRow from './components/NetflixLogosRow';
 import FeedbackWidget from './components/FeedbackWidget';
 import NetflixModal from './components/NetflixModal';
 import NewsletterSignup from './components/NewsletterSignup';
@@ -35,8 +34,6 @@ import MobileBottomNav, { NavSection } from './components/MobileBottomNav';
 import VideoMixesSection from './components/VideoMixesSection';
 import AboutMeSection from './components/AboutMeSection';
 import BookMeSection from './components/BookMeSection';
-import ThreeDLogosRevealPage from './components/ThreeDLogosRevealPage';
-import ThreeDLogosWelcomeHero from './components/ThreeDLogosWelcomeHero';
 import TopStreetAnthemBanner from './components/TopStreetAnthemBanner';
 import ContinueListeningBanner from './components/ContinueListeningBanner';
 import MyFavoritesSection from './components/MyFavoritesSection';
@@ -62,8 +59,7 @@ export type AppView =
   | 'privacy' 
   | 'terms' 
   | 'contact' 
-  | 'manager' 
-  | 'logos-reveal';
+  | 'manager';
 
 function NetflixDashboard() {
   const { t } = useLanguage();
@@ -91,7 +87,6 @@ function NetflixDashboard() {
       else if (hash === '#privacy') setCurrentView('privacy');
       else if (hash === '#terms') setCurrentView('terms');
       else if (hash === '#contact') setCurrentView('contact');
-      else if (hash === '#logos-reveal') setCurrentView('logos-reveal');
     };
 
     handleHash();
@@ -337,30 +332,6 @@ function NetflixDashboard() {
     );
   }
 
-  if (currentView === 'logos-reveal') {
-    return (
-      <div className="min-h-screen bg-[#07070a] text-white pb-20 md:pb-8">
-        <ThreeDLogosRevealPage
-          onBackToStore={() => {
-            setCurrentView('home');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenStudioManager={() => {
-            setCurrentView('manager');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-        <MobileBottomNav
-          currentView="logos-reveal"
-          activeSection="audio"
-          onNavigateSection={(sec) => {
-            setCurrentView('home');
-            setActiveNavSection(sec);
-          }}
-        />
-      </div>
-    );
-  }
 
   // DEFAULT HOMEPAGE VIEW ('home')
   return (
@@ -385,10 +356,6 @@ function NetflixDashboard() {
 
         {/* Quick Access Bar */}
         <QuickAccessBar
-          onOpenLogosReveal={() => {
-            setCurrentView('logos-reveal');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
           onOpenCustomDrops={() => {
             setCurrentView('manager');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -490,16 +457,6 @@ function NetflixDashboard() {
           <NetflixDropsRow />
         </div>
 
-        {/* 3D Metallic Logos & Reveal Showcase (#logos) */}
-        <div id="logos" className="space-y-6">
-          <ThreeDLogosWelcomeHero
-            onOpenLogosReveal={() => {
-              setCurrentView('logos-reveal');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-          <NetflixLogosRow />
-        </div>
 
         {/* Verified Delivery Proofs */}
         <TrustProofBanner onOpenProofModal={() => setIsTrustModalOpen(true)} />

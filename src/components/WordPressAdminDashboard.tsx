@@ -55,7 +55,7 @@ import GoogleSearchVisibilityModal from './GoogleSearchVisibilityModal';
 
 export interface WordPressAdminDashboardProps {
   onBackToStore: () => void;
-  onOpenUploadCatalog?: (section: 'tracks' | 'drops' | 'logos' | 'files' | 'inquiries') => void;
+  onOpenUploadCatalog?: (section: 'tracks' | 'drops' | 'files' | 'inquiries') => void;
 }
 
 export interface AdminOrder {
@@ -404,10 +404,6 @@ export default function WordPressAdminDashboard({
                 <Mic className="w-3.5 h-3.5 text-red-400" />
                 <span>DJ Voice Drop</span>
               </div>
-              <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
-                <Box className="w-3.5 h-3.5 text-emerald-400" />
-                <span>3D Logo Order</span>
-              </div>
               <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('files')} className="px-3 py-1.5 hover:bg-[#2271b1] hover:text-white cursor-pointer flex items-center gap-2">
                 <Folder className="w-3.5 h-3.5 text-purple-400" />
                 <span>Media File</span>
@@ -554,29 +550,6 @@ export default function WordPressAdminDashboard({
               )}
             </div>
 
-            {/* 5. 3D Logos */}
-            <div>
-              <div 
-                onClick={() => toggleSubmenu('logos')}
-                className="flex items-center justify-between px-3 py-2 hover:bg-[#2c3338] hover:text-[#72aee6] cursor-pointer transition-colors"
-                title="3D Logos"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Box className="w-4 h-4 text-[#4ab866] shrink-0" />
-                  {!isSidebarCollapsed && <span className="font-medium">3D Logos</span>}
-                </div>
-                {!isSidebarCollapsed && (
-                  <span className="text-[10px] bg-[#2c3338] border border-[#3c434a] text-white px-1.5 py-0.2 rounded-full font-bold">6</span>
-                )}
-              </div>
-              {!isSidebarCollapsed && openSubmenus.logos && (
-                <div className="bg-[#101517] py-1 text-xs pl-9 pr-2 space-y-1">
-                  <div onClick={() => setOrderFilter('3D Logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Logo Orders (6)</div>
-                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Logo Catalog ({logos.length || 16})</div>
-                  <div onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="text-[#c3c4c7] hover:text-[#72aee6] cursor-pointer py-0.5">Add New Logo</div>
-                </div>
-              )}
-            </div>
 
             {/* Separator */}
             <div className="my-1 border-t border-[#2c3338]/60" />
@@ -887,7 +860,7 @@ export default function WordPressAdminDashboard({
                     <span>Add New Nonstop Mix</span>
                   </button>
                   <p className="text-[11px] text-[#8c8f94]">
-                    or, <span onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('logos')} className="text-[#72aee6] hover:underline cursor-pointer">upload a 3D Logo file</span>
+                    or, <span onClick={() => onOpenUploadCatalog && onOpenUploadCatalog('files')} className="text-[#72aee6] hover:underline cursor-pointer">upload a media file</span>
                   </p>
                 </div>
 

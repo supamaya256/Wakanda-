@@ -23,15 +23,6 @@ const DEFAULT_CUSTOM_FILES: CustomMediaFile[] = [
     description: 'Main DJ EMMA PRO billboard backdrop'
   },
   {
-    id: 'asset-3d-logo-edition-08',
-    name: '3D Logo Animation Edition #08.mp4',
-    type: 'video',
-    url: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/3d%20logos%20(8).mp4',
-    sizeFormatted: '4.2 MB',
-    uploadedAt: '2026-11-06',
-    description: 'Edition #08 3D logo animation and reveal master'
-  },
-  {
     id: 'asset-ronnie-majje-drop',
     name: 'Ronnie Majje Boss Audio Tag.mp3',
     type: 'audio',
