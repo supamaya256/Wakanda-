@@ -42,7 +42,9 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
   const [activeIndex, setActiveIndex] = useState<number>(() => getDefault3DLogoRevealIndex());
   const activeLogo: ThreeDLogoRevealItem = THREE_D_LOGOS_REVEAL_DATA[activeIndex] || getDefault3DLogoRevealItem();
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(!isDataSaver);
+  // Speed Optimization: Zero auto-download on initial homepage open. Click-to-load only.
+  const [hasClickedPlay, setHasClickedPlay] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(true);
   const [showToast, setShowToast] = useState<string | null>(null);
   const [videoHasError, setVideoHasError] = useState<boolean>(false);
@@ -65,7 +67,7 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
           .replace(/\.mp4(\?.*)?$/i, '.jpg');
       }
     } catch {}
-    return '';
+    return 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_0000000082e48206b44f044859a03025.png';
   };
 
   // Scroll ribbon so active edition button is visible
@@ -93,22 +95,27 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
       isInitialMount.current = false;
       return;
     }
-    if (videoRef.current) {
+    if (videoRef.current && hasClickedPlay) {
       try {
         if (videoRef.current.readyState >= 1) {
           videoRef.current.currentTime = 0;
         }
       } catch {}
-      if (!isDataSaver && isPlaying) {
+      if (isPlaying) {
         videoRef.current.play().catch(() => {});
       }
     }
-  }, [activeIndex, isDataSaver]);
+  }, [activeIndex, hasClickedPlay, isPlaying]);
 
   const togglePlay = () => {
+    if (!hasClickedPlay) {
+      setHasClickedPlay(true);
+      setIsPlaying(true);
+      return;
+    }
     if (!videoRef.current) return;
     if (videoRef.current.paused) {
-      videoRef.current.play();
+      videoRef.current.play().catch(() => {});
       setIsPlaying(true);
     } else {
       videoRef.current.pause();
@@ -284,8 +291,8 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                 className="relative rounded-xl overflow-hidden bg-black border border-white/15 aspect-video w-full flex items-center justify-center shadow-2xl group select-none"
                 onContextMenu={handleContextMenu}
               >
-                {/* 3D Logo Reveal Video (Delivered in fast 360p Data Saver quality) */}
-                {videoHasError ? (
+                {/* 3D Logo Reveal Video (Click-To-Load: Zero background download on page load) */}
+                {!hasClickedPlay || videoHasError ? (
                   <div 
                     className="relative w-full h-full flex items-center justify-center cursor-pointer group/poster"
                     onClick={togglePlay}
@@ -294,12 +301,14 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                       src={getPoster(activeLogo.videoUrl)}
                       alt={activeLogo.title}
                       className="w-full h-full object-contain max-h-[420px] select-none"
+                      loading="lazy"
                     />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px]">
-                      <div className="w-16 h-16 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-[0_0_35px_rgba(229,9,20,0.85)] hover:scale-110 active:scale-95 transition-transform mb-3">
-                        <Play className="w-7 h-7 fill-white translate-x-0.5" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px] transition-all group-hover/poster:bg-black/35">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-[0_0_40px_rgba(229,9,20,0.9)] hover:scale-110 active:scale-95 transition-transform mb-3">
+                        <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-white translate-x-0.5" />
                       </div>
-                      <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/85 border border-amber-500/50 text-xs font-mono font-bold text-amber-400 shadow-xl">
+                      <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-black/90 border border-red-500/50 text-xs font-mono font-bold text-white shadow-2xl">
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                         <span>Tap to Play 3D Logo Reveal</span>
                       </div>
                     </div>
@@ -309,8 +318,8 @@ export default function ThreeDLogosWelcomeHero({ onOpenLogosReveal }: ThreeDLogo
                     ref={videoRef}
                     key={activeLogo.videoUrl}
                     poster={getPoster(activeLogo.videoUrl)}
-                    autoPlay={shouldAutoplay}
-                    preload={preloadStrategy}
+                    autoPlay
+                    preload="auto"
                     loop
                     playsInline
                     muted={isMuted}

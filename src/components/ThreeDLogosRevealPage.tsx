@@ -51,13 +51,13 @@ export default function ThreeDLogosRevealPage({
 }: ThreeDLogosRevealPageProps) {
   const { isDataSaver, toggleDataSaver, shouldAutoplay, preloadStrategy } = useDataSaver();
 
-  // Helper for ultra-lightweight Cloudinary video posters (10KB vs 5MB video)
+  // Helper for ultra-lightweight video posters
   const getVideoPoster = (url: string) => {
     if (!url) return '';
     if (url.includes('cloudinary.com') && url.includes('/video/upload/')) {
       return url.replace(/\/video\/upload\/([^/]+)?\/?/, '/video/upload/so_0,w_480,h_270,c_fill,f_auto,q_auto:low/').replace(/\.mp4(\?.*)?$/i, '.jpg');
     }
-    return '';
+    return 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_0000000082e48206b44f044859a03025.png';
   };
 
   // Active selected video in center Holo-Deck (defaults to Edition #08)

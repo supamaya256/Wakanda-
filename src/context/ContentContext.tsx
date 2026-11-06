@@ -23,13 +23,13 @@ const DEFAULT_CUSTOM_FILES: CustomMediaFile[] = [
     description: 'Main DJ EMMA PRO billboard backdrop'
   },
   {
-    id: 'asset-dj-capecious-video',
-    name: 'DJ Capecious 3D Master Loop.mp4',
+    id: 'asset-3d-logo-edition-08',
+    name: '3D Logo Animation Edition #08.mp4',
     type: 'video',
-    url: 'https://res.cloudinary.com/hbyqk5y0/video/upload/h_480,q_auto/v1789609383/DJ_CAPECIOUS.mp4',
+    url: 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/3d%20logos%20(8).mp4',
     sizeFormatted: '4.2 MB',
-    uploadedAt: '2026-09-12',
-    description: '480p preview sample for 3D metallic logo'
+    uploadedAt: '2026-11-06',
+    description: 'Edition #08 3D logo animation and reveal master'
   },
   {
     id: 'asset-ronnie-majje-drop',
@@ -74,7 +74,7 @@ interface ContentContextType {
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
 const DROPS_STORAGE_KEY = 'dj_emma_voice_drops_v1';
-const LOGOS_STORAGE_KEY = 'dj_emma_logos_v2_electric_first';
+const LOGOS_STORAGE_KEY = 'dj_emma_logos_v4_r2_videos';
 const FILES_STORAGE_KEY = 'dj_emma_custom_files_v1';
 const YT_SUBSCRIBED_KEY = 'dj_emma_yt_subscribed_v2';
 
@@ -114,7 +114,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       const saved = localStorage.getItem(LOGOS_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed) && parsed.length === LOGO_ITEMS_DATA.length && parsed.every((l: any) => l.videoUrl?.includes('pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev'))) {
           return parsed;
         }
       }

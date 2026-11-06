@@ -1,4 +1,4 @@
-import { X, Download, Play, Pause, Volume2, VolumeX, Maximize2, MonitorPlay } from 'lucide-react';
+import { X, Play, Pause, Volume2, VolumeX, Maximize2, MonitorPlay } from 'lucide-react';
 import { useState, useRef, useEffect, ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AudioTrack } from '../context/AudioContext';
@@ -76,6 +76,8 @@ export default function VideoPlayerModal({ track, isOpen, onClose }: VideoPlayer
     }
   };
 
+  const [isHalfScreen, setIsHalfScreen] = useState(false);
+
   const toggleFullscreen = () => {
     if (mediaRef.current) {
       if (mediaRef.current.requestFullscreen) {
@@ -107,17 +109,16 @@ export default function VideoPlayerModal({ track, isOpen, onClose }: VideoPlayer
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <a
-              href={track.downloadUrl || track.url}
-              download={track.filename || 'dj_emma_video.mp4'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 bg-zinc-800/80 hover:bg-zinc-700 text-white rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 border border-zinc-700 transition-colors cursor-pointer shadow-lg"
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Half Screen / Full Screen toggle */}
+            <button
+              onClick={() => setIsHalfScreen(!isHalfScreen)}
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-zinc-800/80 hover:bg-zinc-700 text-white rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 border border-zinc-700 transition-colors cursor-pointer shadow-lg"
+              title={isHalfScreen ? 'Switch to Full Screen' : 'Switch to Half Screen'}
             >
-              <Download className="w-4 h-4 text-[#E50914]" />
-              <span className="hidden sm:inline">Download Video</span>
-            </a>
+              <Maximize2 className="w-3.5 h-3.5 text-[#E50914]" />
+              <span>{isHalfScreen ? 'Full Screen' : 'Half Screen'}</span>
+            </button>
             <button
               onClick={onClose}
               className="p-2.5 rounded-full bg-zinc-800/80 hover:bg-[#E50914] text-white transition-all cursor-pointer border border-zinc-700 hover:border-[#E50914]"
@@ -129,7 +130,9 @@ export default function VideoPlayerModal({ track, isOpen, onClose }: VideoPlayer
         </div>
 
         {/* Video Container */}
-        <div className="relative w-full h-full max-w-6xl max-h-[85vh] flex items-center justify-center bg-black rounded-2xl overflow-hidden shadow-2xl border border-zinc-800">
+        <div className={`relative w-full h-full transition-all duration-300 flex items-center justify-center bg-black rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 ${
+          isHalfScreen ? 'max-w-2xl max-h-[50vh] sm:max-h-[55vh]' : 'max-w-6xl max-h-[85vh]'
+        }`}>
           {track.youtubeId ? (
             <div className="w-full h-full aspect-video bg-black flex items-center justify-center">
               <iframe

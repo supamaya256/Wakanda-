@@ -52,25 +52,25 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
   const { logos } = useContent();
   const { isDataSaver, shouldAutoplay, preloadStrategy, getOptimizedMediaUrl } = useDataSaver();
 
-  // Helper for ultra-fast Cloudinary video posters (10KB vs 5MB video)
+  // Helper for ultra-fast video posters
   const getCloudinaryPoster = (url: string) => {
     if (!url) return '';
     if (url.includes('cloudinary.com') && url.includes('/video/upload/')) {
       return url.replace(/\/video\/upload\/([^/]+)?\/?/, '/video/upload/so_0,w_360,h_200,c_fill,f_auto,q_auto:low/').replace(/\.mp4(\?.*)?$/i, '.jpg');
     }
-    return '';
+    return 'https://pub-9ff2b7b2f3a346f5a63e81c39303b367.r2.dev/file_0000000082e48206b44f044859a03025.png';
   };
 
   // Active / Center Stage 3D Video Player (Plays directly from the middle of the showcase without scrolling up)
   const [activeLogo, setActiveLogo] = useState<LogoItem>(() => {
     const list = Array.isArray(logos) && logos.length > 0 ? logos : LOGO_ITEMS_DATA;
-    const edition08Logo = list.find(l => l && (l.id === 'emma-pro-club-mix-intro' || l.videoUrl?.includes('InShot_20260901_180733541')));
-    const electricLogo = list.find(l => l && (l.id === 'electric-shockwave-wa0011' || l.title?.toUpperCase().includes('ELECTRIC SHOCKWAVE')));
-    return edition08Logo || electricLogo || list[0] || LOGO_ITEMS_DATA[0];
+    const edition08Logo = list.find(l => l && (l.id === '3d-logo-08' || l.videoUrl?.includes('3d%20logos%20(8).mp4')));
+    return edition08Logo || list[0] || LOGO_ITEMS_DATA[0];
   });
   const activeVideoRef = useRef<HTMLVideoElement>(null);
   const centerPlayerRef = useRef<HTMLDivElement>(null);
-  const [isActivePlaying, setIsActivePlaying] = useState<boolean>(!isDataSaver);
+  const [hasClickedPlay, setHasClickedPlay] = useState<boolean>(false);
+  const [isActivePlaying, setIsActivePlaying] = useState<boolean>(false);
   const [isActiveMuted, setIsActiveMuted] = useState<boolean>(true);
   const [activeCurrentTime, setActiveCurrentTime] = useState<number>(0);
   const [activeDuration, setActiveDuration] = useState<number>(0);
@@ -80,9 +80,8 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
   useEffect(() => {
     const list = Array.isArray(logos) && logos.length > 0 ? logos : LOGO_ITEMS_DATA;
     if (!activeLogo || !list.find(l => l && l.id === activeLogo.id) || !activeLogo.videoUrl) {
-      const edition08Logo = list.find(l => l && (l.id === 'emma-pro-club-mix-intro' || l.videoUrl?.includes('InShot_20260901_180733541')));
-      const electricLogo = list.find(l => l && (l.id === 'electric-shockwave-wa0011' || l.title?.toUpperCase().includes('ELECTRIC SHOCKWAVE')));
-      setActiveLogo(edition08Logo || electricLogo || list[0] || LOGO_ITEMS_DATA[0]);
+      const edition08Logo = list.find(l => l && (l.id === '3d-logo-08' || l.videoUrl?.includes('3d%20logos%20(8).mp4')));
+      setActiveLogo(edition08Logo || list[0] || LOGO_ITEMS_DATA[0]);
     }
   }, [logos, activeLogo]);
 
@@ -180,6 +179,7 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
     }
     pauseTrack(); // Pause any mixtape playing
     setActiveLogo(logo);
+    setHasClickedPlay(true);
     setIsActivePlaying(true);
     setShowCenterPlayer(true);
 
@@ -218,6 +218,7 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
       e.preventDefault();
       e.stopPropagation();
     }
+    setHasClickedPlay(true);
     if (activeVideoRef.current) {
       if (activeVideoRef.current.paused) {
         activeVideoRef.current.play().catch(() => {});
@@ -226,6 +227,8 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
         activeVideoRef.current.pause();
         setIsActivePlaying(false);
       }
+    } else {
+      setIsActivePlaying(true);
     }
   };
 
@@ -553,32 +556,44 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
             className="relative aspect-video max-h-[460px] w-full bg-black flex items-center justify-center select-none overflow-hidden group/centerplayer cursor-pointer"
             onClick={toggleActivePlay}
           >
-            <video
-              ref={activeVideoRef}
-              src={getOptimizedMediaUrl(activeLogo?.videoUrl || LOGO_ITEMS_DATA[0]?.videoUrl, 'video')}
-              poster={getCloudinaryPoster(activeLogo?.videoUrl || LOGO_ITEMS_DATA[0]?.videoUrl || '')}
-              autoPlay={shouldAutoplay}
-              preload={preloadStrategy}
-              loop
-              playsInline
-              muted={isActiveMuted}
-              disablePictureInPicture
-              disableRemotePlayback
-              controlsList="nodownload noplaybackrate nofullscreen"
-              onContextMenu={(e) => e.preventDefault()}
-              onDragStart={(e) => e.preventDefault()}
-              onTimeUpdate={handleActiveTimeUpdate}
-              onLoadedMetadata={handleActiveLoadedMetadata}
-              onPlay={() => setIsActivePlaying(true)}
-              onPause={() => setIsActivePlaying(false)}
-              onError={(e) => {
-                e.stopPropagation();
-                console.warn('Active cinema video stream error handled:', e);
-              }}
-              className="w-full h-full object-contain"
-            >
-              <source src={getOptimizedMediaUrl(activeLogo?.videoUrl || LOGO_ITEMS_DATA[0]?.videoUrl, 'video')} type="video/mp4" />
-            </video>
+            {hasClickedPlay ? (
+              <video
+                ref={activeVideoRef}
+                src={getOptimizedMediaUrl(activeLogo?.videoUrl || LOGO_ITEMS_DATA[0]?.videoUrl, 'video')}
+                poster={getCloudinaryPoster(activeLogo?.videoUrl || LOGO_ITEMS_DATA[0]?.videoUrl || '')}
+                autoPlay
+                preload="metadata"
+                loop
+                playsInline
+                muted={isActiveMuted}
+                disablePictureInPicture
+                disableRemotePlayback
+                controlsList="nodownload noplaybackrate nofullscreen"
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
+                onTimeUpdate={handleActiveTimeUpdate}
+                onLoadedMetadata={handleActiveLoadedMetadata}
+                onPlay={() => setIsActivePlaying(true)}
+                onPause={() => setIsActivePlaying(false)}
+                onError={(e) => {
+                  e.stopPropagation();
+                  console.warn('Active cinema video stream error handled:', e);
+                }}
+                className="w-full h-full object-contain"
+              >
+                <source src={getOptimizedMediaUrl(activeLogo?.videoUrl || LOGO_ITEMS_DATA[0]?.videoUrl, 'video')} type="video/mp4" />
+              </video>
+            ) : (
+              <div className="relative w-full h-full flex items-center justify-center bg-zinc-950">
+                <img
+                  src={getCloudinaryPoster(activeLogo?.videoUrl || LOGO_ITEMS_DATA[0]?.videoUrl || '')}
+                  alt={activeLogo?.title || '3D Logo'}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-contain opacity-85"
+                />
+              </div>
+            )}
 
             {/* Subtle Anti-Download Watermark Banner */}
             <div className="absolute top-3 left-3 z-10 pointer-events-none flex items-center gap-1.5 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded text-white border border-white/10 text-[10px] font-mono">
@@ -594,24 +609,22 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
               </span>
             </div>
 
-            {/* Center Play Button Overlay when paused */}
-            {!isActivePlaying && (
+            {/* Center Play Button Overlay when paused or unstarted */}
+            {(!hasClickedPlay || !isActivePlaying) && (
               <div
-                className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-[2px] cursor-pointer z-20"
+                className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px] cursor-pointer z-20"
                 onClick={toggleActivePlay}
               >
                 <div 
-                  className="w-16 h-16 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-[0_0_30px_rgba(229,9,20,0.8)] hover:scale-110 active:scale-95 transition-transform mb-2.5"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#E50914] text-white flex items-center justify-center shadow-[0_0_35px_rgba(229,9,20,0.85)] hover:scale-110 active:scale-95 transition-transform mb-2.5"
                   title="Play 3D Logo"
                 >
-                  <Play className="w-7 h-7 fill-white translate-x-0.5" />
+                  <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-white translate-x-0.5" />
                 </div>
-                {isDataSaver && (
-                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/85 border border-emerald-500/40 text-xs font-mono font-bold text-emerald-400 shadow-lg">
-                    <Zap className="w-3.5 h-3.5 fill-current animate-pulse" />
-                    <span>Tap to Play 3D Logo (Data Saver Active)</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/85 border border-[#E50914]/40 text-xs font-mono font-bold text-white shadow-lg">
+                  <Play className="w-3.5 h-3.5 fill-[#E50914] text-[#E50914]" />
+                  <span>Tap to Play 3D Logo Animation</span>
+                </div>
               </div>
             )}
 
@@ -794,7 +807,7 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                 >
                   {/* Left: Compact Video Preview Thumbnail */}
                   <div className="relative w-24 h-16 sm:w-28 sm:h-20 flex-shrink-0 rounded-md overflow-hidden bg-black border border-white/10 select-none">
-                    {(!logo?.videoUrl || (!isHovered && !isCurrentActive)) ? (
+                    {(!logo?.videoUrl || !isHovered) ? (
                       <img
                         src={getCloudinaryPoster(logo?.videoUrl || '')}
                         alt={logo?.title || '3D Logo'}
@@ -964,7 +977,7 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                 }`}
               >
                 <div className="relative w-24 h-16 sm:w-28 sm:h-20 flex-shrink-0 rounded-md overflow-hidden bg-black border border-white/10 select-none">
-                  {(!logo?.videoUrl || (!isHovered && !isCurrentActive)) ? (
+                  {(!logo?.videoUrl || !isHovered) ? (
                     <img
                       src={getCloudinaryPoster(logo?.videoUrl || '')}
                       alt={logo?.title || '3D Logo'}
@@ -1084,7 +1097,7 @@ export default function NetflixLogosRow({ isLoading = false }: NetflixLogosRowPr
                 >
                   {/* Top: Video Screen with Auto Play on Hover / Poster for Data Saver */}
                   <div className="relative aspect-video w-full bg-black overflow-hidden select-none">
-                    {(!logo?.videoUrl || (!isHovered && !isCurrentActive)) ? (
+                    {(!logo?.videoUrl || !isHovered) ? (
                       <img
                         src={getCloudinaryPoster(logo?.videoUrl || '')}
                         alt={logo?.title || '3D Logo'}

@@ -383,14 +383,6 @@ function NetflixDashboard() {
           <NetflixBillboard onOpenModal={(track) => setSelectedTrack(track)} />
         </div>
 
-        {/* 3D LOGOS REVEAL Spotlight Banner (Edition #08 Default) */}
-        <ThreeDLogosWelcomeHero
-          onOpenLogosReveal={() => {
-            setCurrentView('logos-reveal');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-
         {/* Quick Access Bar */}
         <QuickAccessBar
           onOpenLogosReveal={() => {
@@ -498,8 +490,14 @@ function NetflixDashboard() {
           <NetflixDropsRow />
         </div>
 
-        {/* 3D Metallic Logos Row */}
-        <div id="logos">
+        {/* 3D Metallic Logos & Reveal Showcase (#logos) */}
+        <div id="logos" className="space-y-6">
+          <ThreeDLogosWelcomeHero
+            onOpenLogosReveal={() => {
+              setCurrentView('logos-reveal');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
           <NetflixLogosRow />
         </div>
 
